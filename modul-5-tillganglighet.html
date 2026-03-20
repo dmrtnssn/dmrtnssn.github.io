@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 5: Tillgänglighet och webbstandarder — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Modulen bygger vidare på allt från modul 1–4:              ║
+    ║  boxmodell, typsnitt, färger, flexbox, grid, responsiv       ║
+    ║  design, object-fit, aspect-ratio, @import, transitions.     ║
+    ║                                                              ║
+    ║  NYA saker den här modulen:                                  ║
+    ║    Lektion 1: :focus-visible, skip-link, outline-styling     ║
+    ║    Lektion 2: @media prefers-reduced-motion,                 ║
+    ║               @media prefers-color-scheme                    ║
+    ║    Lektion 3: @media print, prefers-contrast                 ║
+    ║                                                              ║
+    ║  Högerklicka → Inspektera för att se vilken CSS              ║
+    ║  som gäller för varje del!                                   ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       FRÅN MODUL 1–4 — Grundläggande styling som vi redan kan.
+       body, typsnitt, mörkt tema, kodrutor, tabeller, info-rutor,
+       transitions, object-fit — allt är känt sedan tidigare.
+       ═══════════════════════════════════════════════════════════ */
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.7;
+      background-color: #0f0f1a;
+      color: #dde1f0;
+    }
+
+    /* ── Skip-link — NYTT i Lektion 1 ──
+       Döljs tills den får fokus, visas sedan tydligt.
+       Kritiskt för tangentbordsanvändare. */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background-color: #e94560;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 0 0 6px 6px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      z-index: 9999;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ── Globala fokus-regler — NYTT i Lektion 1 ──
+       :focus-visible gäller bara vid tangentbordsnavigation,
+       inte när man klickar med mus — snyggare än :focus. */
+    :focus-visible {
+      outline: 3px solid #0db5e6;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* Ta bort default-fokusring, ersätt med vår egen */
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    /* ── Sektionsindelning ── */
+    .lektion {
+      background-color: #1a1a2e;
+      padding: 36px 32px;
+      margin: 0 -20px;
+    }
+
+    .lektion + hr.separator {
+      margin: 0;
+      border: none;
+      background-color: #1a1a2e;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 16px 0;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    hr.separator {
+      border: none;
+      border-top: 1px solid #2a2a3e;
+      margin: 40px 0;
+    }
+
+    /* ── Rubriker ── */
+    h1 {
+      font-size: 2em;
+      font-weight: 700;
+      margin-top: 0;
+      color: #ffffff;
+    }
+
+    h2 {
+      font-size: 1.75em;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0;
+    }
+
+    h3 {
+      font-size: 1.15em;
+      font-weight: 600;
+      color: #e94560;
+      margin-top: 32px;
+      margin-bottom: 10px;
+    }
+
+    /* ── Kodexempel (från modul 1–4) ── */
+    .kodexempel {
+      background-color: #0a0a14;
+      border: 1px solid #2a2a3e;
+      border-radius: 6px;
+      padding: 18px 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel pre,
+    .kodexempel code {
+      font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      color: #cdd6f4;
+      margin: 0;
+      white-space: pre;
+    }
+
+    /* ── Info-ruta (från modul 1–4) ── */
+    .info-ruta {
+      background-color: #0d1b2a;
+      border-left: 4px solid #0db5e6;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-ruta strong {
+      color: #0db5e6;
+    }
+
+    /* ── Varning-ruta ── */
+    .varning-ruta {
+      background-color: #1f1000;
+      border-left: 4px solid #f4a500;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .varning-ruta strong {
+      color: #f4a500;
+    }
+
+    /* ── Uppdrag-ruta (från modul 1–4) ── */
+    .uppdrag {
+      border-left: 4px solid #e94560;
+      padding: 16px 20px;
+      margin: 20px 0;
+      background-color: #16213e;
+    }
+
+    .uppdrag h3 {
+      margin-top: 0;
+    }
+
+    /* ── Tabeller (från modul 1–4) ── */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid #2a2a3e;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d1b2a;
+      color: #e94560;
+    }
+
+    /* ── Länkar ── */
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #5dd0f7;
+    }
+
+    /* ── CSS-spaning-rutor ── */
+    .css-spaning {
+      background-color: #0a0a14;
+      color: #ccc;
+      border: 2px dashed #0db5e6;
+      padding: 14px 18px;
+      margin: 24px 0;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .css-spaning strong {
+      color: #e94560;
+    }
+
+    .css-spaning code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background-color: #1a1a2e;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ── Kontrast-demo — visuellt exempel i Lektion 1 ── */
+    .kontrast-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .kontrast-demo .demo-ruta {
+      padding: 18px 16px;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .kontrast-demo .dalig {
+      background-color: #cccccc;
+      color: #aaaaaa;
+    }
+
+    .kontrast-demo .bra {
+      background-color: #1a1a2e;
+      color: #ffffff;
+    }
+
+    .kontrast-demo .dalig-etikett {
+      font-size: 11px;
+      color: #e94560;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .kontrast-demo .bra-etikett {
+      font-size: 11px;
+      color: #4caf50;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* ── WCAG-chips ── */
+    .niva-chip {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .niva-a   { background-color: #2a4a2a; color: #7ddf7d; }
+    .niva-aa  { background-color: #1a3a5a; color: #7dc7f5; }
+    .niva-aaa { background-color: #4a1a5a; color: #d4a0f5; }
+
+    /* ── Checklist ── */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+    }
+
+    .checklist li {
+      padding: 8px 12px;
+      margin: 4px 0;
+      background-color: #0d1b2a;
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .checklist li::before {
+      content: '☐';
+      font-size: 16px;
+      flex-shrink: 0;
+      color: #0db5e6;
+      margin-top: 1px;
+    }
+
+    /* ── Media query demo-block — används i Lektion 2 ── */
+    .motion-demo {
+      background-color: #0a0a14;
+      border: 1px solid #2a2a3e;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    .snurrande-ring {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #2a2a3e;
+      border-top-color: #0db5e6;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      animation: snurra 1s linear infinite;
+    }
+
+    @keyframes snurra {
+      to { transform: rotate(360deg); }
+    }
+
+    /* NYTT i Lektion 2: prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .snurrande-ring {
+        animation: none;
+        border-color: #0db5e6;
+        opacity: 0.6;
+      }
+
+      /* Stäng av alla transitions om användaren vill ha det lugnt */
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* NYTT i Lektion 2: prefers-color-scheme */
+    @media (prefers-color-scheme: light) {
+      /* Om OS är i ljust läge — vi visar ett exempel via .ljust-lage-demo */
+      .ljust-lage-demo {
+        background-color: #f0f4ff;
+        color: #1a1a2e;
+        border-color: #333;
+      }
+    }
+
+    .ljust-lage-demo {
+      background-color: #1a1a2e;
+      color: #dde1f0;
+      border: 2px solid #2a2a3e;
+      padding: 14px 18px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 14px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ── Lighthouse-steg ── */
+    .steg-lista {
+      counter-reset: steg-raknare;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steg-lista li {
+      counter-increment: steg-raknare;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .steg-lista li:last-child {
+      border-bottom: none;
+    }
+
+    .steg-lista li::before {
+      content: counter(steg-raknare);
+      background-color: #e94560;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* NYTT i Lektion 3: prefers-contrast */
+    @media (prefers-contrast: more) {
+      body {
+        background-color: #000000;
+        color: #ffffff;
+      }
+
+      .lektion {
+        background-color: #000000;
+      }
+
+      h3 {
+        color: #ffff00;
+      }
+
+      .kodexempel {
+        border-color: #ffffff;
+        border-width: 2px;
+      }
+
+      .uppdrag {
+        border-left-color: #ffff00;
+        background-color: #1a1a00;
+      }
+
+      a {
+        color: #00ccff;
+      }
+
+      th {
+        color: #ffff00;
+      }
+    }
+
+    /* ── Navigationsrad längst ner ── */
+    .modul-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 28px 32px;
+      background-color: #0a0a14;
+      margin: 0 -20px -20px;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    .modul-nav a {
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 20px;
+      border: 2px solid #0db5e6;
+      border-radius: 6px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .modul-nav a:hover {
+      background-color: #0db5e6;
+      color: #0a0a14;
+      text-decoration: none;
+    }
+
+    /* ── Topp-nav ── */
+    #toppen {
+      padding: 36px 32px 24px;
+      margin: -20px -20px 0;
+      background-color: #12122a;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    #toppen h1 {
+      margin-bottom: 6px;
+    }
+
+    #toppen p {
+      margin: 4px 0;
+    }
+
+    #toppen ol {
+      margin-top: 16px;
+    }
+
+    #toppen li {
+      margin: 4px 0;
+    }
+
+    /* NYTT i Lektion 3: @media print */
+    @media print {
+      .skip-link,
+      .modul-nav,
+      .css-spaning,
+      .uppdrag {
+        display: none;
+      }
+
+      body {
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 12pt;
+        padding: 0;
+        margin: 0;
+      }
+
+      .lektion {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 20px 0;
+        margin: 0;
+      }
+
+      h2 {
+        color: #000000;
+        border-bottom: 2px solid #000;
+        padding-bottom: 4px;
+      }
+
+      h3 {
+        color: #333333;
+      }
+
+      a {
+        color: #000000;
+        text-decoration: underline;
+      }
+
+      /* Visa URL:er i utskriven text */
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 10pt;
+        color: #555;
+      }
+
+      .kodexempel {
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+
+      .kodexempel code,
+      .kodexempel pre {
+        color: #111111;
+        font-size: 10pt;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      th {
+        background-color: #e0e0e0;
+        color: #000000;
+      }
+
+      th, td {
+        border: 1px solid #888;
+      }
+
+      hr.separator {
+        border-top: 1px solid #ccc;
+      }
+
+      /* Undvik sidbrytningar mitt i rubriker */
+      h2, h3 {
+        page-break-after: avoid;
+      }
+
+      .lektion {
+        page-break-before: always;
+      }
+
+      #toppen {
+        page-break-before: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- Skip-link — nytt CSS-koncept, förklaras i Lektion 1 -->
+<a class="skip-link" href="#huvudinnehall">Hoppa till huvudinnehållet</a>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOPP — Rubrik och innehållsförteckning
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="toppen">
+  <h1>Modul 5: Tillgänglighet och webbstandarder</h1>
+  <p>Gör webben användbar för faktiskt alla — inte bara de som råkar ha perfekt syn och en datormus.</p>
+  <p><em>Modul 5 av 8 — 3 lektioner</em></p>
+
+  <h2>Innehåll</h2>
+  <ol>
+    <li><a href="#lektion-1">Tillgänglighet – alt-texter, kontrast och tabbordning</a></li>
+    <li><a href="#lektion-2">W3C och WCAG – standarder och riktlinjer</a></li>
+    <li><a href="#lektion-3">Praktisk tillgänglighetskontroll i tidigare projekt</a></li>
+  </ol>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning:</strong> Den här modulen bygger på allt från modul 1–4 — mörkt tema, kodrutor, tabeller, flexbox, grid, <code>object-fit</code>, <code>aspect-ratio</code>, <code>@import</code> av typsnitt och <code>transition</code>. Tre nya saker introduceras: <code>:focus-visible</code> och skip-links (Lektion 1), <code>@media (prefers-reduced-motion)</code> och <code>@media (prefers-color-scheme)</code> (Lektion 2), samt <code>@media print</code> och <code>prefers-contrast</code> (Lektion 3). Prova att skriva ut den här sidan (Ctrl+P) och se vad som händer!
+  </div>
+</div>
+
+<hr class="separator">
+
+<main id="huvudinnehall">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — ALT-TEXTER, KONTRAST, TABBORDNING
+     Ny CSS: :focus-visible, skip-link, outline-styling
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-1" class="lektion">
+  <h2>Lektion 1: Tillgänglighet – alt-texter, kontrast och tabbordning</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NYTT: <code>:focus-visible</code> och skip-link</strong><br>
+    Tryck <strong>Tab</strong> nu — ser du en blå ram hoppa runt länkarna? Det är <code>:focus-visible</code> i aktion. Skillnaden mot vanlig <code>:focus</code>: med <code>:focus</code> visas ramen även när du klickar med musen (irriterande). <code>:focus-visible</code> är smartare — den visar ramen bara när webbläsaren bedömer att du navigerar med tangentbordet. Prova också att trycka Tab direkt när sidan laddats — en röd "Hoppa till huvudinnehållet"-länk dyker upp högst upp. Det är en <strong>skip-link</strong>: den är gömd med <code>top: -100px</code> och hoppar till <code>top: 0</code> vid <code>:focus</code>.
+  </div>
+
+  <p><strong>Varför håller vi på med det här?</strong> Tillgänglighet låter som någonting som bara berör en liten grupp — men räkna: ca 2% av befolkningen är blinda eller gravt synskadade, ca 8% av alla killar har någon form av färgblindhet (bland tjejer är det under 1%), och massor av folk navigerar med tangentbord (av biomekaniska skäl, preference, eller för att de är pro-användaré). Det är inte en liten grupp. Det är din mormor, din kompis med tendinit, och en miljard andra.</p>
+
+  <h3>Alt-text — inte "bild", utan vad bilden faktiskt visar</h3>
+
+  <p>Alt-texten på en bild är det en skärmläsare läser upp. Om du skriver dålig alt-text är bilden lika hjälplös som om den inte fanns alls.</p>
+
+  <table>
+    <tr>
+      <th>Bildtyp</th>
+      <th>Dålig alt-text</th>
+      <th>Bra alt-text</th>
+    </tr>
+    <tr>
+      <td>Profilbild</td>
+      <td><code>alt="bild"</code></td>
+      <td><code>alt="Johan Eriksson, lärare på Teknikgymnasiet"</code></td>
+    </tr>
+    <tr>
+      <td>Produktbild</td>
+      <td><code>alt="skor"</code></td>
+      <td><code>alt="Nike Air Max 90 i svart och vitt, storlek 42"</code></td>
+    </tr>
+    <tr>
+      <td>Graf/diagram</td>
+      <td><code>alt="diagram"</code></td>
+      <td><code>alt="Stapeldiagram som visar att mobilanvändning ökade med 40% 2023"</code></td>
+    </tr>
+    <tr>
+      <td>Dekorativ bild</td>
+      <td><code>alt="vacker bakgrundsbild"</code></td>
+      <td><code>alt=""</code> (tom! skärmläsaren hoppar över den)</td>
+    </tr>
+    <tr>
+      <td>Logotyp</td>
+      <td><code>alt="logo"</code></td>
+      <td><code>alt="Spotify"</code> (bara företagets namn)</td>
+    </tr>
+  </table>
+
+  <div class="info-ruta">
+    <strong>Tumregel:</strong> Testa om din alt-text funkar genom att läsa den högt utan att titta på bilden. Förstår du vad bilden föreställer? Bra. Om det låter konstigt — skriv om.
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- Dekorativ bild — tomt alt-attribut, skärmläsaren hoppar över den --&gt;
+&lt;img src="bakgrund.jpg" alt=""&gt;
+
+&lt;!-- Informativ bild — beskriv vad den visar --&gt;
+&lt;img
+  src="diagram-mobilanvandning.png"
+  alt="Stapeldiagram: mobilanvändning ökade från 60% till 84% mellan 2018 och 2023"
+&gt;
+
+&lt;!-- Länk med bild inuti — alt-texten beskriver länkdestinationen --&gt;
+&lt;a href="startsidan.html"&gt;
+  &lt;img src="logotyp.svg" alt="Hem — tillbaka till startsidan"&gt;
+&lt;/a&gt;</code></pre>
+  </div>
+
+  <h3>Färgkontrast — WCAG AA kräver 4,5:1 för text</h3>
+
+  <p>Kontrast mäts som ett förhållande — hur stor skillnad är det i ljusstyrka mellan text och bakgrund? WCAG AA (den nivå som är lag i Sverige för offentliga sajter) kräver:</p>
+
+  <table>
+    <tr>
+      <th>Innehåll</th>
+      <th>Minimikontrast (WCAG AA)</th>
+      <th>Bättre kontrast (WCAG AAA)</th>
+    </tr>
+    <tr>
+      <td>Vanlig text (under 18pt)</td>
+      <td>4,5:1</td>
+      <td>7:1</td>
+    </tr>
+    <tr>
+      <td>Stor text (18pt+ eller 14pt fet)</td>
+      <td>3:1</td>
+      <td>4,5:1</td>
+    </tr>
+    <tr>
+      <td>UI-komponenter, ikoner</td>
+      <td>3:1</td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <p><strong>Visuellt exempel — samma text, helt olika läsbarhet:</strong></p>
+
+  <div class="kontrast-demo">
+    <div>
+      <div class="dalig-etikett">DÅLIG — kontrast ca 1,6:1</div>
+      <div class="demo-ruta dalig">
+        Det här är text i grå färg på grå bakgrund. Svårt att läsa, eller hur?
+      </div>
+    </div>
+    <div>
+      <div class="bra-etikett">BRA — kontrast ca 16:1</div>
+      <div class="demo-ruta bra">
+        Det här är vit text på mörk bakgrund. Tydlig och lättläst.
+      </div>
+    </div>
+  </div>
+
+  <p><strong>Verktyg för att kolla kontrast:</strong></p>
+  <ul>
+    <li><a href="https://webaim.org/resources/contrastchecker/" target="_blank">WebAIM Contrast Checker</a> — klistra in två färgkoder, får kontrastvärdet direkt</li>
+    <li><strong>Chrome DevTools</strong> — klicka på en färg i CSS-panelen, det dyker upp ett kontrastvärde automatiskt</li>
+    <li><strong>Figma</strong> och liknande designverktyg har inbyggd kontrastkoll</li>
+  </ul>
+
+  <h3>Tabbordning — hur tangentbordsnavigation funkar</h3>
+
+  <p>När en användare trycker Tab hoppar fokus mellan interaktiva element (länkar, knappar, formulärfält) i den ordning de förekommer i HTML-koden. Om din HTML-struktur är logisk funkar tabbordningen automatiskt rätt. Problem uppstår när man försöker fixa det med CSS eller <code>tabindex</code> på fel sätt.</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- tabindex="0" — gör ett icke-interaktivt element fokuserbart (använd sparsamt) --&gt;
+&lt;div tabindex="0" role="button"&gt;Klicka på mig&lt;/div&gt;
+
+&lt;!-- tabindex="-1" — elementet är fokuserbart via JavaScript men inte via Tab --&gt;
+&lt;div id="modal" tabindex="-1"&gt;...&lt;/div&gt;
+
+&lt;!-- tabindex="1" eller högre — UNDVIK. Bryter den naturliga ordningen. --&gt;
+&lt;a href="#" tabindex="5"&gt;Konstigt hopp i tabbordningen&lt;/a&gt;
+
+&lt;!-- BÄSt: låt HTML-ordningen styra. Inga tabindex behövs. --&gt;
+&lt;nav&gt;
+  &lt;a href="/"&gt;Hem&lt;/a&gt;       &lt;!-- Tab 1 --&gt;
+  &lt;a href="/om"&gt;Om oss&lt;/a&gt;  &lt;!-- Tab 2 --&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;a href="/artikel"&gt;Läs mer&lt;/a&gt;  &lt;!-- Tab 3 --&gt;
+&lt;/main&gt;</code></pre>
+  </div>
+
+  <h3>:focus-visible vs :focus — vad är skillnaden?</h3>
+
+  <div class="kodexempel">
+    <pre><code>/* Gammalt sätt — :focus */
+a:focus {
+  outline: 3px solid blue;
+  /* Visas ALLTID när elementet har fokus — även vid musklick.
+     Många designers tyckte det såg fult ut och tog bort det helt.
+     Det är ett tillgänglighetsproblem! */
+}
+
+/* Modernt sätt — :focus-visible */
+:focus-visible {
+  outline: 3px solid #0db5e6;
+  outline-offset: 3px;
+  /* Visas BARA när webbläsaren bedömer att du navigerar med
+     tangentbord/switch/annat icke-mus-verktyg.
+     Vid musklick — ingen ring. Vid Tab — tydlig ring. */
+}
+
+/* Ta bort default-ramen, ersätt med din egen */
+:focus:not(:focus-visible) {
+  outline: none;
+}</code></pre>
+  </div>
+
+  <h3>Skip-link — för att slippa tabba igenom hela menyn</h3>
+
+  <p>Föreställ dig att du måste trycka Tab 30 gånger för att ta dig förbi navigationsmenyn innan du kan läsa innehållet — på varje sida. En skip-link löser det: den hoppar rakt till <code>&lt;main&gt;</code>.</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- Placera detta som FÖRSTA element i &lt;body&gt; --&gt;
+&lt;a class="skip-link" href="#huvudinnehall"&gt;Hoppa till huvudinnehållet&lt;/a&gt;
+
+&lt;!-- ...din navigation... --&gt;
+
+&lt;main id="huvudinnehall"&gt;
+  &lt;!-- Här börjar innehållet --&gt;
+&lt;/main&gt;</code></pre>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>/* CSS för skip-link */
+.skip-link {
+  position: absolute;
+  top: -100px;        /* Gömd utanför skärmen */
+  left: 16px;
+  background-color: #e94560;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 0 0 6px 6px;
+  font-weight: 700;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;             /* Glider ner när den får fokus */
+}</code></pre>
+  </div>
+
+  <div class="varning-ruta">
+    <strong>Vanligt misstag:</strong> Att dölja skip-linken med <code>display: none</code> eller <code>visibility: hidden</code> fungerar INTE — då kan skärmläsare inte hitta den. Använd <code>position: absolute; top: -100px</code> istället — den är visuellt gömd men fortfarande i DOM-trädet.
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Kolla din senaste sida</h3>
+    <ol>
+      <li>Öppna ditt senaste projekt i Chrome.</li>
+      <li>Stäng av musen och navigera med bara <strong>Tab</strong> och <strong>Enter</strong>. Funkar det? Ser du var du är hela tiden?</li>
+      <li>Högerklicka på en textbit → "Inspektera" → klicka på färgen i CSS-panelen → kolla kontrastvärdet som dyker upp.</li>
+      <li>Kolla dina bilder — har alla informativa bilder en beskrivande alt-text (inte bara "bild" eller "img")?</li>
+      <li>Lägg till en skip-link överst på sidan.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — W3C OCH WCAG
+     Ny CSS: @media prefers-reduced-motion, prefers-color-scheme
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-2" class="lektion">
+  <h2>Lektion 2: W3C och WCAG – standarder och riktlinjer</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NYTT: <code>@media (prefers-reduced-motion)</code> och <code>@media (prefers-color-scheme)</code></strong><br>
+    Dessa är <em>media queries för användarpreferenser</em> — de reagerar på inställningar i operativsystemet, inte skärmstorlek. Spinnen nedan är animerad. Om du har aktiverat "Minska rörelse" i ditt OS (Windows: Inställningar → Hjälpmedel → Visuella effekter; Mac: Systeminställningar → Hjälpmedel → Bildskärm) stoppas animationen automatiskt via <code>@media (prefers-reduced-motion: reduce)</code>. Rutans utseende längre ner i lektionen ändras om ditt OS är i ljust läge — via <code>@media (prefers-color-scheme: light)</code>. Inget JavaScript behövs.
+  </div>
+
+  <h3>Vad är W3C?</h3>
+
+  <p><strong>W3C</strong> (World Wide Web Consortium) är organisationen som bestämmer hur webben ska fungera — tekniskt sett. De skriver specifikationerna för HTML, CSS och en massa annat. När webbläsare (Chrome, Firefox, Safari) stöder samma standard kan du skriva kod en gång och ha den fungera överallt.</p>
+
+  <p>Tim Berners-Lee — mannen som uppfann webben 1989 — grundade W3C 1994 och var dess director fram till 2022. Ganska bra CV.</p>
+
+  <div class="info-ruta">
+    <strong>Varför spelar standarder roll?</strong> Utan dem skulle varje webbläsare göra sin grej. Det är delvis vad som hände på 90-talet — Netscape och Internet Explorer hade olika HTML, och webbutvecklare fick göra dubbla versioner av allt. Standards = du skriver en gång, det funkar överallt.
+  </div>
+
+  <h3>WCAG 2.2 — fyra principer</h3>
+
+  <p><strong>WCAG</strong> (Web Content Accessibility Guidelines) är W3C:s riktlinjer för tillgänglighet. Version 2.2 publicerades i oktober 2023 och är den aktuella versionen. Allt bygger på fyra principer — kom ihåg dem med förkortningen <strong>POUR</strong>:</p>
+
+  <table>
+    <tr>
+      <th>Princip</th>
+      <th>Engelska</th>
+      <th>Vad det betyder</th>
+    </tr>
+    <tr>
+      <td><strong>Möjlig att uppfatta</strong></td>
+      <td>Perceivable</td>
+      <td>All information måste kunna uppfattas — inte bara med synen. Text, bilder med alt-text, undertexter på video.</td>
+    </tr>
+    <tr>
+      <td><strong>Hanterbar</strong></td>
+      <td>Operable</td>
+      <td>Allt måste gå att använda utan mus. Tangentbord, switch, pekare — alla ska funka.</td>
+    </tr>
+    <tr>
+      <td><strong>Begriplig</strong></td>
+      <td>Understandable</td>
+      <td>Innehåll och gränssnitt måste vara förståeligt. Tydliga felmeddelanden, förutsägbart beteende.</td>
+    </tr>
+    <tr>
+      <td><strong>Robust</strong></td>
+      <td>Robust</td>
+      <td>Innehållet måste funka i olika webbläsare och hjälpmedel, nu och i framtiden. Validera din HTML.</td>
+    </tr>
+  </table>
+
+  <h3>Nivåer: A, AA och AAA</h3>
+
+  <p>WCAG delar in krav i tre nivåer:</p>
+
+  <ul>
+    <li><span class="niva-chip niva-a">A</span> — Lägsta nivån. Måste uppfyllas. Utan den är sidan nästan oanvändbar för många.</li>
+    <li><span class="niva-chip niva-aa">AA</span> — Mellannivån. Det här är vad lagen kräver för offentliga webbplatser i Sverige (DOS-lagen). Rimlig att uppnå.</li>
+    <li><span class="niva-chip niva-aaa">AAA</span> — Högsta nivån. Bäst möjlig tillgänglighet. Inte alltid realistiskt för hela sidor, men sträva mot det.</li>
+  </ul>
+
+  <h3>Vanliga WCAG-krav och hur du möter dem</h3>
+
+  <table>
+    <tr>
+      <th>Krav</th>
+      <th>Nivå</th>
+      <th>Hur du gör det</th>
+    </tr>
+    <tr>
+      <td>Alt-text på bilder</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td><code>alt="beskrivning"</code> på alla informativa bilder, <code>alt=""</code> på dekorativa.</td>
+    </tr>
+    <tr>
+      <td>Tangentbordsnavigation</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td>Allt som går att klicka ska gå att nå med Tab och aktivera med Enter.</td>
+    </tr>
+    <tr>
+      <td>Sidtitel</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td>Varje sida måste ha en beskrivande <code>&lt;title&gt;</code>.</td>
+    </tr>
+    <tr>
+      <td>Synlig fokusindikator</td>
+      <td><span class="niva-chip niva-aa">AA</span></td>
+      <td>Använd <code>:focus-visible</code> med tydlig <code>outline</code>. Ta inte bort outline helt.</td>
+    </tr>
+    <tr>
+      <td>Textkontrast 4,5:1</td>
+      <td><span class="niva-chip niva-aa">AA</span></td>
+      <td>Kolla med WebAIM Contrast Checker eller Chrome DevTools.</td>
+    </tr>
+    <tr>
+      <td>Rubriker i logisk ordning</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td>h1 → h2 → h3. Hoppa inte från h1 till h4.</td>
+    </tr>
+    <tr>
+      <td>Undertexter på video</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td>Lägg till <code>&lt;track kind="captions"&gt;</code> i din <code>&lt;video&gt;</code>-tagg.</td>
+    </tr>
+    <tr>
+      <td>Ingen autoplay-animation som blinkar</td>
+      <td><span class="niva-chip niva-a">A</span></td>
+      <td>Blinkande innehåll kan trigga epileptiska anfall. Undvik det.</td>
+    </tr>
+    <tr>
+      <td>Textkontrast 7:1</td>
+      <td><span class="niva-chip niva-aaa">AAA</span></td>
+      <td>Sträva mot detta om möjligt — alla vinner på högre kontrast.</td>
+    </tr>
+  </table>
+
+  <h3>Validering — W3C Validator</h3>
+
+  <p>Ogiltig HTML kan bete sig konstigt i skärmläsare och andra hjälpmedel. W3C erbjuder gratis validatorer:</p>
+
+  <ul>
+    <li><a href="https://validator.w3.org/" target="_blank">validator.w3.org</a> — HTML-validator. Klistra in din kod eller ange en URL.</li>
+    <li><a href="https://jigsaw.w3.org/css-validator/" target="_blank">jigsaw.w3.org/css-validator</a> — CSS-validator.</li>
+  </ul>
+
+  <div class="info-ruta">
+    <strong>Varför validera?</strong> Webbläsare är förlåtande — de försöker visa sidan även om HTML:en är trasig. Skärmläsare är det inte alltid. En saknad stängningstagg eller ett felaktigt nästlat element kan bryta navigationen för en skärmläsaranvändare.
+  </div>
+
+  <h3>@media prefers-reduced-motion — respektera rörelsepreferenser</h3>
+
+  <p>Vissa användare mår illa av animationer — det gäller folk med vestibulära störningar (balansproblem), men också folk som helt enkelt gillar ett lugnt gränssnitt. Operativsystemen har inbyggda inställningar för "minska rörelse" — CSS kan läsa av dem.</p>
+
+  <div class="motion-demo">
+    <div class="snurrande-ring"></div>
+    <p style="margin: 0; font-size: 14px; color: #888;">
+      Den här ringen snurrar — om du inte har aktiverat "Minska rörelse" i ditt OS.
+    </p>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>/* Animation finns som default */
+.spinner {
+  animation: snurra 1s linear infinite;
+}
+
+/* Om användaren vill ha lugnt gränssnitt: stäng av */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+
+  /* Generell regel — stäng av alla animationer */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre>
+  </div>
+
+  <h3>@media prefers-color-scheme — ljust och mörkt läge</h3>
+
+  <p>De flesta moderna OS har ett mörkt och ett ljust läge. CSS kan anpassa sig automatiskt — utan JavaScript, utan inloggning, utan cookies. Det är också en tillgänglighetsgrej: många med dyslexicertifiering eller migrän föredrar specifika kontrastsätt.</p>
+
+  <div class="ljust-lage-demo">
+    Den här rutan byter utseende beroende på om ditt OS är i ljust eller mörkt läge. Prova att byta i dina systeminställningar!
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>/* Bas: mörkt läge (om man bygger dark-first) */
+body {
+  background-color: #0f0f1a;
+  color: #dde1f0;
+}
+
+/* Ljust läge — aktiveras automatiskt om OS är i light mode */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+    color: #1a1a2e;
+  }
+
+  .kort {
+    background-color: #f0f4ff;
+    border-color: #ccc;
+  }
+}
+
+/* Alternativt — CSS custom properties (förhandstitt på Modul 7!)
+   Med variabler (--bg, --text) behöver man bara ändra på ett ställe */
+:root {
+  --bg: #0f0f1a;
+  --text: #dde1f0;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a2e;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}</code></pre>
+  </div>
+
+  <div class="info-ruta">
+    <strong>Förhandstitt:</strong> Koden med <code>--bg</code>, <code>--text</code> och <code>var()</code> använder <em>CSS custom properties</em> (CSS-variabler) — ett koncept som tas upp ordentligt i Modul 7. Det viktigaste nu är att förstå grundmönstret med <code>@media (prefers-color-scheme)</code>.
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: WCAG-jakt</h3>
+    <ol>
+      <li>Gå till <a href="https://validator.w3.org/" target="_blank">validator.w3.org</a> och validera din senaste HTML-fil. Fixa eventuella fel.</li>
+      <li>Leta upp tre tillgänglighetsbrister på en valfri webbsida med Chrome DevTools → Lighthouse → Accessibility. Skriv upp vad du hittade.</li>
+      <li>Lägg till <code>@media (prefers-reduced-motion: reduce)</code> i ditt projekt för alla <code>transition</code> och <code>animation</code> du använder.</li>
+      <li><strong>Boss-level:</strong> Implementera <code>@media (prefers-color-scheme)</code> med CSS custom properties i ditt projekt. Byt theme baserat på OS-inställning.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — PRAKTISK TILLGÄNGLIGHETSKONTROLL
+     Ny CSS: @media print, prefers-contrast
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-3" class="lektion">
+  <h2>Lektion 3: Praktisk tillgänglighetskontroll i tidigare projekt</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NYTT: <code>@media print</code> och <code>prefers-contrast</code></strong><br>
+    Tryck <strong>Ctrl+P</strong> (eller Cmd+P) för att öppna utskriftsdialogen — välj "Förhandsgranska" utan att faktiskt skriva ut. Se hur sidan ser helt annorlunda ut: mörk bakgrund borta, vit bakgrund, skip-link och navigationsknappar dolda, URL:er skrivs ut efter länkarna. Det är <code>@media print</code> i aktion. Det andra nya: <code>@media (prefers-contrast: more)</code> — om du aktiverat "Öka kontrast" i ditt OS (Mac: Systeminställningar → Hjälpmedel → Bildskärm) ser sidan ännu skarpare ut. Inte för att det är nödvändigt här — men som ett mönster att känna till.
+  </div>
+
+  <h3>Lighthouse — det kraftfullaste gratis-verktyget du redan har</h3>
+
+  <p>Lighthouse är inbyggt i Chrome DevTools och analyserar din sida på fyra axlar: Performance, Accessibility, Best Practices och SEO. Du får en poäng 0–100 och en lista med konkreta åtgärder.</p>
+
+  <ol class="steg-lista">
+    <li>Öppna din sida i Chrome och tryck <strong>F12</strong> (eller högerklicka → Inspektera).</li>
+    <li>Klicka på fliken <strong>Lighthouse</strong> (kan vara gömd bakom <strong>&gt;&gt;</strong>-pilen).</li>
+    <li>Kryssa i <strong>Accessibility</strong> (och gärna de andra) — klicka <strong>Analyze page load</strong>.</li>
+    <li>Vänta ca 10–30 sekunder medan Lighthouse kör sin analys.</li>
+    <li>Läs igenom resultaten. Varje problem har en länk till dokumentation om hur du fixar det.</li>
+    <li>Fixa de enklaste felen, kör om analysen — se poängen gå upp.</li>
+  </ol>
+
+  <div class="info-ruta">
+    <strong>Mål:</strong> En tillgänglighetspoäng på 90+ är bra. 100 är möjligt men kräver ofta extra arbete. Sikta på minst 80 i dina projekt — och förstå varför poängen är vad den är.
+  </div>
+
+  <h3>Manuell testning — Lighthouse missar en del</h3>
+
+  <p>Lighthouse hittar ca 30–40% av tillgänglighetsproblem automatiskt. Resten kräver manuell testning. De här testerna tar 5 minuter och hittar saker som ingen algoritm kan:</p>
+
+  <table>
+    <tr>
+      <th>Test</th>
+      <th>Hur du gör det</th>
+      <th>Vad du letar efter</th>
+    </tr>
+    <tr>
+      <td><strong>Tangentbordstest</strong></td>
+      <td>Koppla från musen, navigera med Tab, Shift+Tab, Enter, piltangenter.</td>
+      <td>Kan du nå allt? Ser du alltid var fokus är? Fastnar du i någon loop?</td>
+    </tr>
+    <tr>
+      <td><strong>Zoom 200%</strong></td>
+      <td>Ctrl++ (eller Cmd++) tills du är på 200%.</td>
+      <td>Bryts layouten? Försvinner text bakom kanter? Rullningslist horisontellt?</td>
+    </tr>
+    <tr>
+      <td><strong>Skärmläsare (Windows)</strong></td>
+      <td>Aktivera NVDA (gratis) eller Windows Narrator (Win+Ctrl+Enter).</td>
+      <td>Läses innehållet upp i logisk ordning? Är bildtexter vettiga?</td>
+    </tr>
+    <tr>
+      <td><strong>Skärmläsare (Mac)</strong></td>
+      <td>Aktivera VoiceOver med Cmd+F5.</td>
+      <td>Samma som ovan.</td>
+    </tr>
+    <tr>
+      <td><strong>Färgblindhetstest</strong></td>
+      <td>Chrome DevTools → Rendering-fliken → Emulate vision deficiencies.</td>
+      <td>Förstår man fortfarande innehållet utan att förlita sig på färg?</td>
+    </tr>
+  </table>
+
+  <h3>Checklista — det du ska kunna bocka av</h3>
+
+  <p>Gå igenom varje punkt för ditt projekt:</p>
+
+  <ul class="checklist">
+    <li>HTML validerar utan fel på validator.w3.org</li>
+    <li><code>&lt;html lang="sv"&gt;</code> är satt (eller rätt språk)</li>
+    <li>Varje sida har en unik, beskrivande <code>&lt;title&gt;</code></li>
+    <li>Rubriker är i logisk ordning: h1 → h2 → h3 (inga hopp)</li>
+    <li>Semantiska taggar används: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code></li>
+    <li>Alla informativa bilder har beskrivande alt-text</li>
+    <li>Dekorativa bilder har <code>alt=""</code></li>
+    <li>Textkontrast är minst 4,5:1 för vanlig text</li>
+    <li>Synlig fokusindikator finns för alla interaktiva element</li>
+    <li>Hela sidan går att navigera med bara tangentbord</li>
+    <li>Skip-link finns och fungerar</li>
+    <li>Formulärfält (om du har) har kopplade <code>&lt;label&gt;</code>-taggar</li>
+    <li>Lighthouse Accessibility-poäng: 80 eller högre</li>
+    <li><code>@media (prefers-reduced-motion: reduce)</code> stänger av animationer</li>
+  </ul>
+
+  <h3>Vanliga problem och hur du fixar dem</h3>
+
+  <table>
+    <tr>
+      <th>Problem Lighthouse hittar</th>
+      <th>Felet i koden</th>
+      <th>Fix</th>
+    </tr>
+    <tr>
+      <td>"Image elements do not have [alt] attributes"</td>
+      <td><code>&lt;img src="foto.jpg"&gt;</code></td>
+      <td>Lägg till <code>alt="beskrivning"</code> eller <code>alt=""</code>.</td>
+    </tr>
+    <tr>
+      <td>"Links do not have a discernible name"</td>
+      <td><code>&lt;a href="..."&gt;&lt;img src="pil.svg"&gt;&lt;/a&gt;</code></td>
+      <td>Lägg till <code>aria-label="Nästa sida"</code> på länken, eller alt-text på bilden.</td>
+    </tr>
+    <tr>
+      <td>"Form elements do not have associated labels"</td>
+      <td><code>&lt;input type="text" placeholder="Namn"&gt;</code></td>
+      <td><code>&lt;label for="namn"&gt;Namn&lt;/label&gt;&lt;input id="namn" type="text"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>"Heading elements are not in a sequentially-descending order"</td>
+      <td><code>&lt;h1&gt;</code> följt av <code>&lt;h4&gt;</code></td>
+      <td>Använd h1 → h2 → h3 i ordning. Hoppa inte nivåer.</td>
+    </tr>
+    <tr>
+      <td>"Background and foreground colors do not have a sufficient contrast ratio"</td>
+      <td>Ljusgrå text på vit bakgrund.</td>
+      <td>Mörkare text eller ljusare bakgrund. Kolla med WebAIM Contrast Checker.</td>
+    </tr>
+    <tr>
+      <td>"Buttons do not have an accessible name"</td>
+      <td><code>&lt;button&gt;&lt;img src="sok.svg"&gt;&lt;/button&gt;</code></td>
+      <td><code>&lt;button aria-label="Sök"&gt;&lt;img src="sok.svg" alt=""&gt;&lt;/button&gt;</code></td>
+    </tr>
+  </table>
+
+  <h3>@media print — skriv ut som ett proffs</h3>
+
+  <p>Nästan ingen tänker på det, men folk skriver ut webbsidor. En CV-sida, en recept-sida, en informationssida — alla kan hamna på ett papper. Utan print-CSS blir det kaos: mörk bakgrund, navigationsmenyer, knappar som inte gör någonting på papper.</p>
+
+  <div class="kodexempel">
+    <pre><code>@media print {
+  /* Dölj det som inte behövs på papper */
+  nav,
+  .skip-link,
+  .css-spaning,
+  button {
+    display: none;
+  }
+
+  /* Ljus bakgrund, mörk text (standard för papper) */
+  body {
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 12pt;
+  }
+
+  /* Visa URL:er i klartext efter länkarna */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #555;
+  }
+
+  /* Undvik sidbrytningar mitt i rubriker */
+  h2, h3 {
+    page-break-after: avoid;
+  }
+
+  /* Börja varje stor sektion på ny sida */
+  section, article {
+    page-break-before: always;
+  }
+}</code></pre>
+  </div>
+
+  <h3>@media prefers-contrast — för de som behöver det riktigt skarpt</h3>
+
+  <div class="kodexempel">
+    <pre><code>/* Om OS är inställt på "Öka kontrast" */
+@media (prefers-contrast: more) {
+  body {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  a {
+    color: #ffff00;         /* Gul — syns tydligt på svart */
+    text-decoration: underline;
+  }
+
+  button {
+    border: 2px solid #ffffff;
+  }
+
+  /* Inga halvtransparenta bakgrunder */
+  .kort {
+    background-color: #000000;
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Om OS är inställt på "Minska kontrast" (ovanligare) */
+@media (prefers-contrast: less) {
+  body {
+    color: #555;      /* Mjukare kontrast för de som föredrar det */
+  }
+}</code></pre>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Projekt: Revidera ett tidigare projekt</h3>
+    <p>Välj ett av dina projekten från modul 1–4. Gör en fullständig tillgänglighetsrevision:</p>
+    <ol>
+      <li><strong>Kör Lighthouse</strong> — skriv upp poängen och alla fel.</li>
+      <li><strong>Gå igenom checklistan</strong> ovanför punkt för punkt.</li>
+      <li><strong>Fixa minst 5 problem</strong> du hittar — börja med de enklaste (alt-texter, rubriker).</li>
+      <li><strong>Lägg till</strong> skip-link, <code>:focus-visible</code>-styling och <code>@media (prefers-reduced-motion)</code>.</li>
+      <li><strong>Lägg till ett print-stylesheet</strong> med <code>@media print</code>.</li>
+      <li><strong>Kör Lighthouse igen</strong> — hur mycket gick poängen upp?</li>
+      <li><strong>Redovisa:</strong> Vad var det värsta problemet du hittade? Vad var lättast att fixa? Vad var svårast?</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Skärmläsartest</h3>
+    <ol>
+      <li>Aktivera NVDA (Windows, gratis på nvaccess.org) eller VoiceOver (Mac, Cmd+F5).</li>
+      <li>Navigera din sida med bara tangentbordet medan skärmläsaren läser upp.</li>
+      <li>Är det meningsfullt? Hoppar den rätt? Läser den upp bilderna korrekt?</li>
+      <li>Skriv ner tre saker du vill förbättra.</li>
+    </ol>
+  </div>
+
+  <div class="css-spaning">
+    <strong>CSS-sammanfattning — Modul 5:</strong> Det här är vad vi introducerade i den här modulen:
+    <ol>
+      <li><strong>Lektion 1:</strong> <code>:focus-visible</code> (tangentbordsfokus utan musklick), <code>:focus:not(:focus-visible)</code> (ta bort standardring), skip-link med <code>position: absolute; top: -100px</code> som glider till <code>top: 0</code> vid fokus.</li>
+      <li><strong>Lektion 2:</strong> <code>@media (prefers-reduced-motion: reduce)</code> (stänger av animationer för känsliga användare), <code>@media (prefers-color-scheme: light/dark)</code> (anpassar färgtemat till OS-inställning).</li>
+      <li><strong>Lektion 3:</strong> <code>@media print</code> (utskriftsanpassning — dölj nav, ljus bakgrund, skriv ut URL:er), <code>@media (prefers-contrast: more)</code> (förstärkt kontrast för de som behöver).</li>
+    </ol>
+    <p>Allt annat på sidan — mörkt tema, kodrutor, tabeller, info-rutor, flexbox, grid, <code>@import</code> av typsnitt, <code>transition</code> — det är från modul 1–4 och återanvänds här utan att introduceras på nytt.</p>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVIGATIONSRAD
+     ═══════════════════════════════════════════════════════════════ -->
+<div style="text-align: center; padding: 24px 0 8px;">
+  <a href="test-modul-5.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em; font-family: 'Segoe UI', system-ui, sans-serif;">Gå till testet för Modul 5 →</a>
+</div>
+
+<nav class="modul-nav" aria-label="Modulnavigation">
+  <a href="modul-4-media-och-typsnitt.html">← Modul 4: Media och typsnitt</a>
+  <a href="modul-6-javascript.html">Modul 6: JavaScript →</a>
+</nav>
+
+</body>
+</html>

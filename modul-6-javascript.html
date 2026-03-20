@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 6: JavaScript-introduktion — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Modul 6 bygger vidare på CSS från modulerna 1–5.           ║
+    ║  Varje lektion lägger till ny CSS — och den här modulen      ║
+    ║  visar också hur CSS och JavaScript samarbetar.              ║
+    ║                                                              ║
+    ║  Lektion 1: cursor: pointer, user-select                     ║
+    ║  Lektion 2: transition (mjuka övergångar)                    ║
+    ║  Lektion 3: CSS-klasser för JS-toggles (.dark-mode,          ║
+    ║             .hidden, .active)                                ║
+    ║  Lektion 4: @keyframes animation (teaser)                    ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — ärvt från modulerna 1–5.
+       Mörkt tema, sans-serif, boxmodellen, länkstyling, bilder.
+       ═══════════════════════════════════════════════════════════ */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.7;
+    }
+
+    h1 {
+      font-size: 2em;
+      font-weight: 700;
+      color: #f5c518;
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      font-size: 1.7em;
+      font-weight: 700;
+      color: #f5c518;
+      margin-top: 0;
+    }
+
+    h3 {
+      color: #e94560;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      font-size: 1.15em;
+    }
+
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus {
+      outline: 3px solid #e94560;
+      outline-offset: 2px;
+    }
+
+    p {
+      margin: 12px 0;
+    }
+
+    code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.92em;
+      background-color: #0a0a1a;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #f5c518;
+    }
+
+    .separator {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 40px 0;
+    }
+
+    /* ── Gemensam sektionsstil ── */
+    .lektion {
+      padding: 30px;
+      margin-left: -20px;
+      margin-right: -20px;
+      border-top: 1px solid #333;
+    }
+
+    /* ── Kodexempel ── */
+    .kodexempel {
+      background-color: #0a0a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel pre {
+      margin: 0;
+    }
+
+    .kodexempel code {
+      background: none;
+      padding: 0;
+      font-size: 14px;
+      color: #e0e0e0;
+      display: block;
+      white-space: pre;
+    }
+
+    /* ── Uppdragsrutor ── */
+    .uppdrag {
+      border-left: 4px solid #e94560;
+      padding: 16px 20px;
+      margin: 20px 0;
+      background-color: #16213e;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .uppdrag h3 {
+      margin-top: 0;
+    }
+
+    /* ── Info-rutor ── */
+    .info-ruta {
+      background-color: #0d1b2a;
+      border-left: 4px solid #0db5e6;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-ruta strong {
+      color: #0db5e6;
+    }
+
+    /* ── CSS-spaningsrutor ── */
+    .css-spaning {
+      background-color: #0a0a1a;
+      color: #ccc;
+      border: 2px dashed #0db5e6;
+      padding: 14px 18px;
+      margin: 24px 0;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .css-spaning strong {
+      color: #e94560;
+    }
+
+    .css-spaning code {
+      background: none;
+      padding: 0;
+      color: #f5c518;
+    }
+
+    /* ── Tabeller ── */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d1b2a;
+      color: #e94560;
+    }
+
+    /* ── Navigation (topp och botten) ── */
+    #toppen {
+      padding-bottom: 20px;
+    }
+
+    .nav-botten {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px 0 10px;
+      font-size: 1.05em;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LEKTION 1 — NY CSS: cursor: pointer, user-select
+       ══════════════════════════════════════════════════════════ */
+
+    /* Allt som "kan klickas" ska se klickbart ut */
+    .klickbar {
+      cursor: pointer;
+    }
+
+    /* Markeringsbart kodblock (välj all text med ett klick) */
+    .kodsnutt-valbara {
+      user-select: all;
+      cursor: text;
+    }
+
+    /* Demo-knappar — grundstil som byggs på i lektion 2 */
+    .demo-knapp {
+      display: inline-block;
+      background-color: #e94560;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-family: inherit;
+      cursor: pointer;
+      margin: 8px 4px;
+    }
+
+    .demo-knapp:hover {
+      background-color: #c73652;
+    }
+
+    /* Liten demo-yta */
+    .demo-yta {
+      background-color: #0d1b2a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 16px 0;
+      min-height: 60px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LEKTION 2 — NY CSS: transition
+       Mjuka övergångar när JS ändrar utseende
+       ══════════════════════════════════════════════════════════ */
+
+    /* Elementet får en mjuk övergång när JS byter färg/storlek */
+    .mjuk-overgang {
+      transition: background-color 0.3s ease,
+                  color 0.3s ease,
+                  transform 0.2s ease,
+                  font-size 0.3s ease;
+    }
+
+    /* Räknaren i demo */
+    #raknare-text {
+      font-size: 3em;
+      font-weight: 700;
+      color: #f5c518;
+      display: inline-block;
+      transition: transform 0.15s ease, color 0.3s ease;
+    }
+
+    /* Stil-demo — textrutan som JS ändrar */
+    #stil-demo-text {
+      font-size: 1.1em;
+      padding: 16px;
+      background-color: #16213e;
+      border-radius: 6px;
+      transition: background-color 0.4s ease,
+                  color 0.4s ease,
+                  font-size 0.3s ease;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LEKTION 3 — NY CSS: klasser för JS-toggles
+       ══════════════════════════════════════════════════════════ */
+
+    /* Dark mode — klass som JS lägger till/tar bort på body */
+    body.dark-mode-demo {
+      /* används inte på hela body här, demonstreras i demo-elementet */
+    }
+
+    /* Dold klass — JS använder classList.toggle('hidden') */
+    .hidden {
+      display: none;
+    }
+
+    /* Aktiv klass — t.ex. för FAQ-svar som är öppna */
+    .aktiv-svar {
+      display: block;
+    }
+
+    /* FAQ-styling */
+    .faq-item {
+      border: 1px solid #333;
+      border-radius: 6px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+
+    .faq-fraga {
+      /* Reset av standardstyling för button-elementet */
+      appearance: none;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      text-align: left;
+      width: 100%;
+      /* Egen styling */
+      background-color: #16213e;
+      padding: 14px 18px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .faq-fraga:hover {
+      background-color: #1e2d4a;
+    }
+
+    .faq-fraga .pil {
+      font-size: 0.85em;
+      transition: transform 0.25s ease;
+    }
+
+    .faq-item.aktiv .faq-fraga .pil {
+      transform: rotate(180deg);
+    }
+
+    .faq-svar {
+      display: none;
+      padding: 14px 18px;
+      background-color: #0d1b2a;
+      border-top: 1px solid #333;
+    }
+
+    .faq-item.aktiv .faq-svar {
+      display: block;
+    }
+
+    /* Dark/light mode toggle-demo */
+    .mode-demo-yta {
+      background-color: #16213e;
+      color: #e0e0e0;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 16px 0;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .mode-demo-yta.ljust-lage {
+      background-color: #f0f4ff;
+      color: #1a1a2e;
+    }
+
+    /* Bildkarusell */
+    .bild-demo {
+      width: 100%;
+      max-width: 340px;
+      height: 120px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5em;
+      font-weight: 700;
+      transition: background-color 0.4s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LEKTION 4 — NY CSS: @keyframes animation (teaser)
+       ══════════════════════════════════════════════════════════ */
+
+    @keyframes pulsa {
+      0%   { transform: scale(1);    opacity: 1; }
+      50%  { transform: scale(1.08); opacity: 0.85; }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+
+    @keyframes glid-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes regnbage {
+      0%   { color: #e94560; }
+      25%  { color: #f5c518; }
+      50%  { color: #0db5e6; }
+      75%  { color: #a855f7; }
+      100% { color: #e94560; }
+    }
+
+    .pulsande {
+      animation: pulsa 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .regnbage-text {
+      animation: regnbage 3s linear infinite;
+      font-weight: 700;
+      font-size: 1.3em;
+    }
+
+    .animerat-kort {
+      background-color: #16213e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 12px 0;
+      animation: glid-in 0.6s ease both;
+    }
+
+    .animerat-kort:nth-child(2) { animation-delay: 0.1s; }
+    .animerat-kort:nth-child(3) { animation-delay: 0.2s; }
+    .animerat-kort:nth-child(4) { animation-delay: 0.3s; }
+
+    #animera-knapp {
+      display: none;
+    }
+
+    .animationsyta {
+      min-height: 80px;
+    }
+
+    /* Poängtavla i slutuppgiften */
+    #poang-display {
+      font-size: 2em;
+      font-weight: 700;
+      color: #f5c518;
+      transition: transform 0.15s ease;
+    }
+
+    /* ── Sammanfattningstabell i lektion 4 ── */
+    .sammanfattning-tabell td:first-child {
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: #f5c518;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOPPNAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="toppen">
+  <h1>Modul 6: JavaScript-introduktion</h1>
+  <p>Du kan HTML. Du kan CSS. Nu lär vi oss att göra saker som faktiskt händer när man klickar.</p>
+  <p><em>Modul 6 av 8 — 4 lektioner</em></p>
+
+  <h2>Innehåll</h2>
+  <ol>
+    <li><a href="#lektion-1">Vad är JavaScript?</a></li>
+    <li><a href="#lektion-2">Enkel interaktivitet — knapp som gör saker</a></li>
+    <li><a href="#lektion-3">Praktiskt — toggle, FAQ och räknare</a></li>
+    <li><a href="#lektion-4">Sammanfattning och vad händer härnäst</a></li>
+  </ol>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning:</strong> Den här modulen har ett mörkt tema från start — det är CSS från modulerna 1–5 som redan är på plats. Ny CSS tillkommer för varje lektion och markeras i spaningsrutorna. Det roliga den här gången: du får se CSS och JavaScript jobba ihop!
+  </div>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — VAD ÄR JAVASCRIPT?
+     NY CSS: cursor: pointer, user-select
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-1" class="lektion">
+  <h2>Lektion 1: Vad är JavaScript?</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NY: <code>cursor: pointer</code> och <code>user-select</code></strong><br>
+    Ser du att muspekaren ändrar form när du hovrar över knapparna och demo-elementen nedan? Det är <code>cursor: pointer</code> — den lilla handen som talar om "det här är klickbart". Utan den ser knappar och klickbara element likadana ut som vanlig text, vilket är förvirrande. <code>user-select: none</code> förhindrar att text av misstag markeras när man klickar snabbt, och <code>user-select: all</code> markerar hela kodblock med ett enda klick.
+  </div>
+
+  <p><strong>Okej, du vet redan att webben har tre lager.</strong> HTML är skelettet, CSS är kläderna. JavaScript är det som gör att kläder kan bytas, skelett kan röra sig och saker faktiskt händer när du klickar. Utan JS är en webbsida en affisch. Med JS är det ett program.</p>
+
+  <h3>De tre pelarna — en snabb påminnelse</h3>
+
+  <table>
+    <tr><th>Språk</th><th>Vad det gör</th><th>Exempel</th></tr>
+    <tr>
+      <td><strong>HTML</strong></td>
+      <td>Struktur — vad som finns</td>
+      <td>"Det här är en rubrik och en knapp."</td>
+    </tr>
+    <tr>
+      <td><strong>CSS</strong></td>
+      <td>Utseende — hur det ser ut</td>
+      <td>"Knappen är röd och har rundade hörn."</td>
+    </tr>
+    <tr>
+      <td><strong>JavaScript</strong></td>
+      <td>Beteende — vad som händer</td>
+      <td>"När man klickar på knappen ändras texten."</td>
+    </tr>
+  </table>
+
+  <h3>Lite historia (snabbversion)</h3>
+
+  <p>JavaScript skapades 1995 av <strong>Brendan Eich</strong> på Netscape. Han fick uppdraget att bygga ett skriptspråk för webben. Han var klar på <strong>10 dagar</strong>. (Seriöst. Tio dagar. Det förklarar en del konstigheter i språket.)</p>
+
+  <p>Det hette ursprungligen <em>Mocha</em>, sedan <em>LiveScript</em>, och döptes till <strong>JavaScript</strong> av marknadsskäl — Java var populärt just då. Trots likheten i namn har JavaScript och Java ungefär lika mycket gemensamt som en hamburgare och ett hamburger-emoji.</p>
+
+  <p>Idag är JavaScript det mest använda programmeringsspråket i världen. Det körs i din webbläsare, på servrar, i mobilappar och i smarta kylskåp. Det man byggde ihop på 10 dagar driver en stor del av internet.</p>
+
+  <h3>Var körs JavaScript?</h3>
+
+  <p>Du behöver inte installera någonting. JS körs direkt i webbläsaren — och du har faktiskt en JS-konsol tillgänglig just nu:</p>
+
+  <div class="info-ruta">
+    <strong>Prova nu:</strong> Tryck <strong>F12</strong> (eller högerklicka → Inspektera) och klicka på fliken <strong>Console</strong>. Skriv <code>1 + 1</code> och tryck Enter. Skriv sedan <code>alert("hej")</code> och tryck Enter. Grattis — du har kört JavaScript.
+  </div>
+
+  <h3>Tre sätt att lägga till JS på en sida</h3>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- 1. Inline i HTML-taggen (undvik — svårt att läsa) --&gt;
+&lt;button onclick="alert('hej')"&gt;Klicka&lt;/button&gt;
+
+&lt;!-- 2. Script-block i HTML-filen (bra för nybörjare) --&gt;
+&lt;script&gt;
+  console.log("hej från script-blocket!");
+&lt;/script&gt;
+
+&lt;!-- 3. Extern fil (standard i riktiga projekt) --&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;</code></pre>
+  </div>
+
+  <p>Vi börjar med <strong>script-block</strong> — det är enklast att förstå och se sambandet med HTML. I riktiga projekt delar man alltid upp i en separat <code>.js</code>-fil.</p>
+
+  <h3>console.log() — din bästa vän</h3>
+
+  <p><code>console.log()</code> skriver ut saker i konsolen. Det är ditt viktigaste felsökningsverktyg. Proffsutvecklare använder det hela tiden. Det kostar ingenting och det stör ingen — det syns bara i DevTools.</p>
+
+  <div class="kodexempel">
+    <pre><code>console.log("Hej!");                    // Skriver ut: Hej!
+console.log(42);                        // Skriver ut: 42
+console.log("Summan är:", 3 + 4);       // Skriver ut: Summan är: 7
+console.log(true);                      // Skriver ut: true</code></pre>
+  </div>
+
+  <h3>Variabler: let och const</h3>
+
+  <p>En variabel är en namngiven låda där du lagrar ett värde. Du kan läsa värdet, byta det och använda det i beräkningar.</p>
+
+  <div class="kodexempel">
+    <pre><code>// let — ett värde som kan ändras
+let poang = 0;
+poang = poang + 10;  // nu är poang 10
+poang = 100;         // nu är poang 100
+
+// const — ett värde som INTE kan ändras
+const spelarnamn = "GamerXL99";
+// spelarnamn = "nåt annat";  &lt;-- detta kraschar!
+
+// Använd const om du vet att värdet inte ska ändras.
+// Använd let om värdet kommer att ändras.
+// Använd ALDRIG var — det är gammaldags och har konstiga regler.</code></pre>
+  </div>
+
+  <h3>Datatyper — tre du behöver nu</h3>
+
+  <table>
+    <tr><th>Typ</th><th>Vad det är</th><th>Exempel</th></tr>
+    <tr>
+      <td><strong>string</strong></td>
+      <td>Text — alltid inom citattecken (enkla eller dubbla).</td>
+      <td><code>"hej"</code>, <code>'GTA VI'</code>, <code>`Hej ${namn}`</code></td>
+    </tr>
+    <tr>
+      <td><strong>number</strong></td>
+      <td>Tal — utan citattecken. Heltals och decimaltal.</td>
+      <td><code>42</code>, <code>3.14</code>, <code>-7</code></td>
+    </tr>
+    <tr>
+      <td><strong>boolean</strong></td>
+      <td>Sant eller falskt — och bara det. Inget citattecken.</td>
+      <td><code>true</code>, <code>false</code></td>
+    </tr>
+  </table>
+
+  <div class="kodexempel">
+    <pre><code>const namn    = "Alex";            // string
+const alder   = 17;                // number
+const inloggad = true;             // boolean
+
+// Kolla typen med typeof:
+console.log(typeof namn);         // "string"
+console.log(typeof alder);        // "number"
+console.log(typeof inloggad);     // "boolean"
+
+// Strängsammansättning med template literals (backtick):
+console.log(`Hej ${namn}, du är ${alder} år!`);
+// Skriver ut: Hej Alex, du är 17 år!</code></pre>
+  </div>
+
+  <h3>Livetest — konsolen</h3>
+
+  <div class="demo-yta">
+    <p>Klicka på knappen nedan — den kör lite JS och skriver i konsolen. Öppna F12 → Console för att se vad som händer.</p>
+    <!-- I den riktiga koden skulle vi använda addEventListener -->
+    <button class="demo-knapp klickbar" onclick="
+      const n = 'Webutveckling';
+      const ar = 2026;
+      const coolt = true;
+      console.log('--- Variabeltest ---');
+      console.log('namn:', n);
+      console.log('år:', ar);
+      console.log('är JS coolt?', coolt);
+      console.log('typeof namn:', typeof n);
+      console.log('typeof ar:', typeof ar);
+      console.log('typeof coolt:', typeof coolt);
+      console.log('Hej från ' + n + '! Året är ' + ar + '.');
+    ">Kör kod i konsolen (F12!)</button>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag 1</h3>
+    <ol>
+      <li>Öppna konsolen (F12 → Console).</li>
+      <li>Skapa en variabel med ditt namn och en med din ålder.</li>
+      <li>Skriv ut dem med <code>console.log()</code> — använd template literals så det blir en hel mening.</li>
+      <li>Kolla typen på varje variabel med <code>typeof</code>.</li>
+      <li><strong>Boss:</strong> Prova att räkna — vad är <code>7 * 6</code>? Vad händer om du gör <code>"3" + 3</code>? (Ledtråd: det är konstigt.)</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — ENKEL INTERAKTIVITET
+     NY CSS: transition
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-2" class="lektion">
+  <h2>Lektion 2: Enkel interaktivitet — knapp som gör saker</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NY: <code>transition</code></strong><br>
+    Den här lektionen introducerar <code>transition</code> — det som gör att CSS-ändringar inte sker direkt utan glider mjukt. Utan transition: en knapptryckning byter bakgrundsfärg momentant. Med <code>transition: background-color 0.4s ease</code> glider färgen över 0.4 sekunder. Det är viktigt just nu för att JS kan ändra CSS-värden direkt — och med transition blir det visuellt tydligt vad som händer. Kolla på demo-rutorna nedan!
+  </div>
+
+  <p><strong>Nu börjar det roliga på riktigt.</strong> Vi ska hitta HTML-element med JS, ändra dem och reagera på klick. Det är egentligen tre saker som måste sitta: hitta elementet, lyssna på klicket, göra förändringen.</p>
+
+  <h3>alert() — enkel men irriterande</h3>
+
+  <p><code>alert()</code> visar en popup-ruta. Det är det enklaste sättet att bevisa att JS körs. Det är också det mest irriterande. Ingen riktigt webbplats använder den — men den är bra för att förstå grunderna.</p>
+
+  <!-- I den riktiga koden skulle vi använda addEventListener -->
+  <div class="demo-yta">
+    <button class="demo-knapp klickbar" onclick="alert('JavaScript funkar! Nu vet du det.')">Visa alert</button>
+    <button class="demo-knapp klickbar" onclick="alert('Hej ' + prompt('Vad heter du?') + '!')">Prompt + Alert</button>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>alert("Hej!");               // Popup med text
+prompt("Vad heter du?");     // Popup där användaren kan skriva
+confirm("Är du säker?");     // Popup med OK / Avbryt</code></pre>
+  </div>
+
+  <h3>document.querySelector() — hitta element</h3>
+
+  <p>Det är här JS och HTML kopplas ihop. <code>document.querySelector()</code> letar igenom sidan och returnerar det första elementet som matchar en CSS-selektor — precis som CSS-selektorer fast i JS.</p>
+
+  <div class="kodexempel">
+    <pre><code>// Hitta ett element med ID:
+const rubrik = document.querySelector('#min-rubrik');
+
+// Hitta ett element med klass:
+const knapp = document.querySelector('.demo-knapp');
+
+// Hitta ett element med taggnamn:
+const forstaP = document.querySelector('p');
+
+// Hitta ALLA matchande element (ger en lista):
+const allaKnappar = document.querySelectorAll('button');</code></pre>
+  </div>
+
+  <h3>.textContent — ändra text</h3>
+
+  <p>När du hittat ett element kan du läsa eller skriva dess textinnehåll med <code>.textContent</code>.</p>
+
+  <div class="demo-yta">
+    <p id="text-demo" style="font-size: 1.2em; font-weight: 600; color: #f5c518;">Den här texten kan ändras av JavaScript!</p>
+    <button class="demo-knapp klickbar" onclick="
+      document.querySelector('#text-demo').textContent = 'Texten har bytts ut! JS funkar!';
+    ">Byt text</button>
+    <!-- I den riktiga koden skulle vi använda addEventListener -->
+    <button class="demo-knapp klickbar" onclick="
+      document.querySelector('#text-demo').textContent = 'Den här texten kan ändras av JavaScript!';
+    ">Återställ</button>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>// Läs textinnehållet:
+const rubrik = document.querySelector('#text-demo');
+console.log(rubrik.textContent);  // Skriver ut texten
+
+// Skriv nytt textinnehåll:
+rubrik.textContent = 'Ny text!';</code></pre>
+  </div>
+
+  <h3>.style — ändra CSS från JavaScript</h3>
+
+  <p>Du kan ändra CSS-egenskaper direkt med JS via <code>.style</code>. Observera att bindestreck i CSS blir camelCase i JS: <code>background-color</code> → <code>backgroundColor</code>.</p>
+
+  <div class="demo-yta">
+    <div id="stil-demo-text" class="mjuk-overgang">Den här rutan ändrar utseende när du klickar!</div>
+    <br>
+    <!-- I den riktiga koden skulle vi använda addEventListener -->
+    <button class="demo-knapp klickbar" onclick="
+      const el = document.querySelector('#stil-demo-text');
+      el.style.backgroundColor = '#e94560';
+      el.style.color = '#fff';
+      el.style.fontSize = '1.4em';
+    ">Stor och röd</button>
+    <button class="demo-knapp klickbar" onclick="
+      const el = document.querySelector('#stil-demo-text');
+      el.style.backgroundColor = '#0db5e6';
+      el.style.color = '#000';
+      el.style.fontSize = '0.9em';
+    ">Liten och blå</button>
+    <button class="demo-knapp klickbar" onclick="
+      const el = document.querySelector('#stil-demo-text');
+      el.style.backgroundColor = '#16213e';
+      el.style.color = '#e0e0e0';
+      el.style.fontSize = '1.1em';
+    ">Återställ</button>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>const ruta = document.querySelector('#min-ruta');
+
+// CSS-egenskap background-color → JS: backgroundColor
+ruta.style.backgroundColor = '#e94560';
+
+// CSS-egenskap font-size → JS: fontSize
+ruta.style.fontSize = '2em';
+
+// CSS-egenskap border-radius → JS: borderRadius
+ruta.style.borderRadius = '50%';</code></pre>
+  </div>
+
+  <h3>Events — reagera på klick</h3>
+
+  <p>En <em>event</em> (händelse) är något som händer på sidan: ett klick, en tangenttryckning, musen rör sig. Du kan lyssna på events och köra kod när de sker.</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- Sätt 1: onclick direkt i HTML (snabbt men lite stökigt) --&gt;
+&lt;button onclick="alert('klickad!')"&gt;Klicka&lt;/button&gt;
+
+&lt;!-- Sätt 2: addEventListener (bättre — separerar HTML och JS) --&gt;
+&lt;button id="min-knapp"&gt;Klicka&lt;/button&gt;
+
+&lt;script&gt;
+  const knapp = document.querySelector('#min-knapp');
+
+  knapp.addEventListener('click', function() {
+    alert('klickad!');
+  });
+&lt;/script&gt;</code></pre>
+  </div>
+
+  <div class="info-ruta">
+    <strong>Varför addEventListener?</strong> Med <code>onclick</code> i HTML blandar du HTML och JS — svårare att underhålla. Med <code>addEventListener</code> kan du lyssna på massor av events (klick, hover, tangentbord) utan att röra HTML-koden. Det är standardsättet i riktiga projekt.
+  </div>
+
+  <h3>Bygg: knapp som räknar klick</h3>
+
+  <div class="demo-yta" style="text-align: center;">
+    <p style="margin: 0 0 12px; color: #aaa;">Antal klick:</p>
+    <div id="raknare-text">0</div>
+    <br>
+    <button class="demo-knapp klickbar mjuk-overgang" id="raknare-knapp">Klicka mig!</button>
+    <button class="demo-knapp klickbar" id="raknare-reset" style="background-color: #333;">Nollställ</button>
+  </div>
+
+  <script>
+    // Räknardemo — addEventListener
+    let antalKlick = 0;
+    const raknareText = document.querySelector('#raknare-text');
+    const raknareKnapp = document.querySelector('#raknare-knapp');
+    const raknareReset = document.querySelector('#raknare-reset');
+
+    raknareKnapp.addEventListener('click', function() {
+      antalKlick = antalKlick + 1;
+      raknareText.textContent = antalKlick;
+
+      // Lite kul feedback
+      raknareText.style.transform = 'scale(1.3)';
+      setTimeout(function() {
+        raknareText.style.transform = 'scale(1)';
+      }, 150);
+
+      // Ändra färg när man kommit en bit
+      if (antalKlick >= 20) {
+        raknareText.style.color = '#e94560';
+      } else if (antalKlick >= 10) {
+        raknareText.style.color = '#0db5e6';
+      } else {
+        raknareText.style.color = '#f5c518';
+      }
+    });
+
+    raknareReset.addEventListener('click', function() {
+      antalKlick = 0;
+      raknareText.textContent = '0';
+      raknareText.style.color = '#f5c518';
+    });
+  </script>
+
+  <div class="kodexempel">
+    <pre><code>let antalKlick = 0;
+const raknareText = document.querySelector('#raknare-text');
+const raknareKnapp = document.querySelector('#raknare-knapp');
+
+raknareKnapp.addEventListener('click', function() {
+  antalKlick = antalKlick + 1;
+  raknareText.textContent = antalKlick;
+});</code></pre>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag 2</h3>
+    <ol>
+      <li>Skapa en HTML-fil med en <code>&lt;p&gt;</code> och en <code>&lt;button&gt;</code>.</li>
+      <li>Ge dem id-attribut.</li>
+      <li>Skriv ett <code>&lt;script&gt;</code>-block som lyssnar på knappklicket.</li>
+      <li>När knappen klickas: ändra texten i <code>&lt;p&gt;</code>.</li>
+      <li><strong>Boss:</strong> Ändra också bakgrundsfärgen på sidan och lägg till en <code>transition</code> i CSS för att animera den. Målet: varje klick gör sidan lite mörkare tills den är helt svart.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — PRAKTISK INTERAKTIVITET
+     NY CSS: CSS-klasser för JS-toggles
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-3" class="lektion">
+  <h2>Lektion 3: Praktiskt — toggle, FAQ och räknare</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NY: CSS-klasser designade för JS</strong><br>
+    Det här är ett nyckelmönster: du definierar klasser i CSS som "sätter på" ett beteende, och sedan låter JS lägga till och ta bort dem. <code>.hidden { display: none; }</code> gör ett element osynligt. <code>.aktiv { ... }</code> ger en aktiv stil. <code>.ljust-lage { background-color: #f0f4ff; }</code> byter tema. JS ändrar aldrig CSS direkt — den togglar bara klasser. Det gör det lätt att underhålla: ändra utseendet i CSS-filen, JS-koden behöver inte röras. Se <code>classList.toggle()</code> nedan.
+  </div>
+
+  <p><strong>Nu kombinerar vi allt.</strong> Det här är de vanligaste mönstren du ser på riktiga sidor: dark mode, accordion, räknare, bildspel. Alla bygger på exakt samma grundidé: en händelse → ändra DOM eller klasser.</p>
+
+  <h3>classList — lägg till, ta bort och toggle klasser</h3>
+
+  <div class="kodexempel">
+    <pre><code>const box = document.querySelector('#min-box');
+
+// Lägg till en klass:
+box.classList.add('aktiv');
+
+// Ta bort en klass:
+box.classList.remove('aktiv');
+
+// Toggle: lägg till om den saknas, ta bort om den finns:
+box.classList.toggle('aktiv');
+
+// Kolla om elementet har en klass:
+if (box.classList.contains('aktiv')) {
+  console.log('aktiv!');
+}</code></pre>
+  </div>
+
+  <h3>Demo 1: Dark / Light mode</h3>
+
+  <div class="mode-demo-yta" id="mode-demo">
+    <p style="margin: 0;"><strong>Det här är en demo-yta.</strong> Klicka på knappen för att byta mellan mörkt och ljust läge. Lägg märke till att övergången är mjuk — det är <code>transition</code> i CSS som gör det!</p>
+  </div>
+  <button class="demo-knapp klickbar" id="mode-toggle-knapp">Byt till ljust läge</button>
+
+  <script>
+    const modeDemoYta = document.querySelector('#mode-demo');
+    const modeToggleKnapp = document.querySelector('#mode-toggle-knapp');
+
+    modeToggleKnapp.addEventListener('click', function() {
+      modeDemoYta.classList.toggle('ljust-lage');
+
+      if (modeDemoYta.classList.contains('ljust-lage')) {
+        modeToggleKnapp.textContent = 'Byt till mörkt läge';
+      } else {
+        modeToggleKnapp.textContent = 'Byt till ljust läge';
+      }
+    });
+  </script>
+
+  <div class="kodexempel">
+    <pre><code>const yta = document.querySelector('#mode-demo');
+const knapp = document.querySelector('#mode-toggle-knapp');
+
+knapp.addEventListener('click', function() {
+  yta.classList.toggle('ljust-lage');
+
+  if (yta.classList.contains('ljust-lage')) {
+    knapp.textContent = 'Byt till mörkt läge';
+  } else {
+    knapp.textContent = 'Byt till ljust läge';
+  }
+});</code></pre>
+  </div>
+
+  <h3>Demo 2: FAQ-accordion — visa/dölj innehåll</h3>
+
+  <p>En accordion döljer allt från start och visar ett svar i taget. Det klassiska mönstret på alla FAQ-sidor.</p>
+
+  <!-- Vi använder <button> istället för <div> — precis som vi lärde oss i modul 5!
+       <button> ger gratis tangentbordsnavigering och skärmläsarstöd utan extra kod. -->
+  <div id="faq-demo">
+    <div class="faq-item">
+      <button class="faq-fraga klickbar">
+        Varför används JavaScript och inte Python på webben?
+        <span class="pil">&#9660;</span>
+      </button>
+      <div class="faq-svar">
+        Python körs på servern, inte i webbläsaren. Webbläsare förstår bara JavaScript — det är det enda skriptspråk som är inbyggt i varje webbläsare. Därför HAR man liksom valt JS för webben, inte valt bort Python.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-fraga klickbar">
+        Är JavaScript och Java samma sak?
+        <span class="pil">&#9660;</span>
+      </button>
+      <div class="faq-svar">
+        Nej. Absolut inte. De delar namn av historiska marknadsföringsskäl från 1995. JavaScript och Java är ungefär lika lika som "hamburgare" och "hamster".
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-fraga klickbar">
+        Måste man lära sig JS för att jobba med webbutveckling?
+        <span class="pil">&#9660;</span>
+      </button>
+      <div class="faq-svar">
+        Ja. Frontend-utveckling utan JavaScript är som att laga mat utan spis — tekniskt möjligt men extremt begränsat. JS är numera obligatoriskt för i princip alla webbrelaterade jobb.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // FAQ accordion
+    const faqFragor = document.querySelectorAll('.faq-fraga');
+
+    faqFragor.forEach(function(fraga) {
+      fraga.addEventListener('click', function() {
+        const faqItem = fraga.parentElement;
+        faqItem.classList.toggle('aktiv');
+      });
+    });
+  </script>
+
+  <div class="info-ruta">
+    <strong>Nytt här:</strong> <code>querySelectorAll</code> väljer ALLA element som matchar (inte bara det första). <code>forEach</code> loopar igenom alla och gör något med varje.
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>// Hämta ALLA .faq-fraga-element (en lista)
+const faqFragor = document.querySelectorAll('.faq-fraga');
+
+// Loopa igenom dem och lägg till klicklyssnare på varje
+faqFragor.forEach(function(fraga) {
+  fraga.addEventListener('click', function() {
+    const faqItem = fraga.parentElement;   // gå upp ett steg i DOM
+    faqItem.classList.toggle('aktiv');     // sätt på/av klassen
+  });
+});</code></pre>
+  </div>
+
+  <h3>Demo 3: Bildkarusell — byt "bild" på klick</h3>
+
+  <p>Klassiskt mönster: ett klick byter ut innehållet. Här använder vi emojis istället för riktiga bilder, men logiken är exakt densamma.</p>
+
+  <div class="demo-yta" style="text-align: center;">
+    <div class="bild-demo klickbar" id="bild-demo" style="background-color: #16213e; margin: 0 auto 16px;">
+      &#127918;
+    </div>
+    <button class="demo-knapp klickbar" id="bild-forra">&#8592; Förra</button>
+    <button class="demo-knapp klickbar" id="bild-nasta">Nästa &#8594;</button>
+    <p id="bild-info" style="color: #aaa; margin: 8px 0 0; font-size: 0.9em;">Bild 1 av 5</p>
+  </div>
+
+  <script>
+    const bilder = [
+      { emoji: '&#127918;', farg: '#16213e', namn: 'Spel'     },
+      { emoji: '&#127925;', farg: '#1a0d2e', namn: 'Musik'    },
+      { emoji: '&#127839;', farg: '#2e1a0d', namn: 'Pizza'    },
+      { emoji: '&#128187;', farg: '#0d2e1a', namn: 'Kod'      },
+      { emoji: '&#9917;',   farg: '#0d1a2e', namn: 'Fotboll'  },
+    ];
+
+    let bildIndex = 0;
+    const bildDemo = document.querySelector('#bild-demo');
+    const bildInfo = document.querySelector('#bild-info');
+
+    function visaBild(index) {
+      bildDemo.innerHTML = bilder[index].emoji;
+      bildDemo.style.backgroundColor = bilder[index].farg;
+      bildInfo.textContent = bilder[index].namn + ' — bild ' + (index + 1) + ' av ' + bilder.length;
+    }
+
+    document.querySelector('#bild-nasta').addEventListener('click', function() {
+      bildIndex = (bildIndex + 1) % bilder.length;
+      visaBild(bildIndex);
+    });
+
+    document.querySelector('#bild-forra').addEventListener('click', function() {
+      bildIndex = (bildIndex - 1 + bilder.length) % bilder.length;
+      visaBild(bildIndex);
+    });
+  </script>
+
+  <div class="kodexempel">
+    <pre><code>const bilder = ['bild1.jpg', 'bild2.jpg', 'bild3.jpg'];
+let bildIndex = 0;
+
+document.querySelector('#nasta').addEventListener('click', function() {
+  bildIndex = (bildIndex + 1) % bilder.length;  // loopar runt
+  document.querySelector('#bild').src = bilder[bildIndex];
+});</code></pre>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag 3</h3>
+    <ol>
+      <li>Bygg en enkel sida med en knapp och en <code>&lt;p&gt;</code> som är dold från start (<code>class="hidden"</code>).</li>
+      <li>När knappen klickas: toggla klassen <code>hidden</code> med <code>classList.toggle()</code>.</li>
+      <li>Uppdatera knapptexten: "Visa mer" när texten är dold, "Visa mindre" när den syns.</li>
+      <li><strong>Boss:</strong> Lägg till en dark/light mode-knapp på sidan. Skapa en CSS-klass <code>.ljust</code> som byter bakgrundsfärg och textfärg. Toggla klassen på <code>&lt;body&gt;</code> när knappen klickas.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 4 — SAMMANFATTNING OCH REPETITION
+     NY CSS: @keyframes animation (teaser)
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-4" class="lektion">
+  <h2>Lektion 4: Sammanfattning och vad händer härnäst</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — NY: <code>@keyframes</code> animationer</strong><br>
+    Det här är en teaser på vad CSS kan göra på egen hand — utan JS. <code>@keyframes</code> definierar en animation steg för steg. Du ger den ett namn, beskriver hur den börjar och slutar (och eventuella mellansteg), och sedan kopplar du den till ett element med <code>animation: namn duration timing iteration</code>. Texten "REGNBÅGE" nedan animeras med rena CSS-keyframes. Korten som glider in använder <code>animation-delay</code> för att starta lite efter varandra. Det kräver noll JavaScript.
+  </div>
+
+  <p><strong>Du har faktiskt lärt dig ganska mycket.</strong> Det känns kanske inte så — men tänk på vad du kunde i förra veckan kontra nu. Låt oss gå igenom det ordentligt.</p>
+
+  <h3>Allt du kan nu: en snabb recap</h3>
+
+  <table class="sammanfattning-tabell">
+    <tr><th>Koncept</th><th>Vad det är</th><th>Exempel</th></tr>
+    <tr>
+      <td>let / const</td>
+      <td>Variabler — lådor med värden.</td>
+      <td><code>let poang = 0;</code></td>
+    </tr>
+    <tr>
+      <td>string, number, boolean</td>
+      <td>De tre vanligaste datatyperna.</td>
+      <td><code>"hej"</code>, <code>42</code>, <code>true</code></td>
+    </tr>
+    <tr>
+      <td>console.log()</td>
+      <td>Skriv ut i konsolen — felsökningsverktyg.</td>
+      <td><code>console.log(poang);</code></td>
+    </tr>
+    <tr>
+      <td>document.querySelector()</td>
+      <td>Hitta ett HTML-element med CSS-selektor.</td>
+      <td><code>document.querySelector('#knapp')</code></td>
+    </tr>
+    <tr>
+      <td>.textContent</td>
+      <td>Läs eller skriv text i ett element.</td>
+      <td><code>el.textContent = 'ny text';</code></td>
+    </tr>
+    <tr>
+      <td>.style</td>
+      <td>Ändra CSS direkt från JS.</td>
+      <td><code>el.style.color = 'red';</code></td>
+    </tr>
+    <tr>
+      <td>addEventListener('click', ...)</td>
+      <td>Lyssna på en händelse och kör kod.</td>
+      <td><code>knapp.addEventListener('click', fn)</code></td>
+    </tr>
+    <tr>
+      <td>classList.toggle()</td>
+      <td>Lägg till/ta bort en CSS-klass på ett element.</td>
+      <td><code>el.classList.toggle('aktiv')</code></td>
+    </tr>
+    <tr>
+      <td>querySelectorAll + forEach</td>
+      <td>Hitta flera element och gör något med varje.</td>
+      <td><code>els.forEach(function(el) { ... })</code></td>
+    </tr>
+  </table>
+
+  <h3>Vanliga mönster att kunna utantill</h3>
+
+  <div class="kodexempel">
+    <pre><code>// MÖNSTER 1: Ändra text när knappen klickas
+const knapp = document.querySelector('#knapp');
+const text  = document.querySelector('#text');
+knapp.addEventListener('click', function() {
+  text.textContent = 'Klickad!';
+});
+
+// MÖNSTER 2: Toggle klass (show/hide, dark mode...)
+const knapp2 = document.querySelector('#toggle-knapp');
+const box    = document.querySelector('#box');
+knapp2.addEventListener('click', function() {
+  box.classList.toggle('aktiv');
+});
+
+// MÖNSTER 3: Räknare
+let n = 0;
+const display = document.querySelector('#display');
+document.querySelector('#plus').addEventListener('click', function() {
+  n = n + 1;
+  display.textContent = n;
+});</code></pre>
+  </div>
+
+  <h3>Debugging — vad gör du när det inte funkar?</h3>
+
+  <p>JS slutar tyst om det är ett fel — ingenting händer och du undrar varför. Stegen för att hitta felet:</p>
+
+  <ol>
+    <li><strong>F12 → Console.</strong> Finns det ett rött felmeddelande? Läs det — det säger oftast exakt vad som är fel och på vilken rad.</li>
+    <li><strong>Vanliga fel:</strong>
+      <ul>
+        <li><code>Cannot read properties of null</code> — querySelector hittade inget. Kolla att id/class stämmer.</li>
+        <li><code>is not a function</code> — du har stavat fel på en metod.</li>
+        <li><code>Uncaught ReferenceError</code> — du använder en variabel som inte är definierad.</li>
+      </ul>
+    </li>
+    <li><strong>Lägg till console.log() överallt</strong> tills du hittar var det går fel.</li>
+    <li><strong>Googla felmeddelandet.</strong> Nästan alla fel har svar på Stack Overflow.</li>
+  </ol>
+
+  <div class="info-ruta">
+    <strong>Tips:</strong> Skriv <code>console.log("här är vi nu")</code> på strategiska ställen i koden. Om den skriver ut nåt vet du att koden körts. Om den inte skriver ut nåt har koden inte körts — och nu vet du var felet är.
+  </div>
+
+  <h3>@keyframes demo — ren CSS-animering</h3>
+
+  <p>Det här kräver noll JavaScript — bara CSS. <code>@keyframes</code> är ett av de roligaste verktygen i CSS.</p>
+
+  <div class="demo-yta" style="text-align: center; padding: 30px;">
+    <div class="regnbage-text">REGNBÅGE</div>
+    <br>
+    <span class="pulsande" style="font-size: 2em;">&#128293;</span>
+    <span class="pulsande" style="font-size: 2em; animation-delay: 0.3s;">&#128293;</span>
+    <span class="pulsande" style="font-size: 2em; animation-delay: 0.6s;">&#128293;</span>
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>/* Definiera animationen: */
+@keyframes regnbage {
+  0%   { color: #e94560; }
+  25%  { color: #f5c518; }
+  50%  { color: #0db5e6; }
+  75%  { color: #a855f7; }
+  100% { color: #e94560; }
+}
+
+/* Koppla till ett element: */
+.regnbage-text {
+  animation: regnbage 3s linear infinite;
+}
+
+/* Glida in från nedanför: */
+@keyframes glid-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animerat-kort {
+  animation: glid-in 0.6s ease both;
+}</code></pre>
+  </div>
+
+  <h3>Animerade kort som glider in</h3>
+
+  <p>De här korten animeras med CSS när sidan laddas — animation-delay gör att de startar lite efter varandra:</p>
+
+  <div class="animationsyta">
+    <div class="animerat-kort">
+      <strong style="color: #f5c518;">HTML</strong> — Struktur. Vad som finns.
+    </div>
+    <div class="animerat-kort">
+      <strong style="color: #0db5e6;">CSS</strong> — Utseende. Hur det ser ut.
+    </div>
+    <div class="animerat-kort">
+      <strong style="color: #e94560;">JavaScript</strong> — Beteende. Vad som händer.
+    </div>
+  </div>
+
+  <h3>Mini-spel: Klicka så fort du kan!</h3>
+
+  <div class="demo-yta" style="text-align: center;">
+    <p style="color: #aaa; margin: 0 0 10px;">Klicka knappen så många gånger som möjligt på 5 sekunder!</p>
+    <div id="poang-display">0</div>
+    <p id="spel-status" style="color: #aaa; margin: 6px 0 14px; font-size: 0.95em;">Tryck Start för att börja</p>
+    <button class="demo-knapp klickbar" id="spel-start">Start!</button>
+    <button class="demo-knapp klickbar" id="spel-klick" disabled style="opacity: 0.4; cursor: not-allowed;">KLICKA!</button>
+  </div>
+
+  <script>
+    let spelPoang = 0;
+    let spelAktivt = false;
+    let spelTimer = null;
+
+    const poangDisplay = document.querySelector('#poang-display');
+    const spelStatus   = document.querySelector('#spel-status');
+    const spelStart    = document.querySelector('#spel-start');
+    const spelKlick    = document.querySelector('#spel-klick');
+
+    spelStart.addEventListener('click', function() {
+      if (spelAktivt) return;
+      spelAktivt = true;
+      spelPoang = 0;
+      poangDisplay.textContent = '0';
+      poangDisplay.style.color = '#f5c518';
+      spelStatus.textContent = '5 sekunder kvar!';
+      spelStart.disabled = true;
+      spelStart.style.opacity = '0.4';
+      spelKlick.disabled = false;
+      spelKlick.style.opacity = '1';
+      spelKlick.style.cursor = 'pointer';
+
+      let sekundsvar = 5;
+      spelTimer = setInterval(function() {
+        sekundsvar--;
+        spelStatus.textContent = sekundsvar + ' sekunder kvar!';
+        if (sekundsvar <= 0) {
+          clearInterval(spelTimer);
+          spelAktivt = false;
+          spelKlick.disabled = true;
+          spelKlick.style.opacity = '0.4';
+          spelKlick.style.cursor = 'not-allowed';
+          spelStart.disabled = false;
+          spelStart.style.opacity = '1';
+          spelStatus.textContent = 'Slut! Du klickade ' + spelPoang + ' gånger. Prova igen?';
+          if (spelPoang > 30) {
+            poangDisplay.style.color = '#e94560';
+          }
+        }
+      }, 1000);
+    });
+
+    spelKlick.addEventListener('click', function() {
+      if (!spelAktivt) return;
+      spelPoang++;
+      poangDisplay.textContent = spelPoang;
+      poangDisplay.style.transform = 'scale(1.2)';
+      setTimeout(function() {
+        poangDisplay.style.transform = 'scale(1)';
+      }, 100);
+    });
+  </script>
+
+  <h3>Vad händer härnäst i kursen?</h3>
+
+  <div class="animerat-kort">
+    <strong style="color: #f5c518;">Modul 7: Projektarbete</strong><br>
+    Nu har du verktygen. Dags att bygga något på riktigt — ett eget projekt där du sätter ihop HTML, CSS och JavaScript. Det är där allt faller på plats.
+  </div>
+
+  <p>Om du vill lära dig mer JavaScript på egen hand:</p>
+  <ul>
+    <li><a href="https://javascript.info" target="_blank">javascript.info</a> — den bästa gratisresursen, på engelska, mycket tydlig.</li>
+    <li><a href="https://developer.mozilla.org/sv/docs/Web/JavaScript" target="_blank">MDN Web Docs</a> — referens för allt om JS, HTML och CSS.</li>
+    <li><a href="https://www.freecodecamp.org" target="_blank">freeCodeCamp.org</a> — gratis interaktiva JS-kurser.</li>
+  </ul>
+
+  <div class="css-spaning">
+    <strong>CSS-sammanfattning för modul 6 — all ny CSS:</strong>
+    <ol>
+      <li><strong>Lektion 1:</strong> <code>cursor: pointer</code> — visar att något är klickbart. <code>user-select: none/all</code> — kontrollera om text kan markeras.</li>
+      <li><strong>Lektion 2:</strong> <code>transition</code> — mjuka övergångar när JS ändrar CSS-värden. <code>transition: background-color 0.4s ease</code>.</li>
+      <li><strong>Lektion 3:</strong> CSS-klasser designade för JS: <code>.hidden { display: none; }</code>, <code>.aktiv</code>, <code>.ljust-lage</code>. JS ändrar klasser — CSS bestämmer utseendet.</li>
+      <li><strong>Lektion 4:</strong> <code>@keyframes</code> — definiera egna animationer. <code>animation</code> — koppla animationen till ett element med duration, timing och iteration.</li>
+    </ol>
+    <p>Härnäst: <strong>Modul 7 — Projektarbete</strong>. Nu sätter du ihop allt.</p>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Slutuppdrag: En interaktiv sida med minst tre JS-funktioner</h3>
+    <ol>
+      <li>Skapa en ny HTML-fil.</li>
+      <li>Den ska ha <strong>minst tre</strong> av följande:
+        <ul>
+          <li>En knapp som ändrar text.</li>
+          <li>En knapp som byter dark/light mode.</li>
+          <li>En räknare (upp och/eller ner).</li>
+          <li>En accordion/FAQ med minst 3 frågor.</li>
+          <li>En bildkarusell (kan vara med emojis eller färger).</li>
+        </ul>
+      </li>
+      <li>Alla JS-händelser ska använda <code>addEventListener</code>, inte <code>onclick</code> i HTML.</li>
+      <li>Lägg till <code>transition</code> på minst ett element som ändras av JS.</li>
+      <li><strong>Boss:</strong> Lägg till en <code>@keyframes</code>-animation på något element — en pulsande knapp, en text som byter färg, eller en "badge" som glider in.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BOTTENNAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<div style="text-align: center; padding: 24px 0 8px;">
+  <a href="test-modul-6.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em; font-family: 'Segoe UI', system-ui, sans-serif;">Gå till testet för Modul 6 →</a>
+</div>
+
+<div class="nav-botten">
+  <a href="modul-5-tillganglighet.html">&#8592; Modul 5: Tillgänglighet</a>
+  <a href="modul-7-projektarbete.html">Modul 7: Projektarbete &#8594;</a>
+</div>
+
+</body>
+</html>

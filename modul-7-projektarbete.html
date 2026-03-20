@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 7: Projektarbete — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Det här är modul 7 — du har nu sett CSS växa steg för     ║
+    ║  steg genom sex moduler. Nu sätter vi ihop allt på riktigt. ║
+    ║                                                              ║
+    ║  Den här filen är ett exempel på välorganiserad CSS:        ║
+    ║   • Custom properties (--variabler) för färger och spacing  ║
+    ║   • Tydlig sektionering med kommentarer                     ║
+    ║   • Konsekvent namngivning                                   ║
+    ║   • En enkel animation (progressbar)                        ║
+    ║                                                              ║
+    ║  Det du ser på skärmen ÄR det du ska bygga mot.            ║
+    ║  Högerklicka → Inspektera och studera hur det är gjort!    ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+
+    /* ═══════════════════════════════════════════════════════════
+       1. CSS CUSTOM PROPERTIES (VARIABLER)
+       Allt nytt i modul 7! Istället för att skriva samma
+       färgkod om och om igen definierar vi dem EN gång här.
+       Sen använder vi var(--namn) överallt.
+
+       Fördelen: vill du byta accentfärg? Ändra på ETT ställe.
+       ═══════════════════════════════════════════════════════════ */
+
+    :root {
+      /* Färgpalett */
+      --färg-bakgrund:      #0f0f1a;
+      --färg-yta:           #1a1a2e;
+      --färg-yta-2:         #16213e;
+      --färg-yta-3:         #0d1b2a;
+      --färg-kant:          #2a2a4a;
+      --färg-text:          #e0e0e0;
+      --färg-text-dämpad:   #a0a0b8;
+      --färg-accent-röd:    #e94560;
+      --färg-accent-blå:    #0db5e6;
+      --färg-accent-grön:   #2ecc71;
+      --färg-accent-gul:    #f39c12;
+
+      /* Typsnitt */
+      --typsnitt-text:      'Segoe UI', system-ui, sans-serif;
+      --typsnitt-kod:       'Consolas', 'Courier New', monospace;
+
+      /* Spacing — konsekvent avstånd genom hela sidan */
+      --space-xs:  4px;
+      --space-s:   8px;
+      --space-m:   16px;
+      --space-l:   24px;
+      --space-xl:  40px;
+      --space-xxl: 60px;
+
+      /* Rundningar */
+      --radie-liten:  4px;
+      --radie-mellan: 8px;
+      --radie-stor:   12px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       2. RESET & BAS
+       Samma grund som i alla moduler — ta bort webbläsarens
+       inkonsistenta standardstyling och sätt vår egna bas.
+       ═══════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--typsnitt-text);
+      background-color: var(--färg-bakgrund);
+      color: var(--färg-text);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       3. TYPOGRAFI
+       Rubriker, text, kod — allt definierat på ett ställe.
+       ═══════════════════════════════════════════════════════════ */
+
+    h1, h2, h3, h4 {
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    h1 { font-size: 2.4rem;  margin-bottom: var(--space-m); }
+    h2 { font-size: 1.75rem; margin-bottom: var(--space-m); margin-top: var(--space-xl); }
+    h3 { font-size: 1.2rem;  margin-bottom: var(--space-s); margin-top: var(--space-l);
+         color: var(--färg-accent-röd); }
+    h4 { font-size: 1rem;    margin-bottom: var(--space-s); margin-top: var(--space-m); }
+
+    p { margin-bottom: var(--space-m); }
+
+    ul, ol {
+      padding-left: var(--space-l);
+      margin-bottom: var(--space-m);
+    }
+
+    li { margin-bottom: var(--space-xs); }
+
+    code {
+      font-family: var(--typsnitt-kod);
+      font-size: 0.88em;
+      background-color: var(--färg-yta-3);
+      color: var(--färg-accent-blå);
+      padding: 1px 5px;
+      border-radius: var(--radie-liten);
+    }
+
+    strong { color: inherit; }
+
+    a {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    a:focus {
+      outline: 3px solid var(--färg-accent-röd);
+      outline-offset: 3px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       4. LAYOUT — Sidans skelett
+       En enkel, centrerad layout med max-bredd.
+       ═══════════════════════════════════════════════════════════ */
+
+    .sidbredd {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 var(--space-l);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       5. HEADER & NAVIGATION
+       ═══════════════════════════════════════════════════════════ */
+
+    .site-header {
+      background-color: var(--färg-yta);
+      border-bottom: 1px solid var(--färg-kant);
+      padding: var(--space-xl) var(--space-l);
+    }
+
+    .site-header .sidbredd { }
+
+    .modul-etikett {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--färg-accent-blå);
+      background-color: var(--färg-yta-3);
+      border: 1px solid var(--färg-accent-blå);
+      padding: var(--space-xs) var(--space-m);
+      border-radius: 999px;
+      margin-bottom: var(--space-m);
+    }
+
+    .site-header h1 {
+      font-size: 2.6rem;
+      margin-bottom: var(--space-s);
+    }
+
+    .site-header h1 span {
+      color: var(--färg-accent-röd);
+    }
+
+    .site-header .ingress {
+      font-size: 1.1rem;
+      color: var(--färg-text-dämpad);
+      max-width: 600px;
+      margin-bottom: var(--space-m);
+    }
+
+    .site-header .meta {
+      font-size: 0.85rem;
+      color: var(--färg-text-dämpad);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       6. INNEHÅLLSFÖRTECKNING
+       ═══════════════════════════════════════════════════════════ */
+
+    .toc {
+      background-color: var(--färg-yta);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie-stor);
+      padding: var(--space-l);
+      margin: var(--space-xl) 0;
+    }
+
+    .toc h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--färg-text-dämpad);
+      margin-top: 0;
+      margin-bottom: var(--space-m);
+    }
+
+    .toc ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-s) var(--space-l);
+    }
+
+    @media (max-width: 540px) {
+      .toc ol { grid-template-columns: 1fr; }
+    }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+      color: var(--färg-text);
+      padding: var(--space-xs) 0;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .toc a:hover {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+      border-bottom-color: var(--färg-accent-blå);
+    }
+
+    .toc-nummer {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--färg-accent-röd);
+      min-width: 1.8em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       7. SEKTIONER — lektionernas omslag
+       ═══════════════════════════════════════════════════════════ */
+
+    .sektion {
+      padding: var(--space-xxl) 0;
+      border-top: 1px solid var(--färg-kant);
+    }
+
+    .sektion:first-of-type {
+      border-top: none;
+    }
+
+    .lektion-rubrik {
+      display: flex;
+      align-items: center;
+      gap: var(--space-m);
+      margin-bottom: var(--space-xl);
+    }
+
+    .lektion-nummer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--färg-accent-röd);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .lektion-rubrik h2 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       8. KOMPONENTER — Återanvändbara byggstenar
+       ═══════════════════════════════════════════════════════════ */
+
+    /* — Kodexempel — */
+    .kodexempel {
+      background-color: var(--färg-yta-3);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie-mellan);
+      padding: var(--space-m);
+      margin: var(--space-m) 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel pre {
+      margin: 0;
+    }
+
+    .kodexempel code {
+      font-family: var(--typsnitt-kod);
+      font-size: 0.85rem;
+      background: none;
+      color: var(--färg-text);
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .kodexempel .kommentar { color: #5c7a5c; }
+    .kodexempel .nyckelord  { color: var(--färg-accent-blå); }
+    .kodexempel .värde      { color: #98d982; }
+    .kodexempel .egenskap   { color: #e0a070; }
+
+    /* — Uppdragsrutor — */
+    .uppdrag {
+      border-left: 4px solid var(--färg-accent-röd);
+      background-color: var(--färg-yta-2);
+      padding: var(--space-m) var(--space-l);
+      margin: var(--space-l) 0;
+      border-radius: 0 var(--radie-mellan) var(--radie-mellan) 0;
+    }
+
+    .uppdrag h3 {
+      margin-top: 0;
+      color: var(--färg-accent-röd);
+    }
+
+    .uppdrag.boss {
+      border-left-color: var(--färg-accent-gul);
+    }
+
+    .uppdrag.boss h3 { color: var(--färg-accent-gul); }
+
+    /* — Inforutor — */
+    .info-ruta {
+      border-left: 4px solid var(--färg-accent-blå);
+      background-color: var(--färg-yta-3);
+      padding: var(--space-m) var(--space-l);
+      margin: var(--space-m) 0;
+      border-radius: 0 var(--radie-mellan) var(--radie-mellan) 0;
+    }
+
+    .info-ruta strong { color: var(--färg-accent-blå); }
+
+    .tips-ruta {
+      border-left: 4px solid var(--färg-accent-grön);
+      background-color: var(--färg-yta-3);
+      padding: var(--space-m) var(--space-l);
+      margin: var(--space-m) 0;
+      border-radius: 0 var(--radie-mellan) var(--radie-mellan) 0;
+    }
+
+    .tips-ruta strong { color: var(--färg-accent-grön); }
+
+    /* — Tabell — */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: var(--space-m) 0;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      border: 1px solid var(--färg-kant);
+      padding: 10px var(--space-m);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--färg-yta-3);
+      color: var(--färg-accent-röd);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background-color: rgba(255,255,255,0.02);
+    }
+
+    /* — CSS-spaning-rutor — */
+    .css-spaning {
+      background-color: var(--färg-yta);
+      border: 2px dashed var(--färg-accent-blå);
+      border-radius: var(--radie-mellan);
+      padding: var(--space-m) var(--space-l);
+      margin: var(--space-l) 0;
+      font-size: 0.9rem;
+      color: var(--färg-text-dämpad);
+    }
+
+    .css-spaning strong {
+      color: var(--färg-accent-röd);
+    }
+
+    .css-spaning code {
+      background-color: var(--färg-yta-3);
+    }
+
+    /* — Kortlista med ikonsymboler — */
+    .checklista {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-m) 0;
+    }
+
+    .checklista li {
+      padding: var(--space-xs) 0 var(--space-xs) 1.8em;
+      position: relative;
+    }
+
+    .checklista li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--färg-accent-grön);
+      font-weight: 700;
+    }
+
+    .checklista li.nej::before {
+      content: '✗';
+      color: var(--färg-accent-röd);
+    }
+
+    /* — Filstruktur-block — */
+    .filstruktur {
+      background-color: var(--färg-yta-3);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie-mellan);
+      padding: var(--space-m);
+      margin: var(--space-m) 0;
+      font-family: var(--typsnitt-kod);
+      font-size: 0.88rem;
+      line-height: 2;
+    }
+
+    .filstruktur .mapp { color: var(--färg-accent-blå); font-weight: 700; }
+    .filstruktur .fil  { color: var(--färg-text); }
+    .filstruktur .kommentar-fil { color: #5c7a5c; font-style: italic; }
+
+    /* — Steg-för-steg-kort — */
+    .steg-lista {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-m) 0;
+      counter-reset: steg-raknare;
+    }
+
+    .steg-lista li {
+      counter-increment: steg-raknare;
+      padding: var(--space-m) var(--space-m) var(--space-m) 56px;
+      position: relative;
+      border-left: 2px solid var(--färg-kant);
+      margin-bottom: var(--space-s);
+    }
+
+    .steg-lista li::before {
+      content: counter(steg-raknare);
+      position: absolute;
+      left: -1px;
+      top: var(--space-m);
+      width: 36px;
+      height: 36px;
+      background-color: var(--färg-accent-blå);
+      color: var(--färg-yta-3);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(-50%);
+    }
+
+    /* — Progressbar (animation!) — */
+    .projekt-progress {
+      margin: var(--space-l) 0;
+    }
+
+    .progress-rad {
+      margin-bottom: var(--space-m);
+    }
+
+    .progress-etikett {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-xs);
+      font-size: 0.85rem;
+    }
+
+    .progress-bar-spår {
+      height: 8px;
+      background-color: var(--färg-yta-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      background-color: var(--färg-accent-blå);
+      /* CSS-animation: stapeln animeras in när sidan laddas */
+      animation: fyll-stapel 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+
+    @keyframes fyll-stapel {
+      from { width: 0; }
+      /* 'to' hanteras av inline width-stil */
+    }
+
+    /* Korta animationsfördröjningar för varje rad */
+    .progress-rad:nth-child(1) .progress-bar { animation-delay: 0.0s; }
+    .progress-rad:nth-child(2) .progress-bar { animation-delay: 0.15s; }
+    .progress-rad:nth-child(3) .progress-bar { animation-delay: 0.30s; }
+    .progress-rad:nth-child(4) .progress-bar { animation-delay: 0.45s; }
+    .progress-rad:nth-child(5) .progress-bar { animation-delay: 0.60s; }
+    .progress-rad:nth-child(6) .progress-bar { animation-delay: 0.75s; }
+
+    .progress-bar.röd   { background-color: var(--färg-accent-röd); }
+    .progress-bar.grön  { background-color: var(--färg-accent-grön); }
+    .progress-bar.gul   { background-color: var(--färg-accent-gul); }
+
+    /* — Separator — */
+    .separator {
+      border: none;
+      border-top: 1px solid var(--färg-kant);
+      margin: var(--space-xl) 0;
+    }
+
+    /* — Tillbaka till toppen-länk — */
+    .topp-länk {
+      display: inline-block;
+      margin-top: var(--space-l);
+      font-size: 0.85rem;
+      color: var(--färg-text-dämpad);
+    }
+
+    .topp-länk:hover { color: var(--färg-accent-blå); }
+
+    /* ═══════════════════════════════════════════════════════════
+       9. GRID-LAYOUT FÖR PLANERINGSKORTET
+       ═══════════════════════════════════════════════════════════ */
+
+    .planerings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-m);
+      margin: var(--space-m) 0;
+    }
+
+    .planerings-kort {
+      background-color: var(--färg-yta);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie-mellan);
+      padding: var(--space-m);
+    }
+
+    .planerings-kort h4 {
+      color: var(--färg-accent-blå);
+      margin-top: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .planerings-kort p {
+      font-size: 0.9rem;
+      color: var(--färg-text-dämpad);
+      margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       10. FÄRGPALETT-VISARE
+       ═══════════════════════════════════════════════════════════ */
+
+    .färgpalett {
+      display: flex;
+      gap: var(--space-s);
+      flex-wrap: wrap;
+      margin: var(--space-m) 0;
+    }
+
+    .färg-chip {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radie-mellan);
+      border: 1px solid var(--färg-kant);
+      display: flex;
+      align-items: flex-end;
+      padding: 4px;
+    }
+
+    .färg-chip span {
+      font-size: 0.65rem;
+      font-family: var(--typsnitt-kod);
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 1px 3px;
+      border-radius: 2px;
+      line-height: 1.3;
+      word-break: break-all;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       11. VÄLSTRUKTURERAD CSS — EXEMPEL-BLOCK
+       Det här blocket visar hur en komplett stylesheet ser ut.
+       ═══════════════════════════════════════════════════════════ */
+
+    .stylesheet-exempel {
+      background-color: #0c0c18;
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie-stor);
+      overflow: hidden;
+      margin: var(--space-l) 0;
+    }
+
+    .stylesheet-exempel-header {
+      background-color: var(--färg-yta-3);
+      padding: var(--space-s) var(--space-m);
+      font-size: 0.8rem;
+      color: var(--färg-text-dämpad);
+      font-family: var(--typsnitt-kod);
+      border-bottom: 1px solid var(--färg-kant);
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+    }
+
+    .stylesheet-exempel-header::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--färg-accent-röd);
+      box-shadow: 16px 0 0 var(--färg-accent-gul), 32px 0 0 var(--färg-accent-grön);
+    }
+
+    .stylesheet-exempel pre {
+      padding: var(--space-m);
+      overflow-x: auto;
+      margin: 0;
+    }
+
+    .stylesheet-exempel code {
+      font-size: 0.82rem;
+      background: none;
+      color: var(--färg-text);
+      padding: 0;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       12. FOOTER / BOTTOMNAVIGATION
+       ═══════════════════════════════════════════════════════════ */
+
+    .site-footer {
+      background-color: var(--färg-yta);
+      border-top: 1px solid var(--färg-kant);
+      margin-top: var(--space-xxl);
+      padding: var(--space-xl) var(--space-l);
+    }
+
+    .footer-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-m);
+    }
+
+    .footer-nav-länk {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .footer-nav-länk .etikett {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--färg-text-dämpad);
+    }
+
+    .footer-nav-länk a {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--färg-text);
+    }
+
+    .footer-nav-länk a:hover { color: var(--färg-accent-blå); }
+
+    .footer-nav-länk.nästa { text-align: right; }
+
+    .footer-meta {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--färg-text-dämpad);
+      margin-top: var(--space-l);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       13. RESPONSIVITET
+       ═══════════════════════════════════════════════════════════ */
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.4rem; }
+
+      .lektion-rubrik { flex-direction: column; align-items: flex-start; }
+
+      .footer-nav { flex-direction: column; }
+      .footer-nav-länk.nästa { text-align: left; }
+
+      table { font-size: 0.82rem; }
+      th, td { padding: 8px 10px; }
+    }
+
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="site-header" id="toppen">
+  <div class="sidbredd">
+    <div class="modul-etikett">Modul 7 av 8</div>
+    <h1>Projektarbete<span>.</span></h1>
+    <p class="ingress">Dags att bygga något på riktigt. Du planerar, designar, kodar och levererar en komplett webbplats — från idé till färdig produkt.</p>
+    <p class="meta">Webutveckling 1 &mdash; ca 10 lektioner</p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     INNEHÅLLSFÖRTECKNING
+     ═══════════════════════════════════════════════════════════════ -->
+<main>
+<div class="sidbredd">
+
+  <nav class="toc" aria-label="Innehållsförteckning">
+    <h2>Innehåll</h2>
+    <ol>
+      <li><a href="#lektion-1"><span class="toc-nummer">1</span>Projektplanering – miniwebbplats</a></li>
+      <li><a href="#lektion-2"><span class="toc-nummer">2</span>Fördjupning i planering och skiss</a></li>
+      <li><a href="#lektion-3"><span class="toc-nummer">3</span>Struktur och uppsättning</a></li>
+      <li><a href="#lektion-4"><span class="toc-nummer">4</span>Byggfas</a></li>
+      <li><a href="#lektion-5"><span class="toc-nummer">5</span>Tillgänglighet och testning</a></li>
+      <li><a href="#lektion-6"><span class="toc-nummer">6</span>Dokumentation och redovisning</a></li>
+    </ol>
+  </nav>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — Modul 7:</strong> Den här presentationen är designad som ett exempel på <em>välorganiserad CSS</em>. Nya grejer: <code>--custom-properties</code> (CSS-variabler) definierade i <code>:root</code>, en <code>@keyframes fyll-stapel</code>-animation, och ett tydligt sektionssystem med kommentarer. Allt CSS du lärt dig i modulerna 2–6 finns här — boxmodellen, Flexbox, Grid, responsivitet, pseudo-klasser — men nu samlat och strukturerat. Högerklicka → Inspektera och bläddra i stylesheet-panelen!
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — PROJEKTPLANERING
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-1">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">1</div>
+      <h2>Projektplanering &mdash; miniwebbplats</h2>
+    </div>
+
+    <p><strong>Varför planera?</strong> Det är frestande att bara börja koda. Gör inte det. Alla som hoppar rakt in i koden utan plan brukar riva allt och börja om halvvägs. Det tar dubbelt så lång tid. Fem minuter av planering sparar en timme av smärta.</p>
+
+    <h3>Steg 1: Välj ett ämne</h3>
+
+    <p>Din webbplats ska handla om något <em>du faktiskt bryr dig om</em>. Det är mycket lättare att skriva text och hitta bilder när ämnet är kul. Bra alternativ:</p>
+
+    <ul>
+      <li>Ditt favoritspel — guide, karaktärer, tips och tricks</li>
+      <li>En sport eller ett lag — statistik, spelartrupp, historia</li>
+      <li>En artist, ett band eller en podcast</li>
+      <li>En hobby — gaming-setup, skateboardtricks, matlagning</li>
+      <li>En film eller serie — recension, karaktärsöversikt, fan-sida</li>
+    </ul>
+
+    <div class="info-ruta">
+      <strong>En sak:</strong> Välj ett ämne du kan skriva minst tre sidor om. "Bilar" är för brett. "Min topp-5 lista på bästa racing-spel" är lagom.
+    </div>
+
+    <h3>Steg 2: Målgrupp — vem är det för?</h3>
+
+    <p>En webbplats görs alltid för <em>någon</em>. Vem är det som ska besöka din sajt? Det påverkar allt — ton, design, hur mycket du förklarar.</p>
+
+    <div class="planerings-grid">
+      <div class="planerings-kort">
+        <h4>Ålder</h4>
+        <p>Tonåringar? Vuxna? Barn? Påverkar språk och design.</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>Förkunskaper</h4>
+        <p>Nybörjare eller hardcore-fans? Behöver du förklara grunderna?</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>Syfte</h4>
+        <p>Kommer de för att lära sig, bli underhållna, hitta info, köpa något?</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>Enhet</h4>
+        <p>Mobil eller dator? De flesta browsrar på mobil — tänk på det.</p>
+      </div>
+    </div>
+
+    <h3>Steg 3: Webbplatskarta (sitemap)</h3>
+
+    <p>En sitemap är en lista på alla sidor du ska ha och hur de hänger ihop. Håll det enkelt — tre till fem sidor räcker.</p>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar">/* Exempel på sitemap för en spel-sajt */</span>
+
+index.html          <span class="kommentar">← Startsida (alltid)</span>
+om-spelet.html      <span class="kommentar">← Info om spelet</span>
+guider.html         <span class="kommentar">← Tips och tricks</span>
+kontakt.html        <span class="kommentar">← Kontaktsida</span>
+
+<span class="kommentar">/* Alla sidor ska länka till varandra via navbaren */</span></code></pre>
+    </div>
+
+    <h3>Steg 4: Wireframes — skissa layouten</h3>
+
+    <p>En wireframe är en grov skiss av hur sidan ska se ut — inga färger, inga bilder, bara boxar och text. Du kan rita den på papper eller använda ett gratisverktyg.</p>
+
+    <div class="planerings-grid">
+      <div class="planerings-kort">
+        <h4>Papper</h4>
+        <p>Snabbast och enklast. Rita boxar och märk vad som går var. Perfekt för att börja.</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>Figma (gratis)</h4>
+        <p><a href="https://figma.com" target="_blank">figma.com</a> — branschstandard. Lite lärandetid men kraftfullt.</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>Excalidraw</h4>
+        <p><a href="https://excalidraw.com" target="_blank">excalidraw.com</a> — superenkelt, sketch-känsla, ingen inloggning.</p>
+      </div>
+      <div class="planerings-kort">
+        <h4>draw.io</h4>
+        <p><a href="https://app.diagrams.net" target="_blank">app.diagrams.net</a> — bra för sitemaps och flöden.</p>
+      </div>
+    </div>
+
+    <h3>Steg 5: Innehållsplanering</h3>
+
+    <p>Innan du kodar en rad ska du veta vad som faktiskt ska vara på sidan. Gör en lista:</p>
+
+    <ul>
+      <li><strong>Text:</strong> Vilka rubriker? Hur mycket text per sektion? Har du det klart?</li>
+      <li><strong>Bilder:</strong> Vilka bilder behövs? Var hämtar du dem (egna, Unsplash, annat)?</li>
+      <li><strong>Övrigt:</strong> Video-inbäddning? Karta? Formulär?</li>
+    </ul>
+
+    <div class="tips-ruta">
+      <strong>Tips:</strong> Använd platshållartext ("Lorem ipsum") om du inte har den riktiga texten än — men planera hur lång den ska vara. Bild-platshållare: <a href="https://placehold.co" target="_blank">placehold.co</a> genererar bilder i vilken storlek du vill.
+    </div>
+
+    <div class="uppdrag">
+      <h3>Lektion 1 — Ditt uppdrag</h3>
+      <ol class="steg-lista">
+        <li>Välj ett ämne för din miniwebbplats. Skriv en mening om varför du valde det.</li>
+        <li>Bestäm målgruppen — skriv tre punkter om vem som ska besöka sajten.</li>
+        <li>Gör en sitemap med minst tre sidor. Lista dem och förklara vad som ska finnas på varje sida.</li>
+        <li>Skissa en wireframe av startsidan. Papper fungerar utmärkt.</li>
+        <li>Lista minst fem bilder du behöver och var du tänker hitta dem.</li>
+      </ol>
+      <p>Lämna in: en bild av wireframen + din sitemap-lista.</p>
+    </div>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning:</strong> Sett de här kortlayouterna? Det är CSS Grid med <code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))</code>. Det betyder: skapa så många kolumner som får plats, men varje kolumn ska vara minst 220px. På smal skärm blir det en kolumn, på bred blir det fyra. Det är responsivt utan en enda media-query!
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — FÖRDJUPNING I PLANERING OCH SKISS
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-2">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">2</div>
+      <h2>Fördjupning i planering och skissarbete</h2>
+    </div>
+
+    <p>Du har en wireframe — nu gör vi den mer konkret. En <strong>mockup</strong> är som en wireframe fast med riktiga färger, typsnitt och bilder. Det är ungefär så här sidan faktiskt ska se ut.</p>
+
+    <h3>Från wireframe till mockup</h3>
+
+    <p>I wireframen ritar du bara lådor. I mockupen fyller du i:</p>
+
+    <ul>
+      <li>Vilka färger ska användas och var</li>
+      <li>Vilket typsnitt (och vilka storlekar)</li>
+      <li>Hur bilderna ser ut och var de sitter</li>
+      <li>Exakt text i rubriker och knappar</li>
+    </ul>
+
+    <div class="info-ruta">
+      <strong>Behöver du en perfekt mockup?</strong> Nej. Den behöver inte vara pixel-perfekt. Det viktigaste är att du har tänkt igenom designen <em>innan</em> du börjar koda. En halvfärdig mockup är bättre än ingen alls.
+    </div>
+
+    <h3>Välj ett färgschema</h3>
+
+    <p>Färger är svårt. Börja med tre färger: en bakgrundsfärg, en textfärg och en accentfärg. Lägg till en fjärde om du behöver.</p>
+
+    <p>Använd dessa verktyg för att hitta en palett som funkar:</p>
+
+    <table>
+      <tr>
+        <th>Verktyg</th>
+        <th>Vad det gör</th>
+        <th>Länk</th>
+      </tr>
+      <tr>
+        <td><strong>Coolors</strong></td>
+        <td>Genererar färgpaletter. Tryck mellanslag för en ny. Lås de du gillar.</td>
+        <td><a href="https://coolors.co" target="_blank">coolors.co</a></td>
+      </tr>
+      <tr>
+        <td><strong>Adobe Color</strong></td>
+        <td>Mer avancerat. Välj färgharmoni-regler (komplement, analogt osv).</td>
+        <td><a href="https://color.adobe.com" target="_blank">color.adobe.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Realtime Colors</strong></td>
+        <td>Förhandsgranskar din palett live på en exempelsida.</td>
+        <td><a href="https://www.realtimecolors.com" target="_blank">realtimecolors.com</a></td>
+      </tr>
+    </table>
+
+    <p>Exempel på en enkel mörktemad palett:</p>
+
+    <div class="färgpalett">
+      <div class="färg-chip" style="background-color: #0f0f1a;"><span>#0f0f1a</span></div>
+      <div class="färg-chip" style="background-color: #1a1a2e;"><span>#1a1a2e</span></div>
+      <div class="färg-chip" style="background-color: #e0e0e0;"><span>#e0e0e0</span></div>
+      <div class="färg-chip" style="background-color: #e94560;"><span>#e94560</span></div>
+      <div class="färg-chip" style="background-color: #0db5e6;"><span>#0db5e6</span></div>
+    </div>
+
+    <h3>Typografival — Google Fonts</h3>
+
+    <p>Google Fonts är gratis och har hundratals typsnitt. Gå till <a href="https://fonts.google.com" target="_blank">fonts.google.com</a>, välj ett och kopiera länken till ditt <code>&lt;head&gt;</code>.</p>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar">&lt;!-- I &lt;head&gt; — hämta typsnittet från Google --&gt;</span>
+&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link href="https://fonts.googleapis.com/css2?
+  family=Inter:wght@400;700&
+  family=Playfair+Display:wght@700&
+  display=swap"
+  rel="stylesheet"&gt;
+
+<span class="kommentar">/* I CSS — använd det */</span>
+<span class="egenskap">body</span> {
+  <span class="nyckelord">font-family</span>: <span class="värde">'Inter', sans-serif</span>;
+}
+
+<span class="egenskap">h1, h2, h3</span> {
+  <span class="nyckelord">font-family</span>: <span class="värde">'Playfair Display', serif</span>;
+}</code></pre>
+    </div>
+
+    <div class="tips-ruta">
+      <strong>Typsnittspar som funkar:</strong> Playfair Display (rubriker) + Inter (text). Oswald (rubriker) + Source Sans Pro (text). Space Grotesk + DM Mono. Håll dig till max två typsnitt — fler och det ser plottrigt ut.
+    </div>
+
+    <h3>Filstruktur — organisera projektet</h3>
+
+    <p>Hur du namnger och organiserar dina filer spelar roll. Gör det rätt från start så slipper du röra runt i kaos senare.</p>
+
+    <div class="filstruktur">
+      <span class="mapp">mitt-projekt/</span><br>
+      &nbsp;&nbsp;<span class="fil">index.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kommentar-fil">← alltid startsidan</span><br>
+      &nbsp;&nbsp;<span class="fil">om.html</span><br>
+      &nbsp;&nbsp;<span class="fil">kontakt.html</span><br>
+      &nbsp;&nbsp;<span class="mapp">css/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fil">style.css</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kommentar-fil">← all din CSS här</span><br>
+      &nbsp;&nbsp;<span class="mapp">images/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fil">hero.jpg</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fil">logotyp.png</span><br>
+      &nbsp;&nbsp;<span class="mapp">js/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kommentar-fil">← JavaScript (om du vill)</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fil">script.js</span>
+    </div>
+
+    <p>Namngivningsregler att följa:</p>
+    <ul class="checklista">
+      <li>Inga svenska tecken i filnamn (inga åäö)</li>
+      <li>Inga mellanslag — använd bindestreck: <code>om-mig.html</code></li>
+      <li>Alltid gemener (lowercase)</li>
+      <li>Logiska namn som beskriver innehållet</li>
+      <li class="nej">Inte: <code>Fil 1 FINAL2 kopia.html</code></li>
+    </ul>
+
+    <h3>Git — versionshantering (bonus)</h3>
+
+    <p>Git är ett system som sparar alla ändringar du gjort i ett projekt. Som Ctrl+Z fast för hela projektet och hur långt tillbaka som helst. Det är standard i branschen.</p>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar"># Starta ett git-repo i din projektmapp</span>
+git init
+
+<span class="kommentar"># Lägg till alla filer</span>
+git add .
+
+<span class="kommentar"># Spara en version med ett meddelande</span>
+git commit -m <span class="värde">"Första versionen av startsidan"</span>
+
+<span class="kommentar"># Se historiken</span>
+git log --oneline</code></pre>
+    </div>
+
+    <div class="uppdrag boss">
+      <h3>Lektion 2 — Ditt uppdrag</h3>
+      <ol class="steg-lista">
+        <li>Välj ett färgschema med minst tre färger. Motivera varför du valde dem.</li>
+        <li>Välj ett typsnitt (eller ett par) från Google Fonts. Testa dem på Realtime Colors.</li>
+        <li>Skapa projektmappen med rätt filstruktur. Skapa tomma filer för alla sidor.</li>
+        <li>Gör en enkel mockup av startsidan (kan vara i Figma, Excalidraw eller papper med färg).</li>
+      </ol>
+      <p><strong>Bonus:</strong> Kör <code>git init</code> i projektmappen och gör en första commit.</p>
+    </div>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning:</strong> Den animerade progressbaren du ser i lektion 4 använder <code>@keyframes</code> och <code>animation-delay</code>. Men det finns också ett enklare trick här: <code>transition: color 0.2s, border-color 0.2s</code> på TOC-länkarna. Det är en mjuk övergång när du hovrar. Alla animations-egenskaper du ser på den här sidan är CSS — inget JavaScript!
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — STRUKTUR OCH UPPSÄTTNING
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-3">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">3</div>
+      <h2>Struktur och uppsättning</h2>
+    </div>
+
+    <p>Nu kodar vi. Men inte innehållet ännu — vi sätter upp grunden som allt annat ska stå på. Det tar 15 minuter och sparar massor av tid senare.</p>
+
+    <h3>HTML-boilerplate med best practices</h3>
+
+    <p>Varje sida i projektet ska börja med den här strukturen. Kopiera den och anpassa:</p>
+
+    <div class="stylesheet-exempel">
+      <div class="stylesheet-exempel-header">index.html</div>
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+  &lt;!-- SEO och sociala medier --&gt;
+  &lt;meta name="description" content="Kort beskrivning av sidan, max 160 tecken."&gt;
+  &lt;title&gt;Sidans namn — Webbplatsens namn&lt;/title&gt;
+
+  &lt;!-- CSS --&gt;
+  &lt;link rel="stylesheet" href="css/style.css"&gt;
+
+  &lt;!-- Google Fonts (om du använder) --&gt;
+  &lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap"
+        rel="stylesheet"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;header&gt;
+    &lt;nav&gt;
+      &lt;a href="index.html"&gt;Hem&lt;/a&gt;
+      &lt;a href="om.html"&gt;Om&lt;/a&gt;
+      &lt;a href="kontakt.html"&gt;Kontakt&lt;/a&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;!-- Sidans unika innehåll --&gt;
+    &lt;h1&gt;Sidans huvudrubrik&lt;/h1&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&amp;copy; 2025 Ditt namn&lt;/p&gt;
+  &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <h3>CSS reset och basstil</h3>
+
+    <p>Webbläsarna har olika standardstyling. En reset nollställer dem så du vet vad du jobbar med. Sedan lägger du till din egna bas.</p>
+
+    <div class="stylesheet-exempel">
+      <div class="stylesheet-exempel-header">css/style.css</div>
+      <pre><code><span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. CUSTOM PROPERTIES (VARIABLER)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">:root</span> {
+  <span class="nyckelord">--färg-bakgrund</span>: <span class="värde">#0f0f1a</span>;
+  <span class="nyckelord">--färg-text</span>: <span class="värde">#e0e0e0</span>;
+  <span class="nyckelord">--färg-accent</span>: <span class="värde">#e94560</span>;
+  <span class="nyckelord">--typsnitt</span>: <span class="värde">'Inter', sans-serif</span>;
+  <span class="nyckelord">--space-m</span>: <span class="värde">16px</span>;
+  <span class="nyckelord">--space-l</span>: <span class="värde">32px</span>;
+}
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. RESET
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">*, *::before, *::after</span> {
+  <span class="nyckelord">box-sizing</span>: <span class="värde">border-box</span>;
+  <span class="nyckelord">margin</span>: <span class="värde">0</span>;
+  <span class="nyckelord">padding</span>: <span class="värde">0</span>;
+}
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. BAS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">html</span> { <span class="nyckelord">scroll-behavior</span>: <span class="värde">smooth</span>; }
+
+<span class="egenskap">body</span> {
+  <span class="nyckelord">font-family</span>: <span class="värde">var(--typsnitt)</span>;
+  <span class="nyckelord">background-color</span>: <span class="värde">var(--färg-bakgrund)</span>;
+  <span class="nyckelord">color</span>: <span class="värde">var(--färg-text)</span>;
+  <span class="nyckelord">line-height</span>: <span class="värde">1.7</span>;
+}
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   4. LAYOUT
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">.wrapper</span> {
+  <span class="nyckelord">max-width</span>: <span class="värde">900px</span>;
+  <span class="nyckelord">margin</span>: <span class="värde">0 auto</span>;
+  <span class="nyckelord">padding</span>: <span class="värde">0 var(--space-m)</span>;
+}
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   5. HEADER & NAVIGATION
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">header</span> { <span class="nyckelord">/* ... */</span> }
+<span class="egenskap">nav</span>    { <span class="nyckelord">/* ... */</span> }
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   6. KOMPONENTER
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">.kort</span>   { <span class="nyckelord">/* ... */</span> }
+<span class="egenskap">.knapp</span>  { <span class="nyckelord">/* ... */</span> }
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   7. FOOTER
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">footer</span> { <span class="nyckelord">/* ... */</span> }
+
+<span class="kommentar">/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   8. MEDIA QUERIES (RESPONSIVITET)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */</span>
+<span class="egenskap">@media (max-width: 600px)</span> {
+  <span class="nyckelord">/* ... */</span>
+}</code></pre>
+    </div>
+
+    <h3>Mobile-first — vad och varför</h3>
+
+    <p>Mobile-first innebär att du designar och kodar för mobil <em>först</em>, och lägger till datorstilen efter med media queries. Varför? Majoriteten av webbtrafik är från mobiler. Det är lättare att bygga ut en enkel layout till en komplex, än tvärtom.</p>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar">/* MOBILE-FIRST: Bas-CSS gäller mobil */</span>
+<span class="egenskap">.nav</span> {
+  <span class="nyckelord">flex-direction</span>: <span class="värde">column</span>; <span class="kommentar">/* staplade på mobil */</span>
+}
+
+<span class="kommentar">/* Lägg till datorstil med min-width */</span>
+<span class="egenskap">@media (min-width: 768px)</span> {
+  <span class="egenskap">.nav</span> {
+    <span class="nyckelord">flex-direction</span>: <span class="värde">row</span>; <span class="kommentar">/* horisontell på dator */</span>
+  }
+}</code></pre>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Lektion 3 — Ditt uppdrag</h3>
+      <ol class="steg-lista">
+        <li>Skapa <code>index.html</code> med komplett boilerplate. Klistra inte — skriv den.</li>
+        <li>Skapa <code>css/style.css</code> med de åtta sektionerna (variabler, reset, bas, layout, header, komponenter, footer, media queries). Fyll i det du vet, lämna resten som kommentarer.</li>
+        <li>Länka CSS-filen till din HTML. Verifiera att det funkar (ändra bakgrundsfärg och ladda om).</li>
+        <li>Skapa alla HTML-filer i din sitemap med boilerplate. Länka dem i navbaren.</li>
+      </ol>
+    </div>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning:</strong> Det här stylesheet-exemplet är utformat exakt som en riktig <code>style.css</code> bör se ut. Lägg märke till sektionerna med kommentarer, ordningen (variabler → reset → bas → layout → komponenter → media queries), och hur alla färger refereras med <code>var(--namn)</code> istället för hårdkodade hex-värden. Det är den struktur du ska använda i ditt projekt.
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 4 — BYGGFAS
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-4">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">4</div>
+      <h2>Projektarbete &mdash; byggfas</h2>
+    </div>
+
+    <p>Nu bygger du. Du har planen, du har wireframen, du har filstrukturen. Dags att koda på riktigt. Här är hur du lägger upp arbetet smart.</p>
+
+    <h3>Bygg en sida i taget, uppifrån och ner</h3>
+
+    <p>Starta alltid med HTML-strukturen — lägg till all text och alla bilder utan styling. Sen lägger du till CSS. Gör det för en sida i taget. Hoppa inte mellan fem sidor.</p>
+
+    <p>Ordningen som funkar:</p>
+    <ol class="steg-lista">
+      <li><strong>HTML-skelett:</strong> Alla element på plats, rätt semantiska taggar, alt-texter på bilder.</li>
+      <li><strong>Mobilstil:</strong> Layout och typografi för smal skärm. Mobile-first!</li>
+      <li><strong>Datorstil:</strong> Lägg till media queries för bredare skärmar.</li>
+      <li><strong>Detaljer:</strong> Hover-effekter, animationer, finlir.</li>
+      <li><strong>Validering:</strong> Kör koden genom W3C-validatorn. Fixa felen.</li>
+    </ol>
+
+    <h3>Bilder — optimering och storlek</h3>
+
+    <p>Ooptimerade bilder är en av de vanligaste anledningarna till att webbplatser laddar långsamt. En sida som tar 10 sekunder att ladda — ingen stannar kvar.</p>
+
+    <table>
+      <tr>
+        <th>Format</th>
+        <th>Använd för</th>
+        <th>Tips</th>
+      </tr>
+      <tr>
+        <td><strong>JPEG / JPG</strong></td>
+        <td>Foton, komplexa bilder med massor av färger.</td>
+        <td>Exportera med 70–80% kvalitet. Ingen märkbar skillnad, halva filstorleken.</td>
+      </tr>
+      <tr>
+        <td><strong>PNG</strong></td>
+        <td>Bilder med transparens (t.ex. logotyper).</td>
+        <td>Stor filstorlek — använd bara när du behöver transparens.</td>
+      </tr>
+      <tr>
+        <td><strong>WebP</strong></td>
+        <td>Allt — modernt format med bättre komprimering.</td>
+        <td>30–50% mindre än JPEG med samma kvalitet. Stöds av alla moderna webbläsare.</td>
+      </tr>
+      <tr>
+        <td><strong>SVG</strong></td>
+        <td>Ikoner, logotyper, vektorgrafik.</td>
+        <td>Skalas utan att bli suddig. Perfekt för logotyper.</td>
+      </tr>
+    </table>
+
+    <div class="tips-ruta">
+      <strong>Gratis bildoptimering:</strong> <a href="https://squoosh.app" target="_blank">squoosh.app</a> — dra in en bild och komprimera den i webbläsaren. Jämför kvalitet och filstorlek live. Sänk filstorleken till under 200 KB för de flesta bilder.
+    </div>
+
+    <h3>Färgschema, typografi och bilder i praktiken</h3>
+
+    <p>Nu är det dags att faktiskt använda det du planerade i lektion 2. Kom ihåg:</p>
+
+    <ul class="checklista">
+      <li>Konsistenta färger — använd <code>--custom-properties</code>, ändra aldrig färger direkt i HTML</li>
+      <li>Samma typsnitt och storlekar hela sidan igenom</li>
+      <li>Bilder i rätt proportion — använd aldrig <code>width</code> och <code>height</code> som sträcker bilden</li>
+      <li>Alltid <code>max-width: 100%</code> på bilder så de inte bräcker layouten på mobil</li>
+      <li class="nej">Aldrig fler än 2 typsnitt</li>
+      <li class="nej">Aldrig mer än 4 olika färger (utöver nyanser)</li>
+    </ul>
+
+    <h3>Responsivitet under byggfasen</h3>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar">/* Bilder: aldrig bredare än sin container */</span>
+<span class="egenskap">img</span> {
+  <span class="nyckelord">max-width</span>: <span class="värde">100%</span>;
+  <span class="nyckelord">height</span>: <span class="värde">auto</span>;
+  <span class="nyckelord">display</span>: <span class="värde">block</span>;
+}
+
+<span class="kommentar">/* Flexbox-navigation som blir vertikal på mobil */</span>
+<span class="egenskap">nav ul</span> {
+  <span class="nyckelord">display</span>: <span class="värde">flex</span>;
+  <span class="nyckelord">flex-wrap</span>: <span class="värde">wrap</span>;
+  <span class="nyckelord">gap</span>: <span class="värde">1rem</span>;
+  <span class="nyckelord">list-style</span>: <span class="värde">none</span>;
+  <span class="nyckelord">padding</span>: <span class="värde">0</span>;
+}
+
+<span class="kommentar">/* Kortgrid som anpassar sig automatiskt */</span>
+<span class="egenskap">.grid</span> {
+  <span class="nyckelord">display</span>: <span class="värde">grid</span>;
+  <span class="nyckelord">grid-template-columns</span>: <span class="värde">repeat(auto-fit, minmax(200px, 1fr))</span>;
+  <span class="nyckelord">gap</span>: <span class="värde">1.5rem</span>;
+}</code></pre>
+    </div>
+
+    <h3>CSS-animation: en progressbar</h3>
+
+    <p>Här är ett exempel på en enkel CSS-animation — ingen JavaScript behövs. Stapeln fylls på när sidan laddas:</p>
+
+    <div class="projekt-progress">
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>HTML-struktur</span><span>100%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar grön" style="width: 100%"></div></div>
+      </div>
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>CSS-styling</span><span>80%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar grön" style="width: 80%"></div></div>
+      </div>
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>Responsivitet</span><span>65%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar" style="width: 65%"></div></div>
+      </div>
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>Bilder optimerade</span><span>50%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar gul" style="width: 50%"></div></div>
+      </div>
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>Tillgänglighet</span><span>30%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar röd" style="width: 30%"></div></div>
+      </div>
+      <div class="progress-rad">
+        <div class="progress-etikett"><span>Dokumentation</span><span>0%</span></div>
+        <div class="progress-bar-spår"><div class="progress-bar röd" style="width: 0%"></div></div>
+      </div>
+    </div>
+
+    <div class="kodexempel">
+      <pre><code><span class="kommentar">/* Animationen som driver progressbarerna */</span>
+<span class="egenskap">@keyframes</span> <span class="nyckelord">fyll-stapel</span> {
+  <span class="egenskap">from</span> { <span class="nyckelord">width</span>: <span class="värde">0</span>; }
+  <span class="kommentar">/* 'to' är den faktiska bredden (satt som inline style) */</span>
+}
+
+<span class="egenskap">.progress-bar</span> {
+  <span class="nyckelord">animation</span>: <span class="värde">fyll-stapel 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) both</span>;
+}
+
+<span class="kommentar">/* Fördröjning per rad för en kaskad-effekt */</span>
+<span class="egenskap">.progress-rad:nth-child(1) .progress-bar</span> { <span class="nyckelord">animation-delay</span>: <span class="värde">0.0s</span>; }
+<span class="egenskap">.progress-rad:nth-child(2) .progress-bar</span> { <span class="nyckelord">animation-delay</span>: <span class="värde">0.15s</span>; }
+<span class="egenskap">.progress-rad:nth-child(3) .progress-bar</span> { <span class="nyckelord">animation-delay</span>: <span class="värde">0.30s</span>; }</code></pre>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Lektion 4 — Ditt uppdrag</h3>
+      <ol class="steg-lista">
+        <li>Koda HTML-innehållet för alla dina sidor. Bara HTML, ingen CSS än.</li>
+        <li>Lägg till CSS steg för steg: layout och navigation först, sedan typografi, sedan komponenter.</li>
+        <li>Optimera alla bilder med Squoosh eller liknande. Kontrollera att ingen bild är över 300 KB.</li>
+        <li>Testa på smal skärm: dra in webbläsarfönstret till ca 375px bred. Funkar det?</li>
+      </ol>
+    </div>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — animationer:</strong> Progressbaren ovan animeras med <code>@keyframes</code>. Det nya: <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code> — det är en custom easing-kurva som gör att animationen bromsar mjukt mot slutet. Du kan experimentera med easing-kurvor på <a href="https://cubic-bezier.com" target="_blank">cubic-bezier.com</a>. <code>animation-fill-mode: both</code> (förkortat i <code>animation</code>-shorthand) gör att elementet håller sin slutposition efter att animationen är klar.
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 5 — TILLGÄNGLIGHET OCH TESTNING
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-5">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">5</div>
+      <h2>Tillgänglighet och testning</h2>
+    </div>
+
+    <p><strong>Du tror att sidan är klar. Den är inte klar.</strong> Den näst sista fasen handlar om att gå igenom allt systematiskt och säkerställa att det faktiskt funkar — för alla, i alla webbläsare, på alla skärmar.</p>
+
+    <h3>Tillgänglighetsgranskning av projektet</h3>
+
+    <p>Gå igenom den här listan punkt för punkt på din webbplats. Kryssa av när det är fixat:</p>
+
+    <table>
+      <tr>
+        <th>Krav</th>
+        <th>Hur du testar</th>
+        <th>Hur du fixar</th>
+      </tr>
+      <tr>
+        <td><strong>Alt-text på alla bilder</strong></td>
+        <td>Högerklicka varje bild → Inspektera, kolla <code>alt</code>-attributet.</td>
+        <td>Lägg till <code>alt="Beskrivning"</code>. Dekorativa bilder: <code>alt=""</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Rubriker i rätt ordning</strong></td>
+        <td>Installera tillägget "HeadingsMap" i Chrome.</td>
+        <td>Kontrollera att du inte hoppar från h1 till h3 etc.</td>
+      </tr>
+      <tr>
+        <td><strong>Tillräcklig kontrast</strong></td>
+        <td><a href="https://webaim.org/resources/contrastchecker/" target="_blank">WebAIM Contrast Checker</a>. Kravet: minst 4.5:1 för normal text.</td>
+        <td>Gör texten mörkare eller bakgrunden ljusare.</td>
+      </tr>
+      <tr>
+        <td><strong>Synlig fokus på interaktiva element</strong></td>
+        <td>Tryck Tab och navigera sidan. Syns det var du är?</td>
+        <td><code>a:focus, button:focus { outline: 3px solid din-accentfärg; }</code></td>
+      </tr>
+      <tr>
+        <td><strong>Semantiska taggar</strong></td>
+        <td>Kolla din HTML — används <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>?</td>
+        <td>Byt ut <code>&lt;div class="header"&gt;</code> mot <code>&lt;header&gt;</code>.</td>
+      </tr>
+      <tr>
+        <td><strong><code>lang</code>-attribut</strong></td>
+        <td>Kolla att <code>&lt;html lang="sv"&gt;</code> finns.</td>
+        <td>Lägg till <code>lang="sv"</code> på html-taggen.</td>
+      </tr>
+    </table>
+
+    <h3>HTML-validering</h3>
+
+    <p>W3C:s validator hittar fel i din HTML — saknade avslutningstaggar, felaktiga attribut, nästlade element som inte får nästlas och liknande. Den ger varningar och fel med förklaringar.</p>
+
+    <div class="info-ruta">
+      <strong>Validera här:</strong> Gå till <a href="https://validator.w3.org/#validate_by_input" target="_blank">validator.w3.org</a>, klistra in din HTML-kod och tryck "Check". Noll fel är målet.
+    </div>
+
+    <h3>CSS-validering</h3>
+
+    <p>Liknande verktyg finns för CSS: <a href="https://jigsaw.w3.org/css-validator/#validate_by_input" target="_blank">jigsaw.w3.org/css-validator</a>. Det hittar stavfel i egenskapsnamn och ogiltiga värden — saker webbläsaren bara ignorerar tyst.</p>
+
+    <h3>Cross-browser-testning</h3>
+
+    <p>Din sida kanske ser perfekt ut i Chrome men trasig ut i Safari eller Firefox. Testa i minst två webbläsare.</p>
+
+    <ul>
+      <li>Chrome Developer Tools: tryck <strong>Ctrl+Shift+M</strong> för att simulera mobila skärmar</li>
+      <li>Firefox och Edge har egna develop-tools — testa i dem också</li>
+      <li><a href="https://browserstack.com" target="_blank">BrowserStack</a> låter dig testa i riktiga enheter (gratis provperiod)</li>
+    </ul>
+
+    <h3>Framstegsgenomgång och feedback</h3>
+
+    <p>En av de bästa sätten att förbättra en webbplats är att låta någon annan använda den. Be din bordsgranne testa:</p>
+
+    <div class="uppdrag">
+      <h3>Feedback-protokoll</h3>
+      <ol>
+        <li>Visa sidan för en klasskamrat utan att förklara vad den är.</li>
+        <li>Ställ dessa frågor: <em>"Vad tror du den här sidan handlar om? Vad är det första du la märke till? Var du förvirrad någonstans?"</em></li>
+        <li>Anteckna svaren — argumentera inte, bara lyssna.</li>
+        <li>Välj tre saker att förbättra baserat på feedbacken.</li>
+      </ol>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Lektion 5 — Ditt uppdrag</h3>
+      <ol class="steg-lista">
+        <li>Validera all din HTML med W3C-validatorn. Fixa alla fel (inte bara varningar).</li>
+        <li>Gå igenom tillgänglighetslistan ovan och kryssa av varje punkt.</li>
+        <li>Testa sidan i Chrome och i Firefox (eller Edge). Notera skillnader.</li>
+        <li>Genomför feedback-protokollet med en klasskamrat. Gör minst tre förbättringar.</li>
+      </ol>
+    </div>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — allt hänger ihop:</strong> Den synliga fokusstilen på den här presentationens länkar (<code>a:focus { outline: 3px solid var(--färg-accent-röd); }</code>) är ett tillgänglighetskrav — och CSS löser det. <code>outline</code> skiljer sig från <code>border</code>: det tar ingen plats i layouten och kan visas utanför elementets gräns med <code>outline-offset</code>. Prova att trycka Tab nu och navigera med tangentbordet!
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 6 — DOKUMENTATION OCH REDOVISNING
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="sektion" id="lektion-6">
+  <div class="sidbredd">
+
+    <div class="lektion-rubrik">
+      <div class="lektion-nummer">6</div>
+      <h2>Dokumentation och redovisning</h2>
+    </div>
+
+    <p>Sista steget. Projektet är byggt och testat — nu ska du kunna berätta om det. Inte för att det är jobbigt, utan för att det du skapar är faktiskt värt att prata om.</p>
+
+    <h3>Dokumentera projektet</h3>
+
+    <p>Dokumentation är en förklaring av <em>vad</em> du byggde, <em>varför</em> du valde att göra det på det sättet, och <em>hur</em> det fungerar. Det ska en annan person (eller du själv om sex månader) kunna förstå.</p>
+
+    <p>Din dokumentation ska innehålla:</p>
+
+    <ul class="checklista">
+      <li><strong>Syfte:</strong> Vad handlar webbplatsen om? Vem är den till för?</li>
+      <li><strong>Planering:</strong> Hur tänkte du? Inkludera din sitemap och wireframe.</li>
+      <li><strong>Designval:</strong> Varför valde du de färgerna? Det typsnittet? Den layouten?</li>
+      <li><strong>Tekniska val:</strong> Vilka CSS-tekniker använde du (Flexbox, Grid, variabler)?</li>
+      <li><strong>Utmaningar:</strong> Vad var svårt? Hur löste du det?</li>
+      <li><strong>Vad du skulle gjort annorlunda:</strong> Om du börjat om — vad hade du ändrat?</li>
+    </ul>
+
+    <h3>Projektrapport</h3>
+
+    <p>En skriftlig rapport behöver inte vara lång. En A4-sida med rubriker räcker. Använd rubrikerna ovan som mall. Var konkret — "jag använde CSS Grid för att göra en tre-kolumns layout på desktop" är bättre än "jag använde CSS".</p>
+
+    <div class="tips-ruta">
+      <strong>Tips:</strong> Skriv rapporten medan du bygger, inte efteråt. Anteckna varje gång du gör ett designbeslut. Det är mycket lättare att skriva om något du precis gjort än att minnas det en vecka senare.
+    </div>
+
+    <h3>Förbered presentationen</h3>
+
+    <p>Du ska visa upp projektet för klassen. Det behöver inte vara perfekt — det ska vara ärligt. Strukturera det så här:</p>
+
+    <ol>
+      <li><strong>Vad:</strong> Vad är webbplatsen? Visa den live i webbläsaren.</li>
+      <li><strong>Varför:</strong> Varför valde du det ämnet och den designen?</li>
+      <li><strong>Hur:</strong> Visa en bit kod du är nöjd med och förklara vad den gör.</li>
+      <li><strong>Vad du lärt dig:</strong> Vad var det svåraste? Vad är du mest nöjd med?</li>
+    </ol>
+
+    <div class="info-ruta">
+      <strong>Tidsplan:</strong> 3–5 minuter presentation per person. Ha webbläsaren och VS Code öppen och redo. Testa att dela skärm i förväg om ni kör digitalt.
+    </div>
+
+    <h3>Självskattning</h3>
+
+    <p>Innan redovisningen fyller du i en självskattning. Det är inte för att du ska bedöma dig själv hårt — det är för att du ska reflektera. Fundera på de här frågorna:</p>
+
+    <table>
+      <tr>
+        <th>Område</th>
+        <th>Fundera på...</th>
+      </tr>
+      <tr>
+        <td><strong>Planering</strong></td>
+        <td>Följde du din plan? Vad förändrades längs vägen och varför?</td>
+      </tr>
+      <tr>
+        <td><strong>HTML</strong></td>
+        <td>Är strukturen semantisk? Validerar den?</td>
+      </tr>
+      <tr>
+        <td><strong>CSS</strong></td>
+        <td>Är koden organiserad? Använder du variabler? Är det responsivt?</td>
+      </tr>
+      <tr>
+        <td><strong>Tillgänglighet</strong></td>
+        <td>Kan sidan navigeras med tangentbord? Finns alt-texter? Är kontrasten OK?</td>
+      </tr>
+      <tr>
+        <td><strong>Process</strong></td>
+        <td>Hur gick arbetet? Vad var svårt? Vad var roligt?</td>
+      </tr>
+    </table>
+
+    <h3>Grupputvärdering</h3>
+
+    <p>Efter presentationerna ger ni feedback till varandra. Konstruktiv feedback handlar inte om att säga "det ser bra ut" — det handlar om att hjälpa någon bli bättre.</p>
+
+    <p>Ge feedback på det här formatet: <em>"En sak jag uppskattade var... En sak som kan förbättras är... En fråga jag har är..."</em></p>
+
+    <div class="uppdrag boss">
+      <h3>Lektion 6 — Inlämning</h3>
+      <p>Din slutinlämning ska innehålla:</p>
+      <ul class="checklista">
+        <li>Alla HTML-filer i projektet (minst 3 sidor)</li>
+        <li><code>css/style.css</code> med välorganiserad och kommenterad kod</li>
+        <li>Optimerade bilder i <code>images/</code>-mappen</li>
+        <li>Projektrapport (digital eller papper)</li>
+        <li>Din wireframe och eventuell mockup</li>
+        <li>Ifylld självskattning</li>
+      </ul>
+      <p style="margin-top: 1em;"><strong>Redovisning:</strong> 3–5 minuter live-demo + frågor från klassen.</p>
+    </div>
+
+    <hr class="separator">
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — allt du lärt dig, samlat:</strong> Den här presentationen använder en komplett uppsättning av all CSS du lärt dig i kursens moduler. Här är en snabbgenomgång av vad som används och var det introducerades:
+      <ul style="margin-top: 0.75em; font-size: 0.9em; color: inherit;">
+        <li><strong>Modul 1 (HTML):</strong> Semantisk HTML, <code>alt</code>-texter, rubrikhierarki — grunden som all CSS vilar på.</li>
+        <li><strong>Modul 2 (CSS):</strong> Selektorer, boxmodellen, färger, typsnitt — det grundläggande verktygslådet.</li>
+        <li><strong>Modul 3 (Responsiv design):</strong> <code>@media</code>-queries, mobile-first, <code>max-width</code>, <code>viewport</code>.</li>
+        <li><strong>Modul 4 (Layout):</strong> Flexbox (<code>display: flex</code>) för navigation och inline-layouter. Grid (<code>display: grid</code>) för kortsektioner.</li>
+        <li><strong>Modul 5 (Formulär &amp; interaktion):</strong> <code>:hover</code>, <code>:focus</code>, <code>transition</code> — interaktiva states.</li>
+        <li><strong>Modul 6 (JavaScript):</strong> CSS och JS samarbetar via klasser (<code>classList</code>). Inga JS-animationer behövs för enkla effekter — CSS räcker.</li>
+        <li><strong>Modul 7 (Projekt — nytt!):</strong> <code>--custom-properties</code> i <code>:root</code>, <code>@keyframes</code>-animationer, välstrukturerat stylesheet med sektioner.</li>
+      </ul>
+    </div>
+
+    <a href="#toppen" class="topp-länk">&#8593; Tillbaka till toppen</a>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER / BOTTOMNAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="sidbredd">
+    <div style="text-align: center; padding: 16px 0 8px;">
+      <a href="test-modul-7.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em;">Gå till testet för Modul 7 →</a>
+    </div>
+    <nav class="footer-nav" aria-label="Modulnavigation">
+      <div class="footer-nav-länk föregående">
+        <span class="etikett">&#8592; Föregående modul</span>
+        <a href="modul-6-javascript.html">Modul 6: JavaScript</a>
+      </div>
+      <div style="text-align: center;">
+        <a href="#toppen" style="color: var(--färg-text-dämpad); font-size: 0.85rem;">&#8593; Tillbaka till toppen</a>
+      </div>
+      <div class="footer-nav-länk nästa">
+        <span class="etikett">Nästa modul &#8594;</span>
+        <a href="modul-8-lagar-och-etik.html">Modul 8: Lagar och etik</a>
+      </div>
+    </nav>
+    <p class="footer-meta">Webutveckling 1 &mdash; Modul 7 av 8 &mdash; Projektarbete</p>
+  </div>
+</footer>
+
+</body>
+</html>

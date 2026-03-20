@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test: Modul 7 – Projektarbete</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — mörkt tema med CSS custom properties (nytt i modul 7!)
+       Hela filen använder var(--namn) istället för hårdkodade värden.
+       Byt accentfärg på ETT ställe — se hur allt uppdateras!
+       ═══════════════════════════════════════════════════════════ */
+
+    :root {
+      /* Färgpalett — definieras EN gång, används överallt */
+      --färg-bakgrund:      #1a1a2e;
+      --färg-yta:           #16213e;
+      --färg-yta-djup:      #0d1b2a;
+      --färg-kant:          rgba(255, 255, 255, 0.08);
+      --färg-text:          #e0e0e0;
+      --färg-text-dämpad:   #a0a0b8;
+      --färg-accent-röd:    #e94560;
+      --färg-accent-blå:    #0db5e6;
+      --färg-accent-grön:   #2ecc71;
+      --färg-accent-gul:    #f39c12;
+
+      /* Typsnitt */
+      --typsnitt-text:      'Segoe UI', system-ui, sans-serif;
+      --typsnitt-kod:       'Consolas', 'Courier New', monospace;
+
+      /* Spacing — konsekvent avstånd */
+      --space-s:   8px;
+      --space-m:   16px;
+      --space-l:   24px;
+      --space-xl:  40px;
+
+      /* Rundningar */
+      --radie:    10px;
+      --radie-liten: 6px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--typsnitt-text);
+      background-color: var(--färg-bakgrund);
+      color: var(--färg-text);
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-m) 60px;
+    }
+
+    a {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--färg-accent-blå);
+      outline-offset: 3px;
+      border-radius: var(--radie-liten);
+    }
+
+    /* Navigation */
+    nav.kurs-nav {
+      display: flex;
+      gap: var(--space-m);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-xl);
+    }
+
+    nav.kurs-nav a {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+      font-size: 0.9em;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      padding: var(--space-s) var(--space-m);
+      border-radius: var(--radie-liten);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    nav.kurs-nav a:hover {
+      background-color: rgba(13, 181, 230, 0.1);
+      border-color: rgba(13, 181, 230, 0.6);
+    }
+
+    /* Header */
+    header.test-header {
+      background: linear-gradient(135deg, var(--färg-yta) 0%, var(--färg-bakgrund) 100%);
+      border: 1px solid rgba(243, 156, 18, 0.25);
+      border-radius: var(--radie);
+      padding: var(--space-xl) var(--space-xl);
+      margin-bottom: var(--space-xl);
+    }
+
+    header.test-header .modul-etikett {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--färg-accent-gul);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-s);
+    }
+
+    header.test-header h1 {
+      font-size: 1.8em;
+      color: var(--färg-text);
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    header.test-header p {
+      color: var(--färg-text-dämpad);
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    /* Frågekortet */
+    .fraga {
+      background-color: var(--färg-yta);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie);
+      padding: var(--space-l) 28px;
+      margin-bottom: var(--space-m);
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    .fraga.ratt {
+      border-color: var(--färg-accent-grön);
+      background-color: rgba(46, 204, 113, 0.06);
+    }
+
+    .fraga.fel {
+      border-color: var(--färg-accent-röd);
+      background-color: rgba(233, 69, 96, 0.06);
+    }
+
+    .fraga-nummer {
+      font-size: 0.75em;
+      font-weight: 600;
+      color: var(--färg-accent-gul);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-s);
+    }
+
+    .fraga h2 {
+      font-size: 1.05em;
+      font-weight: 600;
+      color: var(--färg-text);
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+
+    .fraga code {
+      font-family: var(--typsnitt-kod);
+      background-color: rgba(0, 0, 0, 0.35);
+      color: var(--färg-accent-gul);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    .fraga pre {
+      font-family: var(--typsnitt-kod);
+      background-color: var(--färg-yta-djup);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radie-liten);
+      padding: var(--space-m);
+      font-size: 0.85em;
+      color: #cdd9e5;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      line-height: 1.6;
+    }
+
+    .fraga pre .egenskap { color: var(--färg-accent-blå); }
+    .fraga pre .varde    { color: #a5d6ff; }
+    .fraga pre .kommentar{ color: #6e7781; }
+
+    /* Svarsalternativ */
+    .alternativ-lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+
+    .alternativ-lista li label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px var(--space-m);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    .alternativ-lista li label:hover {
+      background-color: rgba(243, 156, 18, 0.06);
+      border-color: rgba(243, 156, 18, 0.3);
+    }
+
+    .alternativ-lista input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      accent-color: var(--färg-accent-gul);
+      cursor: pointer;
+    }
+
+    .alternativ-lista li.markera-ratt label {
+      background-color: rgba(46, 204, 113, 0.12);
+      border-color: var(--färg-accent-grön);
+      color: var(--färg-accent-grön);
+      cursor: default;
+    }
+
+    .alternativ-lista li.markera-fel label {
+      background-color: rgba(233, 69, 96, 0.12);
+      border-color: var(--färg-accent-röd);
+      color: var(--färg-accent-röd);
+      cursor: default;
+    }
+
+    /* Förklaring */
+    .forklaring {
+      display: none;
+      margin-top: var(--space-m);
+      padding: 12px var(--space-m);
+      border-radius: var(--radie-liten);
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+
+    .forklaring.visa {
+      display: block;
+    }
+
+    .forklaring.ratt-forklaring {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 3px solid var(--färg-accent-grön);
+      color: #a0e8b8;
+    }
+
+    .forklaring.fel-forklaring {
+      background-color: rgba(233, 69, 96, 0.1);
+      border-left: 3px solid var(--färg-accent-röd);
+      color: #f0a0b0;
+    }
+
+    /* Knappar */
+    .rattnings-sektion {
+      text-align: center;
+      margin-top: var(--space-xl);
+    }
+
+    .knapp-ratta {
+      background-color: var(--färg-accent-röd);
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, transform 0.15s;
+      font-family: var(--typsnitt-text);
+    }
+
+    .knapp-ratta:hover {
+      background-color: #c73652;
+    }
+
+    .knapp-ratta:active {
+      transform: scale(0.97);
+    }
+
+    /* Resultat */
+    .resultat {
+      display: none;
+      margin-top: var(--space-xl);
+      padding: var(--space-xl);
+      border-radius: var(--radie);
+      text-align: center;
+    }
+
+    .resultat.godkant {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.04));
+      border: 2px solid var(--färg-accent-grön);
+    }
+
+    .resultat.underkant {
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.12), rgba(233, 69, 96, 0.04));
+      border: 2px solid var(--färg-accent-röd);
+    }
+
+    .resultat h2 {
+      font-size: 1.6em;
+      margin: 0 0 10px;
+    }
+
+    .resultat.godkant h2 { color: var(--färg-accent-grön); }
+    .resultat.underkant h2 { color: var(--färg-accent-röd); }
+
+    .resultat .poang {
+      font-size: 2.8em;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .resultat.godkant .poang { color: var(--färg-accent-grön); }
+    .resultat.underkant .poang { color: var(--färg-accent-röd); }
+
+    .resultat p {
+      color: var(--färg-text-dämpad);
+      margin: var(--space-s) 0;
+    }
+
+    .knapp-forsok {
+      display: inline-block;
+      margin-top: var(--space-m);
+      background-color: transparent;
+      color: var(--färg-accent-röd);
+      border: 2px solid var(--färg-accent-röd);
+      padding: 12px 28px;
+      font-size: 0.95em;
+      font-weight: 600;
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: var(--typsnitt-text);
+    }
+
+    .knapp-forsok:hover {
+      background-color: rgba(233, 69, 96, 0.1);
+    }
+
+    .nasta-modul-lank {
+      display: inline-block;
+      margin-top: var(--space-m);
+      background-color: var(--färg-accent-grön);
+      color: #0f0f1a;
+      padding: 14px 32px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: var(--radie-liten);
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .nasta-modul-lank:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav class="kurs-nav" aria-label="Navigering">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-7-projektarbete.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <header class="test-header">
+      <div class="modul-etikett">Modul 7 — Test</div>
+      <h1>Projektarbete</h1>
+      <p>Svara på alla frågor och klicka sedan "Rätta testet". Du behöver 100&nbsp;% rätt för att bli godkänd.</p>
+    </header>
+
+    <main id="huvud-innehall">
+      <form id="quiz-form" novalidate>
+
+        <!-- Fråga 1 -->
+        <div class="fraga" id="fraga-1">
+          <div class="fraga-nummer">Fråga 1 av 8</div>
+          <h2>Vad är syftet med ett <strong>wireframe</strong> i ett webbprojekt?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f1" value="a"> <span>Att bestämma exakt vilka färger och typsnitt som ska användas.</span></label></li>
+            <li><label><input type="radio" name="f1" value="b"> <span>Att skapa en grov skiss av sidans layout och informationsstruktur, utan design eller färger.</span></label></li>
+            <li><label><input type="radio" name="f1" value="c"> <span>Att testa hur snabb webbplatsen är.</span></label></li>
+            <li><label><input type="radio" name="f1" value="d"> <span>Att skriva HTML-koden för sidan.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-1">
+            Ett wireframe är en enkel, gråskalig skiss (på papper eller i verktyg som Figma) som visar var element ska placeras — rubriker, bilder, knappar, menyer. Inga färger, inga riktiga bilder. Målet är att planera struktur och navigationsflöde innan man börjar koda.
+          </div>
+        </div>
+
+        <!-- Fråga 2 -->
+        <div class="fraga" id="fraga-2">
+          <div class="fraga-nummer">Fråga 2 av 8</div>
+          <h2>Vad visar en <strong>webbplatskarta</strong> (sitemap)?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f2" value="a"> <span>En geografisk karta över var webbplatsens besökare bor.</span></label></li>
+            <li><label><input type="radio" name="f2" value="b"> <span>Alla bilder som används på webbplatsen.</span></label></li>
+            <li><label><input type="radio" name="f2" value="c"> <span>Alla sidor på webbplatsen och hur de är länkade till varandra — hierarkisk struktur.</span></label></li>
+            <li><label><input type="radio" name="f2" value="d"> <span>En lista med alla CSS-regler som används.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-2">
+            En sitemap (webbplatskarta) är ett diagram som visar alla sidor och deras hierarki: startsida, undersidor, undersidor till undersidor osv. Den hjälper teamet att planera navigationen och förstå webbplatsens omfång. Sökmotorer använder XML-sitemaps för att indexera sidor.
+          </div>
+        </div>
+
+        <!-- Fråga 3 -->
+        <div class="fraga" id="fraga-3">
+          <div class="fraga-nummer">Fråga 3 av 8</div>
+          <h2>Vilken mappstruktur är bäst praxis för ett webbprojekt?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f3" value="a"> <span>Alla filer i samma mapp (index.html, style.css, bild.jpg, script.js)</span></label></li>
+            <li><label><input type="radio" name="f3" value="b"> <span>En mapp per filtyp: <code>css/</code>, <code>images/</code>, <code>js/</code> med <code>index.html</code> i roten</span></label></li>
+            <li><label><input type="radio" name="f3" value="c"> <span>CSS- och JavaScript-kod direkt i HTML-filen, inga externa filer</span></label></li>
+            <li><label><input type="radio" name="f3" value="d"> <span>Alla filer i en mapp som heter "hemsida"</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-3">
+            Standard mappstruktur: <code>index.html</code> i projektets rot, undermappar <code>css/</code> för stilmallar, <code>js/</code> för skript, <code>images/</code> (eller <code>img/</code>) för bilder. Separata filer och mappar gör projektet lättare att underhålla, och andra utvecklare förstår strukturen direkt.
+          </div>
+        </div>
+
+        <!-- Fråga 4 -->
+        <div class="fraga" id="fraga-4">
+          <div class="fraga-nummer">Fråga 4 av 8</div>
+          <h2>Vad menas med ett <strong>mobile-first</strong>-förhållningssätt vid webbutveckling?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f4" value="a"> <span>Man designar och kodar enbart för mobiler och struntar i desktopanvändare.</span></label></li>
+            <li><label><input type="radio" name="f4" value="b"> <span>Man startar med en layout för liten skärm och använder sedan <code>@media</code>-regler för att anpassa till större skärmar.</span></label></li>
+            <li><label><input type="radio" name="f4" value="c"> <span>Man skapar först desktoplayouten och lägger till en mobilversion som tillägg.</span></label></li>
+            <li><label><input type="radio" name="f4" value="d"> <span>Att webbplatsen bara kan besökas med mobiltelefon.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-4">
+            Mobile-first innebär att grundstilen (utanför alla <code>@media</code>-regler) fungerar för liten skärm. Sedan lägger man till <code>@media (min-width: ...)</code>-regler för tablet och desktop. Fördelen: man tvingas prioritera viktigt innehåll, och sidan laddar snabbare på mobiler (ingen onödig CSS att ladda ner och ignorera).
+          </div>
+        </div>
+
+        <!-- Fråga 5 -->
+        <div class="fraga" id="fraga-5">
+          <div class="fraga-nummer">Fråga 5 av 8</div>
+          <h2>Titta på CSS-koden nedan. Vilken rad innehåller ett fel i syntaxen för CSS custom properties?</h2>
+          <pre><span class="kommentar">/* Alternativ A */</span>
+<span class="egenskap">--min-färg</span>: <span class="varde">#e94560</span>;
+
+<span class="kommentar">/* Alternativ B */</span>
+<span class="egenskap">var(--min-färg)</span>: <span class="varde">#e94560</span>;
+
+<span class="kommentar">/* Alternativ C */</span>
+color: <span class="varde">var(--min-färg)</span>;
+
+<span class="kommentar">/* Alternativ D */</span>
+background: <span class="varde">var(--bakgrundsfärg, #1a1a2e)</span>;</pre>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f5" value="a"> <span>Alternativ A — man kan inte ha bindestreck i variabelnamn.</span></label></li>
+            <li><label><input type="radio" name="f5" value="b"> <span>Alternativ B — <code>var(--namn)</code> används som värde, inte som egenskap.</span></label></li>
+            <li><label><input type="radio" name="f5" value="c"> <span>Alternativ C — man måste skriva <code>color: --min-färg</code> utan var().</span></label></li>
+            <li><label><input type="radio" name="f5" value="d"> <span>Alternativ D — man kan inte ha ett reservvärde i var().</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-5">
+            CSS custom properties (variabler) deklareras med <code>--variabelnamn: värde</code> (i en selektor, vanligtvis <code>:root</code>). De används med <code>var(--variabelnamn)</code> som ett <em>värde</em>. Man kan INTE använda <code>var()</code> som ett egenskapsnamn (vänster sida av kolon). <code>var(--namn, reservvärde)</code> är giltig syntax med fallback.
+          </div>
+        </div>
+
+        <!-- Fråga 6 -->
+        <div class="fraga" id="fraga-6">
+          <div class="fraga-nummer">Fråga 6 av 8</div>
+          <h2>Vilket bildformat passar bäst för en <strong>logotyp med transparent bakgrund</strong>?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f6" value="a"> <span>JPEG (.jpg) — bra komprimering</span></label></li>
+            <li><label><input type="radio" name="f6" value="b"> <span>PNG (.png) eller SVG (.svg) — stödjer transparens</span></label></li>
+            <li><label><input type="radio" name="f6" value="c"> <span>GIF (.gif) — alltid bäst för logotyper</span></label></li>
+            <li><label><input type="radio" name="f6" value="d"> <span>BMP (.bmp) — förlustfri kvalitet</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-6">
+            JPEG stödjer inte transparens och är förstörande (lossy). PNG stödjer transparens och är förlustfri. SVG är vektorformat — perfekt för logotyper (skalbart utan kvalitetsförlust). GIF stödjer transparens men är begränsat till 256 färger. För foton: JPEG eller WebP. För ikoner/logotyper: SVG (bäst) eller PNG.
+          </div>
+        </div>
+
+        <!-- Fråga 7 -->
+        <div class="fraga" id="fraga-7">
+          <div class="fraga-nummer">Fråga 7 av 8</div>
+          <h2>Varför är det viktigt att validera sin HTML med <strong>W3C:s validator</strong>?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f7" value="a"> <span>Utan validering kan inte webbplatsen publiceras på internet.</span></label></li>
+            <li><label><input type="radio" name="f7" value="b"> <span>Validering hittar syntaxfel och strukturfel som kan orsaka inkonsekvent beteende i olika webbläsare och påverka tillgänglighet och SEO negativt.</span></label></li>
+            <li><label><input type="radio" name="f7" value="c"> <span>Det är bara lärare som kräver det — i verkligheten spelar det ingen roll.</span></label></li>
+            <li><label><input type="radio" name="f7" value="d"> <span>Validering testar om webbplatsen är snabb.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-7">
+            Webbläsare rättar ofta HTML-fel automatiskt, men kan göra det på olika sätt — det ger inkonsekvent visning. Valideringsfel kan också bryta skärmläsare, påverka hur sökmotorer tolkar sidan och orsaka svårfunna buggar. W3C:s validator hittar problem som saknade avslutande taggar, fel nästning och ogiltiga attribut.
+          </div>
+        </div>
+
+        <!-- Fråga 8 -->
+        <div class="fraga" id="fraga-8">
+          <div class="fraga-nummer">Fråga 8 av 8</div>
+          <h2>Vad är det huvudsakliga syftet med <strong>cross-browser-testning</strong>?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f8" value="a"> <span>Att se till att webbplatsen fungerar korrekt och ger en bra upplevelse i Chrome, Firefox, Safari, Edge och på olika operativsystem.</span></label></li>
+            <li><label><input type="radio" name="f8" value="b"> <span>Att välja vilket webbläsarföretag man vill stödja ekonomiskt.</span></label></li>
+            <li><label><input type="radio" name="f8" value="c"> <span>Att testa hur snabb webbplatsen är på servern.</span></label></li>
+            <li><label><input type="radio" name="f8" value="d"> <span>Att kontrollera att webbplatsen fungerar på mobila operativsystem men inte på desktop.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-8">
+            Olika webbläsare renderar CSS och kör JavaScript på lite olika sätt — en sida som ser perfekt ut i Chrome kan ha layoutproblem i Safari. Målet är inte att allt ska se pixel-identiskt ut (det är ofta omöjligt och onödigt), utan att webbplatsen fungerar korrekt och ger en bra upplevelse i alla webbläsare. Verktyg: BrowserStack, Lambdatest, eller att manuellt testa i de vanligaste webbläsarna.
+          </div>
+        </div>
+
+        <div class="rattnings-sektion">
+          <button type="button" class="knapp-ratta" id="ratta-knapp">Rätta testet</button>
+        </div>
+
+      </form>
+
+      <div class="resultat" id="resultat-ruta" aria-live="polite">
+        <h2 id="resultat-rubrik"></h2>
+        <div class="poang" id="resultat-poang"></div>
+        <p id="resultat-text"></p>
+        <div id="resultat-knappar"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Rätta svar — CSS custom properties-variablerna ovan definierar testets "designsystem"!
+    const rattaSvar = {
+      f1: 'b',
+      f2: 'c',
+      f3: 'b',
+      f4: 'b',
+      f5: 'b',
+      f6: 'b',
+      f7: 'b',
+      f8: 'a'
+    };
+
+    const antalFragor = Object.keys(rattaSvar).length;
+
+    document.getElementById('ratta-knapp').addEventListener('click', function () {
+      let antalRatt = 0;
+      let forstaFel = null;
+
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+        radio.disabled = true;
+      });
+
+      for (let i = 1; i <= antalFragor; i++) {
+        const fragaDiv = document.getElementById('fraga-' + i);
+        const fragaKey = 'f' + i;
+        const valtSvar = document.querySelector('input[name="' + fragaKey + '"]:checked');
+        const forklaringDiv = document.getElementById('fork-' + i);
+
+        fragaDiv.classList.remove('ratt', 'fel');
+        fragaDiv.querySelectorAll('li').forEach(function (li) {
+          li.classList.remove('markera-ratt', 'markera-fel');
+        });
+
+        const rattSvar = rattaSvar[fragaKey];
+
+        const rattInput = fragaDiv.querySelector('input[value="' + rattSvar + '"]');
+        if (rattInput) {
+          rattInput.closest('li').classList.add('markera-ratt');
+        }
+
+        if (valtSvar && valtSvar.value === rattSvar) {
+          fragaDiv.classList.add('ratt');
+          forklaringDiv.className = 'forklaring ratt-forklaring visa';
+          antalRatt++;
+        } else {
+          fragaDiv.classList.add('fel');
+          forklaringDiv.className = 'forklaring fel-forklaring visa';
+
+          if (valtSvar) {
+            valtSvar.closest('li').classList.add('markera-fel');
+          }
+
+          if (!forstaFel) {
+            forstaFel = fragaDiv;
+          }
+        }
+      }
+
+      this.style.display = 'none';
+
+      const resultatRuta = document.getElementById('resultat-ruta');
+      const resultatRubrik = document.getElementById('resultat-rubrik');
+      const resultatPoang = document.getElementById('resultat-poang');
+      const resultatText = document.getElementById('resultat-text');
+      const resultatKnappar = document.getElementById('resultat-knappar');
+
+      resultatPoang.textContent = antalRatt + ' av ' + antalFragor + ' rätt';
+
+      if (antalRatt === antalFragor) {
+        localStorage.setItem('test-modul-7-godkand', 'true');
+
+        resultatRuta.className = 'resultat godkant';
+        resultatRubrik.textContent = 'Perfekt! Du är godkänd!';
+        resultatText.textContent = 'Du kan planera och strukturera ett webbprojekt professionellt. Ditt resultat är sparat. Nu är det dags för sista modulen!';
+        resultatKnappar.innerHTML = '<a href="modul-8-lagar-och-etik.html" class="nasta-modul-lank">Gå till Modul 8: Lagar och etik →</a>';
+      } else {
+        resultatRuta.className = 'resultat underkant';
+        resultatRubrik.textContent = 'Inte riktigt än';
+        resultatText.textContent = 'Du behöver 100 % för att bli godkänd. Gå igenom förklaringarna och försök igen.';
+        resultatKnappar.innerHTML = '<button class="knapp-forsok" onclick="location.reload()">Försök igen ↺</button>';
+
+        if (forstaFel) {
+          setTimeout(function () {
+            forstaFel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      }
+
+      resultatRuta.style.display = 'block';
+      resultatRuta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+</body>
+</html>

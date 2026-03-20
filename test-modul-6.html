@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test: Modul 6 – JavaScript-introduktion</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — mörkt tema #1a1a2e, accentfärger röd + blå
+       NYA CSS-koncept i den här filen (matchar modul 6):
+         • cursor: pointer på interaktiva element
+         • user-select: none på knappar
+         • transition för mjuka övergångar
+         • CSS-klasser för JS-toggle (.aktiv, .visa)
+       ═══════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus {
+      outline: 3px solid #e94560;
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+
+    nav.kurs-nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    nav.kurs-nav a {
+      color: #0db5e6;
+      text-decoration: none;
+      font-size: 0.9em;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      padding: 6px 14px;
+      border-radius: 6px;
+      /* transition — nytt i modul 6! Mjuk övergång på hover */
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    nav.kurs-nav a:hover {
+      background-color: rgba(13, 181, 230, 0.1);
+      border-color: rgba(13, 181, 230, 0.6);
+    }
+
+    header.test-header {
+      background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+      border: 1px solid rgba(233, 69, 96, 0.25);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 36px;
+    }
+
+    header.test-header .modul-etikett {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: #e94560;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    header.test-header h1 {
+      font-size: 1.8em;
+      color: #e0e0e0;
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    header.test-header p {
+      color: #a0a0b8;
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    /* ── Frågekortet ── */
+    .fraga {
+      background-color: #16213e;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 20px;
+      /* transition — nytt i modul 6! */
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    .fraga.ratt {
+      border-color: #2ecc71;
+      background-color: rgba(46, 204, 113, 0.06);
+    }
+
+    .fraga.fel {
+      border-color: #e94560;
+      background-color: rgba(233, 69, 96, 0.06);
+    }
+
+    .fraga-nummer {
+      font-size: 0.75em;
+      font-weight: 600;
+      color: #e94560;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .fraga h2 {
+      font-size: 1.05em;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+
+    .fraga code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      background-color: rgba(0, 0, 0, 0.35);
+      color: #f5c518;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    .fraga pre {
+      font-family: 'Consolas', 'Courier New', monospace;
+      background-color: #0d1117;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.85em;
+      color: #cdd9e5;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      line-height: 1.6;
+    }
+
+    .fraga pre .kommentar { color: #6e7781; }
+    .fraga pre .strang { color: #a5d6ff; }
+    .fraga pre .nyckelord { color: #ff7b72; }
+    .fraga pre .tal { color: #79c0ff; }
+
+    /* Svarsalternativ */
+    .alternativ-lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alternativ-lista li label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      /* cursor: pointer — nytt i modul 6! Visar hand-cursor */
+      cursor: pointer;
+      /* user-select: none — förhindrar oavsiktlig textmarkering */
+      user-select: none;
+      transition: background-color 0.2s, border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    .alternativ-lista li label:hover {
+      background-color: rgba(233, 69, 96, 0.06);
+      border-color: rgba(233, 69, 96, 0.3);
+    }
+
+    .alternativ-lista input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      accent-color: #e94560;
+      cursor: pointer;
+    }
+
+    .alternativ-lista li.markera-ratt label {
+      background-color: rgba(46, 204, 113, 0.12);
+      border-color: #2ecc71;
+      color: #2ecc71;
+      cursor: default;
+    }
+
+    .alternativ-lista li.markera-fel label {
+      background-color: rgba(233, 69, 96, 0.12);
+      border-color: #e94560;
+      color: #e94560;
+      cursor: default;
+    }
+
+    /* Förklaring per fråga — .visa-klassen togglas av JS */
+    .forklaring {
+      /* display: none som standard — JS lägger till .visa */
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+
+    /* .visa är en CSS-klass som JS lägger till — nytt mönster från modul 6! */
+    .forklaring.visa {
+      display: block;
+    }
+
+    .forklaring.ratt-forklaring {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 3px solid #2ecc71;
+      color: #a0e8b8;
+    }
+
+    .forklaring.fel-forklaring {
+      background-color: rgba(233, 69, 96, 0.1);
+      border-left: 3px solid #e94560;
+      color: #f0a0b0;
+    }
+
+    .rattnings-sektion {
+      text-align: center;
+      margin-top: 36px;
+    }
+
+    .knapp-ratta {
+      background-color: #e94560;
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, transform 0.15s;
+      font-family: inherit;
+    }
+
+    .knapp-ratta:hover {
+      background-color: #c73652;
+    }
+
+    .knapp-ratta:active {
+      transform: scale(0.97);
+    }
+
+    .resultat {
+      display: none;
+      margin-top: 32px;
+      padding: 32px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .resultat.godkant {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.04));
+      border: 2px solid #2ecc71;
+    }
+
+    .resultat.underkant {
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.12), rgba(233, 69, 96, 0.04));
+      border: 2px solid #e94560;
+    }
+
+    .resultat h2 {
+      font-size: 1.6em;
+      margin: 0 0 10px;
+    }
+
+    .resultat.godkant h2 { color: #2ecc71; }
+    .resultat.underkant h2 { color: #e94560; }
+
+    .resultat .poang {
+      font-size: 2.8em;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .resultat.godkant .poang { color: #2ecc71; }
+    .resultat.underkant .poang { color: #e94560; }
+
+    .resultat p {
+      color: #a0a0b8;
+      margin: 8px 0;
+    }
+
+    .knapp-forsok {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: transparent;
+      color: #e94560;
+      border: 2px solid #e94560;
+      padding: 12px 28px;
+      font-size: 0.95em;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: inherit;
+    }
+
+    .knapp-forsok:hover {
+      background-color: rgba(233, 69, 96, 0.1);
+    }
+
+    .nasta-modul-lank {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #2ecc71;
+      color: #0f0f1a;
+      padding: 14px 32px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .nasta-modul-lank:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav class="kurs-nav" aria-label="Navigering">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-6-javascript.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <header class="test-header">
+      <div class="modul-etikett">Modul 6 — Test</div>
+      <h1>JavaScript-introduktion</h1>
+      <p>Svara på alla frågor och klicka sedan "Rätta testet". Du behöver 100&nbsp;% rätt för att bli godkänd.</p>
+    </header>
+
+    <main id="huvud-innehall">
+      <form id="quiz-form" novalidate>
+
+        <!-- Fråga 1 -->
+        <div class="fraga" id="fraga-1">
+          <div class="fraga-nummer">Fråga 1 av 10</div>
+          <h2>Vad är JavaScripts primära roll i webbutveckling (jämfört med HTML och CSS)?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f1" value="a"> <span>Strukturera innehållet på sidan</span></label></li>
+            <li><label><input type="radio" name="f1" value="b"> <span>Bestämma utseende och layout</span></label></li>
+            <li><label><input type="radio" name="f1" value="c"> <span>Lägga till beteende och interaktivitet</span></label></li>
+            <li><label><input type="radio" name="f1" value="d"> <span>Spara filer på webbservern</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-1">
+            HTML = struktur/innehåll, CSS = utseende/layout, JavaScript = beteende/interaktivitet. JavaScript gör sidan dynamisk — den kan reagera på klick, uppdatera innehåll utan att ladda om sidan, validera formulär och mycket mer.
+          </div>
+        </div>
+
+        <!-- Fråga 2 -->
+        <div class="fraga" id="fraga-2">
+          <div class="fraga-nummer">Fråga 2 av 10</div>
+          <h2>Vad är skillnaden mellan <code>let</code> och <code>const</code> i JavaScript?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f2" value="a"> <span><code>let</code> är snabbare än <code>const</code>.</span></label></li>
+            <li><label><input type="radio" name="f2" value="b"> <span>En variabel deklarerad med <code>const</code> kan inte tilldelas ett nytt värde efter att den skapats, medan <code>let</code> kan ändras.</span></label></li>
+            <li><label><input type="radio" name="f2" value="c"> <span><code>const</code> kan bara användas för textvärden.</span></label></li>
+            <li><label><input type="radio" name="f2" value="d"> <span>Det finns ingen skillnad — de är synonymer.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-2">
+            <code>const</code> (konstant) skapar en variabel som inte kan tilldelas om — du kan inte skriva <code>minKonstant = nyttVärde</code>. <code>let</code> tillåter omtilldelning. Grundregeln: använd alltid <code>const</code> som standard, och byt till <code>let</code> bara om du vet att värdet måste ändras.
+          </div>
+        </div>
+
+        <!-- Fråga 3 -->
+        <div class="fraga" id="fraga-3">
+          <div class="fraga-nummer">Fråga 3 av 10</div>
+          <h2>Vilken datatyp är värdet <code>true</code> i JavaScript?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f3" value="a"> <span>String</span></label></li>
+            <li><label><input type="radio" name="f3" value="b"> <span>Number</span></label></li>
+            <li><label><input type="radio" name="f3" value="c"> <span>Boolean</span></label></li>
+            <li><label><input type="radio" name="f3" value="d"> <span>Object</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-3">
+            <code>true</code> och <code>false</code> är de enda två värdena av datatypen <strong>Boolean</strong>. Strängar (string) skrivs med citattecken, t.ex. <code>"hej"</code>. Tal (number) skrivs utan, t.ex. <code>42</code>.
+          </div>
+        </div>
+
+        <!-- Fråga 4 -->
+        <div class="fraga" id="fraga-4">
+          <div class="fraga-nummer">Fråga 4 av 10</div>
+          <h2>Vad skriver koden nedan ut i webbläsarens konsol?</h2>
+          <pre><span class="nyckelord">const</span> x = <span class="tal">5</span>;
+<span class="nyckelord">const</span> y = <span class="tal">3</span>;
+console.log(x + y);</pre>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f4" value="a"> <span>"x + y"</span></label></li>
+            <li><label><input type="radio" name="f4" value="b"> <span>53</span></label></li>
+            <li><label><input type="radio" name="f4" value="c"> <span>8</span></label></li>
+            <li><label><input type="radio" name="f4" value="d"> <span>Ingenting — console.log fungerar inte på tal.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-4">
+            Eftersom x och y är nummer (inte strängar) utförs matematisk addition: 5 + 3 = <strong>8</strong>. Om de hade deklarerats som strängar (<code>"5"</code> och <code>"3"</code>) hade resultatet blivit <code>"53"</code> (sammansättning), men utan citattecken är de numbers.
+          </div>
+        </div>
+
+        <!-- Fråga 5 -->
+        <div class="fraga" id="fraga-5">
+          <div class="fraga-nummer">Fråga 5 av 10</div>
+          <h2>Vad returnerar <code>document.querySelector(".rubrik")</code>?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f5" value="a"> <span>Alla element med klassen "rubrik" som en lista.</span></label></li>
+            <li><label><input type="radio" name="f5" value="b"> <span>Det första HTML-elementet i dokumentet som har klassen "rubrik".</span></label></li>
+            <li><label><input type="radio" name="f5" value="c"> <span>En ny HTML-tagg med klassen "rubrik".</span></label></li>
+            <li><label><input type="radio" name="f5" value="d"> <span>En sträng med all text i elementet.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-5">
+            <code>document.querySelector()</code> returnerar <strong>det första</strong> matchande elementet (eller <code>null</code> om inget hittas). Den accepterar alla giltiga CSS-selektorer: <code>".klass"</code>, <code>"#id"</code>, <code>"p"</code>, <code>"nav a"</code> osv. För alla matchande element används <code>querySelectorAll()</code>.
+          </div>
+        </div>
+
+        <!-- Fråga 6 -->
+        <div class="fraga" id="fraga-6">
+          <div class="fraga-nummer">Fråga 6 av 10</div>
+          <h2>Vad händer när du kör <code>element.classList.toggle("aktiv")</code> två gånger i rad på samma element?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f6" value="a"> <span>Klassen "aktiv" läggs till två gånger.</span></label></li>
+            <li><label><input type="radio" name="f6" value="b"> <span>Elementet får klassen "aktiv" efter det första anropet, och klassen tas bort igen efter det andra — elementet är tillbaka till sitt ursprungsläge.</span></label></li>
+            <li><label><input type="radio" name="f6" value="c"> <span>Ingenting händer — toggle kräver ett argument till för att fungera.</span></label></li>
+            <li><label><input type="radio" name="f6" value="d"> <span>Alla klasser på elementet tas bort.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-6">
+            <code>classList.toggle()</code> lägger till klassen om den saknas, och tar bort den om den redan finns. Kör du den två gånger i rad hamnar elementet i samma tillstånd som från början. Det är därför toggle är perfekt för knappar som växlar något på/av — varje klick byter tillstånd.
+          </div>
+        </div>
+
+        <!-- Fråga 7 -->
+        <div class="fraga" id="fraga-7">
+          <div class="fraga-nummer">Fråga 7 av 10</div>
+          <h2>Vilket kodexempel lägger korrekt till en händelselyssnare som reagerar på klick?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f7" value="a"> <span><code>knapp.onClick(funktion)</code></span></label></li>
+            <li><label><input type="radio" name="f7" value="b"> <span><code>knapp.addEventListener("click", hanteraKlick)</code></span></label></li>
+            <li><label><input type="radio" name="f7" value="c"> <span><code>knapp.listen("click")</code></span></label></li>
+            <li><label><input type="radio" name="f7" value="d"> <span><code>knapp.addEvent(click, hanteraKlick)</code></span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-7">
+            Rätt syntax är <code>element.addEventListener(händelsetyp, callback)</code>. Händelsetypen är en sträng (med citattecken): <code>"click"</code>, <code>"mouseover"</code>, <code>"keydown"</code> osv. Callback-funktionen anropas när händelsen inträffar.
+          </div>
+        </div>
+
+        <!-- Fråga 8 -->
+        <div class="fraga" id="fraga-8">
+          <div class="fraga-nummer">Fråga 8 av 10</div>
+          <h2>Vad gör <code>element.classList.toggle("aktiv")</code>?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f8" value="a"> <span>Tar alltid bort klassen "aktiv" från elementet.</span></label></li>
+            <li><label><input type="radio" name="f8" value="b"> <span>Lägger alltid till klassen "aktiv" på elementet.</span></label></li>
+            <li><label><input type="radio" name="f8" value="c"> <span>Om klassen "aktiv" finns tas den bort; om den inte finns läggs den till.</span></label></li>
+            <li><label><input type="radio" name="f8" value="d"> <span>Byter ut alla klasser mot "aktiv".</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-8">
+            <code>classList.toggle()</code> är ett smidigt sätt att växla en CSS-klass. Det är grunden för dark mode-knappar, hamburgarmenyer och accordion-komponenter. Relaterade metoder: <code>.add("klass")</code>, <code>.remove("klass")</code>, <code>.contains("klass")</code>.
+          </div>
+        </div>
+
+        <!-- Fråga 9 -->
+        <div class="fraga" id="fraga-9">
+          <div class="fraga-nummer">Fråga 9 av 10</div>
+          <h2>Varför placerar man vanligtvis sin <code>&lt;script src="kod.js"&gt;&lt;/script&gt;</code>-tagg strax före den avslutande <code>&lt;/body&gt;</code>-taggen?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f9" value="a"> <span>Det är ett krav — script-taggar fungerar inte på andra ställen.</span></label></li>
+            <li><label><input type="radio" name="f9" value="b"> <span>För att filen ska laddas snabbare från servern.</span></label></li>
+            <li><label><input type="radio" name="f9" value="c"> <span>För att all HTML hinner laddas och parsas klart innan skriptet körs — annars kan JavaScript försöka hitta element som ännu inte finns på sidan.</span></label></li>
+            <li><label><input type="radio" name="f9" value="d"> <span>Det spelar ingen roll var man placerar den.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-9">
+            Om <code>&lt;script&gt;</code> ligger i <code>&lt;head&gt;</code> körs det innan HTML-elementen skapats. Det betyder att <code>document.querySelector()</code> inte hittar något — det returnerar <code>null</code>. Placerar man script-taggen sist i <code>&lt;body&gt;</code> är alla HTML-element redan på plats när JavaScript börjar köra, och allt fungerar som förväntat.
+          </div>
+        </div>
+
+        <!-- Fråga 10 -->
+        <div class="fraga" id="fraga-10">
+          <div class="fraga-nummer">Fråga 10 av 10</div>
+          <h2>Vad skriver koden nedan ut i konsolen?</h2>
+          <pre><span class="nyckelord">const</span> namn = <span class="strang">"Anna"</span>;
+<span class="nyckelord">const</span> halsa = <span class="strang">"Hej, "</span> + namn + <span class="strang">"!"</span>;
+console.log(halsa);</pre>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f10" value="a"> <span>Hej, namn!</span></label></li>
+            <li><label><input type="radio" name="f10" value="b"> <span>Hej, Anna!</span></label></li>
+            <li><label><input type="radio" name="f10" value="c"> <span>"Hej, " + namn + "!"</span></label></li>
+            <li><label><input type="radio" name="f10" value="d"> <span>undefined</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-10">
+            Strängar konkateneras (sätts ihop) med <code>+</code>-operatorn. Variabeln <code>namn</code> ersätts med sitt värde <code>"Anna"</code>, så resultatet blir <code>"Hej, " + "Anna" + "!"</code> = <code>"Hej, Anna!"</code>. Med template literals hade man kunnat skriva <code>`Hej, ${namn}!`</code> för samma resultat.
+          </div>
+        </div>
+
+        <div class="rattnings-sektion">
+          <button type="button" class="knapp-ratta" id="ratta-knapp">Rätta testet</button>
+        </div>
+
+      </form>
+
+      <div class="resultat" id="resultat-ruta" aria-live="polite">
+        <h2 id="resultat-rubrik"></h2>
+        <div class="poang" id="resultat-poang"></div>
+        <p id="resultat-text"></p>
+        <div id="resultat-knappar"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ── Rätta svar ──
+    const rattaSvar = {
+      f1: 'c',
+      f2: 'b',
+      f3: 'c',
+      f4: 'c',
+      f5: 'b',
+      f6: 'b',
+      f7: 'b',
+      f8: 'c',
+      f9: 'c',
+      f10: 'b'
+    };
+
+    const antalFragor = Object.keys(rattaSvar).length;
+
+    // Hämta knappen med querySelector — precis som vi lärde oss!
+    const rattaKnapp = document.getElementById('ratta-knapp');
+
+    rattaKnapp.addEventListener('click', function () {
+      let antalRatt = 0;
+      let forstaFel = null;
+
+      // Inaktivera alla radioknappar
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+        radio.disabled = true;
+      });
+
+      // Gå igenom varje fråga
+      for (let i = 1; i <= antalFragor; i++) {
+        const fragaDiv = document.getElementById('fraga-' + i);
+        const fragaKey = 'f' + i;
+        const valtSvar = document.querySelector('input[name="' + fragaKey + '"]:checked');
+        const forklaringDiv = document.getElementById('fork-' + i);
+
+        // Rensa gamla klasser
+        fragaDiv.classList.remove('ratt', 'fel');
+        fragaDiv.querySelectorAll('li').forEach(function (li) {
+          li.classList.remove('markera-ratt', 'markera-fel');
+        });
+
+        const rattSvar = rattaSvar[fragaKey];
+
+        // Markera rätt alternativ
+        const rattInput = fragaDiv.querySelector('input[value="' + rattSvar + '"]');
+        if (rattInput) {
+          rattInput.closest('li').classList.add('markera-ratt');
+        }
+
+        if (valtSvar && valtSvar.value === rattSvar) {
+          fragaDiv.classList.add('ratt');
+          // Lägg till .visa-klassen — classList.add() som vi lärde oss!
+          forklaringDiv.className = 'forklaring ratt-forklaring visa';
+          antalRatt++;
+        } else {
+          fragaDiv.classList.add('fel');
+          forklaringDiv.className = 'forklaring fel-forklaring visa';
+
+          if (valtSvar) {
+            valtSvar.closest('li').classList.add('markera-fel');
+          }
+
+          if (!forstaFel) {
+            forstaFel = fragaDiv;
+          }
+        }
+      }
+
+      // Dölj knappen — ändra textContent (som vi lärde oss!)
+      this.style.display = 'none';
+
+      // Bygg resultatrutan
+      const resultatRuta = document.getElementById('resultat-ruta');
+      const resultatRubrik = document.getElementById('resultat-rubrik');
+      const resultatPoang = document.getElementById('resultat-poang');
+      const resultatText = document.getElementById('resultat-text');
+      const resultatKnappar = document.getElementById('resultat-knappar');
+
+      resultatPoang.textContent = antalRatt + ' av ' + antalFragor + ' rätt';
+
+      if (antalRatt === antalFragor) {
+        localStorage.setItem('test-modul-6-godkand', 'true');
+
+        resultatRuta.className = 'resultat godkant';
+        resultatRubrik.textContent = 'Perfekt! Godkänd!';
+        resultatText.textContent = 'Du kan grunderna i JavaScript. Ditt resultat är sparat. Kör på med Modul 7!';
+        resultatKnappar.innerHTML = '<a href="modul-7-projektarbete.html" class="nasta-modul-lank">Gå till Modul 7: Projektarbete →</a>';
+      } else {
+        resultatRuta.className = 'resultat underkant';
+        resultatRubrik.textContent = 'Nästan — försök igen';
+        resultatText.textContent = 'Du behöver 100 % för att bli godkänd. Läs förklaringarna till de röda frågorna och prova på nytt.';
+        resultatKnappar.innerHTML = '<button class="knapp-forsok" onclick="location.reload()">Försök igen ↺</button>';
+
+        if (forstaFel) {
+          setTimeout(function () {
+            forstaFel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      }
+
+      resultatRuta.style.display = 'block';
+      resultatRuta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+</body>
+</html>

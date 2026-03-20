@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 4: Media och typsnitt — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Den här modulen bygger vidare på CSS från modul 1–3.       ║
+    ║  Du kan redan: box-sizing, selektorer, rgba, flexbox,       ║
+    ║  media queries, max-width-centrering och gap.               ║
+    ║                                                              ║
+    ║  Nya CSS-features introduceras progressivt per lektion:     ║
+    ║  L1: object-fit, object-position                            ║
+    ║  L2: aspect-ratio                                           ║
+    ║  L3: @import, font-display, letter-spacing, text-transform  ║
+    ║  L4: transition, hover-effekter, allt ihop                  ║
+    ║                                                              ║
+    ║  Tips: Högerklicka → Inspektera för att se CSS live!        ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <!-- Lektion 3 introducerar Google Fonts via @import -->
+  <style>
+    /* @import måste stå allra först i en CSS-fil (eller style-block),
+       innan alla andra regler. Webbläsaren ignorerar @import om det
+       förekommer efter andra CSS-deklarationer. */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 0 — Bas från modul 1–3.
+       box-sizing, typsnitt, mörk bakgrund, responsiv grundlayout.
+       ═══════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    /* Max-width centrering (från modul 3) */
+    .inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAVIGATIONSHUVUD
+       ═══════════════════════════════════════════════════════════ */
+
+    .site-header {
+      background-color: #12121a;
+      border-bottom: 2px solid #e94560;
+      padding: 28px 0 24px;
+    }
+
+    .site-header h1 {
+      margin: 0 0 4px;
+      font-size: 1.9em;
+      color: #fff;
+    }
+
+    .site-header p {
+      margin: 0 0 18px;
+      color: #999;
+      font-size: 0.95em;
+    }
+
+    .site-header ol {
+      margin: 16px 0 0;
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .site-header a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    .site-header a:hover {
+      text-decoration: underline;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LEKTIONSSEKTIONER
+       ═══════════════════════════════════════════════════════════ */
+
+    .lektion {
+      padding: 48px 0;
+    }
+
+    .lektion:nth-child(odd) {
+      background-color: #1a1a2e;
+    }
+
+    .lektion:nth-child(even) {
+      background-color: #16213e;
+    }
+
+    .lektion h2 {
+      font-size: 1.75em;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+
+    .lektion .lektion-meta {
+      color: #888;
+      font-size: 0.9em;
+      margin-bottom: 24px;
+    }
+
+    .lektion h3 {
+      color: #e94560;
+      margin-top: 32px;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .lektion p {
+      margin: 0 0 14px;
+    }
+
+    .lektion ul,
+    .lektion ol {
+      margin: 0 0 14px;
+      padding-left: 22px;
+    }
+
+    .lektion li {
+      margin-bottom: 6px;
+    }
+
+    .lektion a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    .lektion a:hover {
+      text-decoration: underline;
+    }
+
+    .lektion a:focus {
+      outline: 3px solid #e94560;
+      outline-offset: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GEMENSAMMA KOMPONENTER
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Kodexempel */
+    .kodexempel {
+      background-color: #0a0a18;
+      border: 1px solid #2a2a45;
+      border-radius: 6px;
+      padding: 16px 18px;
+      margin: 18px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel pre {
+      margin: 0;
+    }
+
+    .kodexempel code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13.5px;
+      color: #c9d1d9;
+      line-height: 1.7;
+    }
+
+    /* Uppdragsrutor */
+    .uppdrag {
+      border-left: 4px solid #e94560;
+      padding: 16px 20px;
+      margin: 24px 0;
+      background-color: rgba(233, 69, 96, 0.08);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .uppdrag h3 {
+      margin-top: 0;
+      color: #e94560;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 1em;
+    }
+
+    .uppdrag p:last-child,
+    .uppdrag ol:last-child,
+    .uppdrag ul:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Info-rutor */
+    .info-ruta {
+      background-color: rgba(13, 181, 230, 0.08);
+      border-left: 4px solid #0db5e6;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-ruta strong {
+      color: #0db5e6;
+    }
+
+    /* Varning/tips-ruta */
+    .tips-ruta {
+      background-color: rgba(255, 200, 0, 0.07);
+      border-left: 4px solid #ffc800;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .tips-ruta strong {
+      color: #ffc800;
+    }
+
+    /* CSS-spaning-rutor */
+    .css-spaning {
+      background-color: #0a0a1a;
+      color: #ccc;
+      border: 2px dashed #0db5e6;
+      padding: 14px 18px;
+      margin: 24px 0;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .css-spaning strong {
+      color: #e94560;
+    }
+
+    .css-spaning code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      background-color: rgba(255,255,255,0.07);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Tabeller */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 18px 0;
+    }
+
+    th, td {
+      border: 1px solid #2a2a45;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d1b2a;
+      color: #e94560;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      background-color: rgba(255,255,255,0.07);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Separator */
+    .separator {
+      border: none;
+      border-top: 1px solid #2a2a45;
+      margin: 32px 0;
+    }
+
+    /* Tillbaka-till-toppen */
+    .back-top {
+      margin-top: 32px;
+      font-size: 0.9em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 1 — object-fit och object-position (Lektion 1+)
+       Bildcontainers med fast storlek och styrd beskärning.
+       ═══════════════════════════════════════════════════════════ */
+
+    .bild-container {
+      width: 100%;
+      max-width: 400px;
+      height: 220px;
+      overflow: hidden;
+      border-radius: 6px;
+      border: 1px solid #2a2a45;
+      background-color: #0a0a18;
+    }
+
+    .bild-container img {
+      width: 100%;
+      height: 100%;
+      /* object-fit: cover klipper bilden snyggt utan att deformera den */
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* Demo-rutor för object-fit-varianter */
+    .object-fit-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .object-fit-demo .demo-box {
+      flex: 1 1 160px;
+      text-align: center;
+    }
+
+    .object-fit-demo .demo-box .bild-container {
+      max-width: 100%;
+      height: 140px;
+      margin: 0 auto 8px;
+    }
+
+    .object-fit-demo .demo-box .demo-etikett {
+      font-size: 12px;
+      color: #0db5e6;
+      font-family: 'Consolas', monospace;
+    }
+
+    .object-fit-demo .fill   img { object-fit: fill; }
+    .object-fit-demo .contain img { object-fit: contain; background-color: #111; }
+    .object-fit-demo .cover  img { object-fit: cover; }
+    .object-fit-demo .none   img { object-fit: none; }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 2 — aspect-ratio (Lektion 2+)
+       Videocontainers som håller rätt proportioner.
+       ═══════════════════════════════════════════════════════════ */
+
+    .video-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #0a0a18;
+      border-radius: 6px;
+      border: 1px solid #2a2a45;
+      overflow: hidden;
+      margin: 18px 0;
+    }
+
+    .video-container video,
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+    }
+
+    /* Stil på audio-element */
+    audio {
+      width: 100%;
+      margin: 12px 0;
+      border-radius: 30px;
+      accent-color: #e94560;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 3 — Google Fonts via @import (Lektion 3+)
+       Nytt i CSS: @import, font-display, letter-spacing,
+       text-transform applicerat på riktiga typsnitt.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Lektion 3-sektionen visar hur ett Google Font-par kan se ut */
+    .lektion-3-demo {
+      background-color: #0a0a18;
+      border: 1px solid #2a2a45;
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin: 20px 0;
+    }
+
+    .lektion-3-demo .demo-rubrik {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2em;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .lektion-3-demo .demo-brodtext {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      font-size: 1em;
+      line-height: 1.7;
+      color: #ccc;
+      margin: 0;
+    }
+
+    .lektion-3-demo .demo-overrubrik {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      font-size: 0.75em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #e94560;
+      margin: 0 0 8px;
+    }
+
+    /* Typsnittskort i jämförelserutnät */
+    .font-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .font-kort {
+      flex: 1 1 200px;
+      background-color: #0a0a18;
+      border: 1px solid #2a2a45;
+      border-radius: 6px;
+      padding: 18px 20px;
+    }
+
+    .font-kort .font-namn {
+      font-size: 0.75em;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .font-kort .font-exempel {
+      font-size: 1.5em;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .font-serif    { font-family: Georgia, serif; }
+    .font-sans     { font-family: Arial, sans-serif; }
+    .font-mono     { font-family: 'Courier New', monospace; }
+    .font-playfair { font-family: 'Playfair Display', Georgia, serif; }
+    .font-inter    { font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 4 — Transitions och hover (Lektion 4+)
+       Nya egenskaper: transition, transform, :hover kombinerat
+       med object-fit, aspect-ratio och Google Fonts.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Mediekort med hover-transition */
+    .medie-kort {
+      background-color: #0d1b2a;
+      border: 1px solid #2a2a45;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .medie-kort:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .medie-kort .kort-bild {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      /* Liten zoom-effekt på bilden när man hovrar kortet */
+      transition: transform 0.35s ease;
+    }
+
+    .medie-kort:hover .kort-bild {
+      transform: scale(1.04);
+    }
+
+    .medie-kort .kort-innehall {
+      padding: 16px 18px;
+    }
+
+    .medie-kort .kort-rubrik {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 8px;
+    }
+
+    .medie-kort .kort-text {
+      font-size: 0.9em;
+      color: #aaa;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .kortgrid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .kortgrid .medie-kort {
+      flex: 1 1 240px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SIDFOT-NAVIGATION
+       ═══════════════════════════════════════════════════════════ */
+
+    .modul-nav {
+      background-color: #12121a;
+      border-top: 2px solid #2a2a45;
+      padding: 32px 0;
+    }
+
+    .modul-nav .inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .modul-nav a {
+      color: #0db5e6;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 18px;
+      border: 1px solid #0db5e6;
+      border-radius: 4px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .modul-nav a:hover {
+      background-color: #0db5e6;
+      color: #0a0a18;
+    }
+
+    .modul-nav .nav-center {
+      font-size: 0.85em;
+      color: #666;
+      text-align: center;
+    }
+
+    /* Responsivt: kolumnlayout på smala skärmar */
+    @media (max-width: 600px) {
+      .modul-nav .inner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .object-fit-demo {
+        flex-direction: column;
+      }
+
+      .font-grid {
+        flex-direction: column;
+      }
+
+      .kortgrid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SIDHUVUD + INNEHÅLLSFÖRTECKNING
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="site-header" id="toppen">
+  <div class="inner">
+    <h1>Modul 4: Media och typsnitt</h1>
+    <p>Bilder, video, ljud och snygga typsnitt — nu gör vi sidorna riktigt levande.</p>
+    <p><em>Modul 4 av 8 — 4 lektioner</em></p>
+
+    <h2 style="font-size:1.1em; margin:20px 0 8px; color:#ccc; text-transform:uppercase; letter-spacing:0.06em;">Innehåll</h2>
+    <ol>
+      <li><a href="#lektion-1">Bildformat för webben — JPEG, PNG, SVG</a></li>
+      <li><a href="#lektion-2">Infoga video och ljud i webbsidor</a></li>
+      <li><a href="#lektion-3">Webbtypsnitt och Google Fonts</a></li>
+      <li><a href="#lektion-4">Praktiskt — Infoga media och välj typsnitt</a></li>
+    </ol>
+
+    <div class="css-spaning" style="margin-top:24px;">
+      <strong>Var vi är nu:</strong> Du kan redan box-sizing, selektorer, rgba, flexbox, media queries, max-width-centrering och gap från modul 1–3. Den här modulen lägger till <strong>object-fit</strong>, <strong>aspect-ratio</strong>, <strong>@import</strong> för Google Fonts, <strong>letter-spacing</strong>, <strong>text-transform</strong> och <strong>transition</strong>. Öppna Inspektera och följ med!
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — BILDFORMAT
+     Ny CSS: object-fit, object-position
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="lektion-1" class="lektion">
+  <div class="inner">
+    <h2>Lektion 1: Bildformat för webben — JPEG, PNG, SVG</h2>
+    <p class="lektion-meta">Lektion 1 av 4</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — STEG 1: object-fit och object-position</strong><br>
+      Ny grej i den här lektionen: <code>object-fit</code> och <code>object-position</code>. De styr hur en bild fyller sin container. Utan dem är du tvungen att ha exakt rätt bildstorlek — med dem kan du ha bilder av alla möjliga storlekar och ändå få ett snyggt resultat. Det är som <code>background-size: cover</code> fast för vanliga <code>&lt;img&gt;</code>-taggar.
+    </div>
+
+    <p><strong>Fel bildformat = stor, seg sida.</strong> Det är en av de vanligaste misstagen folk gör. Du kan ha perfekt HTML och CSS — men om bilderna är i fel format eller för stora är sidan ändå seg som en måndag i december.</p>
+
+    <h3>De tre huvudformaten</h3>
+
+    <table>
+      <tr>
+        <th>Format</th>
+        <th>Bäst för</th>
+        <th>Stöd för transparens?</th>
+        <th>Typisk storlek</th>
+      </tr>
+      <tr>
+        <td><strong>JPEG / JPG</strong></td>
+        <td>Foton, bilder med massor av färger och nyanser</td>
+        <td>Nej</td>
+        <td>Liten–medel (50–500 KB)</td>
+      </tr>
+      <tr>
+        <td><strong>PNG</strong></td>
+        <td>Logotyper, ikoner, skärmdumpar, bilder med text</td>
+        <td>Ja (alfa-kanal)</td>
+        <td>Medel–stor (100 KB – 2 MB+)</td>
+      </tr>
+      <tr>
+        <td><strong>SVG</strong></td>
+        <td>Ikoner, illustrationer, logotyper — allt som ska skalas</td>
+        <td>Ja</td>
+        <td>Väldigt liten (1–50 KB)</td>
+      </tr>
+      <tr>
+        <td><strong>WebP</strong></td>
+        <td>Allt det ovan — modernare och mindre än JPEG/PNG</td>
+        <td>Ja</td>
+        <td>25–34% mindre än JPEG, 26% mindre än PNG (förlustfri)</td>
+      </tr>
+    </table>
+
+    <h3>JPEG — foton och rika bilder</h3>
+
+    <p>JPEG är komprimerat, vilket betyder att en del data slängs för att minska filstorleken. Bra för foton eftersom ögat inte märker smårörigt i naturliga bilder. Däremot — har du text eller skarpa kanter i bilden ser den suddig och pixlig ut. Spara aldrig en logotyp som JPEG.</p>
+
+    <div class="info-ruta">
+      <strong>Tumregel:</strong> Om det är ett foto → JPEG. Enkelt.
+    </div>
+
+    <h3>PNG — transparens och skärpa</h3>
+
+    <p>PNG är förlustfritt komprimerat — det slänger ingen data. Perfekt för logotyper, ikoner och bilder med transparenta bakgrunder. Nackdelen är att filen blir större. Aldrig bra för foton — då är JPEG eller WebP bättre.</p>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- PNG med transparens på färgad bakgrund --&gt;
+&lt;img
+  src="logotyp.png"
+  alt="Företagets logotyp"
+  width="200"
+  height="80"
+&gt;</code></pre>
+    </div>
+
+    <h3>SVG — skalbar vektorgrafik</h3>
+
+    <p>SVG är inte en vanlig bildfil — det är XML-kod som beskriver former. Det betyder att en SVG-ikon ser perfekt ut oavsett om den är 16×16 pixlar eller 2000×2000 pixlar. Inga pixlar, inga suddig kanter. Perfekt för ikoner och logotyper.</p>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- SVG som bildfil --&gt;
+&lt;img src="ikon.svg" alt="Sökikon" width="24" height="24"&gt;
+
+&lt;!-- Eller inline SVG direkt i HTML (kan stylas med CSS!) --&gt;
+&lt;svg width="24" height="24" viewBox="0 0 24 24" fill="none"&gt;
+  &lt;circle cx="12" cy="12" r="10" stroke="#e94560" stroke-width="2"/&gt;
+  &lt;line x1="12" y1="8" x2="12" y2="16" stroke="#e94560" stroke-width="2"/&gt;
+&lt;/svg&gt;</code></pre>
+    </div>
+
+    <h3>WebP — det moderna alternativet</h3>
+
+    <p>Google skapade WebP för att ersätta både JPEG och PNG. Det ger bättre bildkvalitet i mindre filer — 25–34% mindre än JPEG vid jämförbar kvalitet, och 26% mindre än PNG vid förlustfri komprimering (Googles officiella siffror). Stöds av alla moderna webbläsare. Det enda problemet är att gamla program kanske inte kan öppna filen.</p>
+
+    <div class="tips-ruta">
+      <strong>Tips:</strong> Använd <code>&lt;picture&gt;</code>-taggen för att erbjuda WebP med fallback till JPEG:
+      <div class="kodexempel" style="margin-top:10px;">
+        <pre><code>&lt;picture&gt;
+  &lt;source srcset="bild.webp" type="image/webp"&gt;
+  &lt;img src="bild.jpg" alt="Beskrivning av bilden"&gt;
+&lt;/picture&gt;</code></pre>
+      </div>
+      Webbläsaren väljer WebP om den stöder det, annars JPEG. Gratis prestandavinst!
+    </div>
+
+    <hr class="separator">
+
+    <h3>Ny CSS: object-fit och object-position</h3>
+
+    <p>Problemet med bilder på webben: de har olika storlekar och proportioner. Om du sätter en fast bredd och höjd på en container sträcks bilden ur form — som att stretcha ett foto i Paint.</p>
+
+    <p><code>object-fit</code> löser det. Det fungerar ungefär som <code>background-size</code> fast för vanliga <code>&lt;img&gt;</code>-taggar.</p>
+
+    <div class="kodexempel">
+      <pre><code>.bild-container {
+  width: 400px;
+  height: 220px;   /* Fast höjd — bilden kanske inte har exakt dessa proportioner */
+  overflow: hidden; /* Klipper bort det som sticker ut */
+}
+
+.bild-container img {
+  width: 100%;
+  height: 100%;
+
+  /* object-fit styr hur bilden fyller containern */
+  object-fit: cover;        /* Fyller helt, beskär om nödvändigt (vanligast) */
+  /* object-fit: contain;   Hela bilden syns, men kan få tomma kanter */
+  /* object-fit: fill;      Sträcker bilden (ser ofta fult ut) */
+  /* object-fit: none;      Ingen skalning alls */
+
+  /* object-position styr VAD som syns vid beskärning */
+  object-position: center;  /* Standard: centrera bilden */
+  /* object-position: top;  Visa toppen (bra för porträttfoton) */
+  /* object-position: 20% 80%; Exakt position med procent */
+}</code></pre>
+    </div>
+
+    <div class="object-fit-demo">
+      <!-- Demo: contain -->
+      <div class="demo-box contain">
+        <div class="bild-container">
+          <img
+            src="https://picsum.photos/seed/cat/400/600"
+            alt="Demobild: contain"
+          >
+        </div>
+        <div class="demo-etikett">object-fit: contain</div>
+      </div>
+      <!-- Demo: cover -->
+      <div class="demo-box cover">
+        <div class="bild-container">
+          <img
+            src="https://picsum.photos/seed/cat/400/600"
+            alt="Demobild: cover"
+          >
+        </div>
+        <div class="demo-etikett">object-fit: cover</div>
+      </div>
+      <!-- Demo: fill -->
+      <div class="demo-box fill">
+        <div class="bild-container">
+          <img
+            src="https://picsum.photos/seed/cat/400/600"
+            alt="Demobild: fill"
+          >
+        </div>
+        <div class="demo-etikett">object-fit: fill</div>
+      </div>
+      <!-- Demo: none -->
+      <div class="demo-box none">
+        <div class="bild-container">
+          <img
+            src="https://picsum.photos/seed/cat/400/600"
+            alt="Demobild: none"
+          >
+        </div>
+        <div class="demo-etikett">object-fit: none</div>
+      </div>
+    </div>
+
+    <div class="info-ruta">
+      <strong>Inspektera det:</strong> Högerklicka på en av bilderna ovan → Inspektera. Ändra <code>object-fit</code>-värdet live och se vad som händer!
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 1.1 — Bildformatsdetektiv</h3>
+      <ol>
+        <li>Gå in på en webbsida du gillar (Steam, YouTube, whatever).</li>
+        <li>Öppna Inspektera → Network → Images.</li>
+        <li>Ladda om sidan. Titta på bilderna — vilka format används? (kolla "Type"-kolumnen)</li>
+        <li>Jämför filstorlekar: vad är den största bilden? Hur stor är den?</li>
+        <li>Skriv ner vad du hittar.</li>
+      </ol>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 1.2 — Prova object-fit</h3>
+      <ol>
+        <li>Skapa en HTML-fil med en <code>&lt;div class="container"&gt;</code> som är 300px bred och 200px hög.</li>
+        <li>Lägg en bild inuti — välj en bild med porträttproportioner (högre än bred).</li>
+        <li>Sätt <code>object-fit: cover</code> och <code>object-fit: contain</code> — vad händer?</li>
+        <li>Testa <code>object-position: top</code> kontra <code>center</code>. Vad händer med innehållet vid beskärning?</li>
+      </ol>
+    </div>
+
+    <p class="back-top"><a href="#toppen">↑ Tillbaka till toppen</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — VIDEO OCH LJUD
+     Ny CSS: aspect-ratio
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="lektion-2" class="lektion">
+  <div class="inner">
+    <h2>Lektion 2: Infoga video och ljud i webbsidor</h2>
+    <p class="lektion-meta">Lektion 2 av 4</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — STEG 2: aspect-ratio</strong><br>
+      Ny CSS: <code>aspect-ratio</code>. Den gör att ett element håller ett fast förhållande mellan bredd och höjd — oavsett hur bred skärmen är. Sätt <code>aspect-ratio: 16 / 9</code> på en videocontainer så blir den alltid widescreen-format, oavsett skärmstorlek. Jämfört med den gamla hacket (<code>padding-top: 56.25%</code>) är det här rakt, läsbart och modernt.
+    </div>
+
+    <p><strong>HTML5 = video och ljud utan plugins.</strong> Minns du Flash Player? Det var ett plugin du behövde installera för att se videos på webben. Det var jobbigt, osäkert och fungerande inte på mobilen. HTML5 löste det — nu är video och ljud inbyggt i webbläsaren.</p>
+
+    <h3>HTML5 video — grundsyntax</h3>
+
+    <div class="kodexempel">
+      <pre><code>&lt;video src="film.mp4" controls width="800"&gt;
+  &lt;!-- Om webbläsaren inte stöder video-taggen --&gt;
+  Din webbläsare stöder inte videouppspelning.
+&lt;/video&gt;
+
+&lt;!-- Eller med flera format som fallback --&gt;
+&lt;video controls width="800"&gt;
+  &lt;source src="film.mp4" type="video/mp4"&gt;
+  &lt;source src="film.webm" type="video/webm"&gt;
+  Din webbläsare stöder inte videouppspelning.
+&lt;/video&gt;</code></pre>
+    </div>
+
+    <h3>Viktiga video-attribut</h3>
+
+    <table>
+      <tr>
+        <th>Attribut</th>
+        <th>Vad det gör</th>
+        <th>Tips</th>
+      </tr>
+      <tr>
+        <td><code>controls</code></td>
+        <td>Visar uppspelningskontroller (play, volym, fullskärm)</td>
+        <td>Ha alltid med — annars kan besökaren inte starta videon</td>
+      </tr>
+      <tr>
+        <td><code>autoplay</code></td>
+        <td>Startar videon automatiskt</td>
+        <td>Kräver oftast <code>muted</code> — webbläsare blockerar annars</td>
+      </tr>
+      <tr>
+        <td><code>muted</code></td>
+        <td>Stänger av ljudet från start</td>
+        <td>Bra för bakgrundsvideo, loops</td>
+      </tr>
+      <tr>
+        <td><code>loop</code></td>
+        <td>Spolar tillbaka och börjar om när videon är slut</td>
+        <td>Perfekt för korta bakgrundsklipp</td>
+      </tr>
+      <tr>
+        <td><code>poster</code></td>
+        <td>En bild som visas innan videon spelas</td>
+        <td>Alltid bra att ha — annars är det tomt tills första bildrutan har laddats, det kan ta en stund, särskilt på mobilt</td>
+      </tr>
+      <tr>
+        <td><code>width</code></td>
+        <td>Videons bredd i pixlar</td>
+        <td>Ange alltid — annars hoppar layouten när videon laddas</td>
+      </tr>
+    </table>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- Bakgrundsvideo — autoplay, muted, loop --&gt;
+&lt;video autoplay muted loop poster="cover.jpg"&gt;
+  &lt;source src="bakgrund.mp4" type="video/mp4"&gt;
+&lt;/video&gt;
+
+&lt;!-- Vanlig video med kontroller och omslagsbild --&gt;
+&lt;video controls poster="thumbnail.jpg" width="800"&gt;
+  &lt;source src="tutorial.mp4" type="video/mp4"&gt;
+&lt;/video&gt;</code></pre>
+    </div>
+
+    <h3>HTML5 audio</h3>
+
+    <p>Audio fungerar likadant som video, fast utan bild. Perfekt för musik, poddar eller ljudeffekter.</p>
+
+    <div class="kodexempel">
+      <pre><code>&lt;audio src="musik.mp3" controls&gt;&lt;/audio&gt;
+
+&lt;!-- Eller med flera format --&gt;
+&lt;audio controls&gt;
+  &lt;source src="musik.mp3" type="audio/mpeg"&gt;
+  &lt;source src="musik.ogg" type="audio/ogg"&gt;
+  Din webbläsare stöder inte ljud.
+&lt;/audio&gt;</code></pre>
+    </div>
+
+    <!-- Exempel på audio-element (fungerar med webbläsarens standardkontroller) -->
+    <audio controls>
+      <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+      Din webbläsare stöder inte ljud.
+    </audio>
+    <p style="font-size:0.85em; color:#888; margin-top:4px;">Exempelljud ovan — lyssna på webbläsarens inbyggda audiospelare.</p>
+
+    <h3>Bädda in YouTube med iframe</h3>
+
+    <p>Du kan inte ladda ner och lagra YouTube-videos på din server — men du kan <em>bädda in</em> dem med en <code>&lt;iframe&gt;</code>. YouTube genererar inbäddningskoden åt dig.</p>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- Steg 1: Gå till videon på YouTube --&gt;
+&lt;!-- Steg 2: Klicka Dela → Bädda in --&gt;
+&lt;!-- Steg 3: Kopiera iframe-koden --&gt;
+
+&lt;iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/VIDEO_ID"
+  title="Videotitel"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+&gt;&lt;/iframe&gt;</code></pre>
+    </div>
+
+    <hr class="separator">
+
+    <h3>Ny CSS: aspect-ratio för videocontainers</h3>
+
+    <p>Problemet: en <code>&lt;iframe&gt;</code> med fast bredd och höjd ser bra ut på din skärm. Men på en mobilskärm sticker den ut, och på en stor skärm ser den liten ut. Vi vill att videon ska skala med sidan — men utan att tappa proportionerna (16:9).</p>
+
+    <div class="kodexempel">
+      <pre><code>/* Gammalt hack (fortfarande vanligt att se i gammal kod): */
+.video-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* 9/16 = 56.25% */
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+/* Modernt sätt med aspect-ratio (fungerar i alla moderna webbläsare): */
+.video-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;  /* Håller alltid 16:9-förhållandet */
+  overflow: hidden;
+}
+.video-container iframe,
+.video-container video {
+  width: 100%;
+  height: 100%;
+}</code></pre>
+    </div>
+
+    <!-- Exempelcontainer med aspect-ratio -->
+    <div class="video-container">
+      <iframe
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="YouTube-video (exempel)"
+        style="border: none;"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <p style="font-size:0.85em; color:#888; margin-top:4px;">Containern ovan använder <code>aspect-ratio: 16 / 9</code>. Ändra webbläsarfönstrets bredd och titta hur den skalar!</p>
+
+    <div class="info-ruta">
+      <strong>aspect-ratio är inte bara för video.</strong> Du kan använda det för alla element — kvadratiska profilfoton (<code>aspect-ratio: 1 / 1</code>), bildkort (<code>aspect-ratio: 4 / 3</code>), banners. Alltid bättre än att räkna ut höjden manuellt.
+    </div>
+
+    <h3>Tillgänglighet för media</h3>
+
+    <p>Video utan textning är oanvändbart för döva och hörselskadade. Det är inte en "nice-to-have" — det är en grundläggande rättighet.</p>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- Lägg till undertexter med track-taggen --&gt;
+&lt;video controls poster="thumbnail.jpg"&gt;
+  &lt;source src="video.mp4" type="video/mp4"&gt;
+
+  &lt;!-- kind="subtitles" = översättning, kind="captions" = textning med ljudeffekter och talaridentifiering ([dörr slår igen], [musik spelar]) --&gt;
+  &lt;track
+    kind="captions"
+    src="undertexter-sv.vtt"
+    srclang="sv"
+    label="Svenska"
+    default
+  &gt;
+  &lt;track
+    kind="subtitles"
+    src="subtitles-en.vtt"
+    srclang="en"
+    label="English"
+  &gt;
+&lt;/video&gt;</code></pre>
+    </div>
+
+    <div class="tips-ruta">
+      <strong>Bra att veta:</strong> .vtt-filer (WebVTT) är vanliga textfiler med tidkoder och text. YouTube kan generera dem automatiskt från dina videos. För skolprojekt räcker det att du vet att <code>&lt;track&gt;</code> finns — i verkligheten är textning ett krav.
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 2.1 — Bädda in en YouTube-video</h3>
+      <ol>
+        <li>Välj valfri YouTube-video.</li>
+        <li>Klicka "Dela" → "Bädda in" och kopiera iframe-koden.</li>
+        <li>Klistra in den i en HTML-fil.</li>
+        <li>Lägg iframe:en i en <code>&lt;div class="video-container"&gt;</code> och sätt <code>aspect-ratio: 16 / 9</code> på containern.</li>
+        <li>Testa på olika skärmbredder — skalar den rätt?</li>
+      </ol>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 2.2 — Audio på din sida</h3>
+      <ol>
+        <li>Hitta ett gratis-ljudklipp på <a href="https://freesound.org" target="_blank">freesound.org</a>.</li>
+        <li>Ladda ner och bädda in det med <code>&lt;audio controls&gt;</code>.</li>
+        <li>Lägg till ett fallback-meddelande inuti audio-taggen för äldre webbläsare.</li>
+      </ol>
+    </div>
+
+    <p class="back-top"><a href="#toppen">↑ Tillbaka till toppen</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — WEBBTYPSNITT OCH GOOGLE FONTS
+     Ny CSS: @import, font-display, letter-spacing, text-transform
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="lektion-3" class="lektion">
+  <div class="inner">
+    <h2>Lektion 3: Webbtypsnitt och Google Fonts</h2>
+    <p class="lektion-meta">Lektion 3 av 4</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — STEG 3: @import, font-display, letter-spacing, text-transform</strong><br>
+      Fyra nya CSS-grejer på en gång:<br>
+      <br>
+      <code>@import url('...')</code> — laddar in ett externt CSS-dokument (t.ex. Google Fonts) direkt i din CSS.<br>
+      <code>font-display: swap</code> — visar text direkt med fallback-typsnitt, byter när det riktiga typsnittet laddats. Förhindrar osynlig text.<br>
+      <code>letter-spacing: 0.08em</code> — styr avstånd mellan bokstäver. Används ofta för versaler och logotyptext.<br>
+      <code>text-transform: uppercase</code> — gör text till VERSALER via CSS (inte i HTML-koden). Lättare att ändra senare!
+    </div>
+
+    <p><strong>Typsnitt gör mer än du tror.</strong> Rätt typsnitt kan göra en sida professionell, trovärdig eller cool. Fel typsnitt (Comic Sans på en advokatbyrå) förstör allt. Det är en av de snabbaste vinsterna i design.</p>
+
+    <h3>Web-safe fonts — finns redan på datorn</h3>
+
+    <p>Web-safe fonts är typsnitt som nästan alla datorer och mobiler redan har installerade. Du behöver inte ladda ner något. Nackdelen: du är begränsad till ett par typsnitt som alla känner igen sedan 90-talet.</p>
+
+    <div class="font-grid">
+      <div class="font-kort">
+        <div class="font-namn">Arial (sans-serif)</div>
+        <div class="font-exempel font-sans">Hej världen! 0123</div>
+      </div>
+      <div class="font-kort">
+        <div class="font-namn">Georgia (serif)</div>
+        <div class="font-exempel font-serif">Hej världen! 0123</div>
+      </div>
+      <div class="font-kort">
+        <div class="font-namn">Courier New (mono)</div>
+        <div class="font-exempel font-mono">Hej världen! 0123</div>
+      </div>
+    </div>
+
+    <div class="kodexempel">
+      <pre><code>/* font-family med fallback-stack */
+body {
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  /* Om Segoe UI saknas → Arial → Helvetica → vad som helst sans-serif */
+}</code></pre>
+    </div>
+
+    <h3>Google Fonts — tusentals gratis typsnitt</h3>
+
+    <p>Google Fonts ger dig tillgång till över 1400 typsnitt — helt gratis. De laddas från Googles servrar och kan användas på vilken webbsida som helst. Så här hittar och lägger du till ett:</p>
+
+    <ol>
+      <li>Gå till <a href="https://fonts.google.com" target="_blank">fonts.google.com</a></li>
+      <li>Bläddra eller sök efter ett typsnitt du gillar</li>
+      <li>Klicka på typsnittet → välj "stilar" du vill ha (Regular 400, Bold 700 etc.)</li>
+      <li>Klicka "Get font" → "Get embed code"</li>
+      <li>Kopiera antingen <code>&lt;link&gt;</code>-taggen (för <code>&lt;head&gt;</code>) eller <code>@import</code>-raden (för CSS)</li>
+    </ol>
+
+    <h3>Två sätt att inkludera Google Fonts</h3>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- SÄTT 1: &lt;link&gt; i &lt;head&gt; (REKOMMENDERAT — snabbare) --&gt;
+&lt;head&gt;
+  &lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"&gt;
+&lt;/head&gt;
+
+/* SÄTT 2: @import i CSS-filen (enklare men lite långsammare) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* Sedan använder du typsnittet precis som vanligt: */
+body {
+  font-family: 'Inter', sans-serif;
+}</code></pre>
+    </div>
+
+    <div class="info-ruta">
+      <strong>Varför två preconnect-taggar?</strong> Google Fonts laddar CSS från <code>fonts.googleapis.com</code> och själva typsnittsfilerna från <code>fonts.gstatic.com</code>. Med <code>preconnect</code> talar du om för webbläsaren att förbereda uppkopplingen innan den ens behövs — sidan laddar snabbare.
+    </div>
+
+    <h3>font-display: swap — undvik osynlig text</h3>
+
+    <p>När en sida laddar och typsnittet inte är klart än kan texten bli <em>osynlig</em> i en sekund eller mer (FOIT — Flash of Invisible Text). Det ser ut som att sidan är tom.</p>
+
+    <div class="kodexempel">
+      <pre><code>/* Google Fonts lägger till detta automatiskt om du använder display=swap i URL:en */
+@import url('...&display=swap');
+
+/* Eller i en egen @font-face-regel: */
+@font-face {
+  font-family: 'MittTypsnitt';
+  src: url('typsnitt.woff2') format('woff2');
+  font-display: swap; /* Visa fallback-typsnitt direkt, byt när riktiga är klart */
+}</code></pre>
+    </div>
+
+    <h3>Font pairing — att kombinera typsnitt</h3>
+
+    <p>Proffs-trick: kombinera ett serif-typsnitt för rubriker med ett sans-serif för brödtext (eller tvärtom). Det skapar kontrast och hierarki utan att det ser rörigt ut.</p>
+
+    <div class="lektion-3-demo">
+      <p class="demo-overrubrik">Spelrecension</p>
+      <h2 class="demo-rubrik">Elden Ring: ett mästerverk</h2>
+      <p class="demo-brodtext">Det är sällan ett spel lyckas balansera svårighet och belöning så här perfekt. Varje boss-fight känns omöjlig — tills du plötsligt klarar den. Rubrik i Playfair Display (serif), brödtext i Inter (sans-serif).</p>
+    </div>
+
+    <div class="font-grid">
+      <div class="font-kort">
+        <div class="font-namn">Playfair Display — rubrik</div>
+        <div class="font-exempel font-playfair">Elden Ring</div>
+      </div>
+      <div class="font-kort">
+        <div class="font-namn">Inter — brödtext</div>
+        <div class="font-exempel font-inter">Det är sällan ett spel...</div>
+      </div>
+    </div>
+
+    <h3>letter-spacing och text-transform</h3>
+
+    <div class="kodexempel">
+      <pre><code>/* letter-spacing — avstånd mellan bokstäver */
+.etikett {
+  letter-spacing: 0.1em;  /* Relativt till fontstorleken — skalas snyggt */
+}
+
+/* text-transform — ändra skiftläge via CSS */
+.nav-länk {
+  text-transform: uppercase;   /* VERSALER */
+}
+
+.rubrik {
+  text-transform: capitalize;  /* Första Bokstaven Stor */
+}
+
+/* Vanlig kombination: versaler + lite extra letter-spacing */
+.kategori-etikett {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #e94560;
+}</code></pre>
+    </div>
+
+    <div class="tips-ruta">
+      <strong>Presstandips:</strong> Ladda bara de vikter och stilar du faktiskt använder. Varje font-vikt är en extra fil att ladda. Om du bara använder 400 och 700 — ladda bara 400 och 700. Laddar du in 8 vikter och bara använder 2 slösar du bandbredd i onödan.
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 3.1 — Välj ditt typsnittpar</h3>
+      <ol>
+        <li>Gå till <a href="https://fonts.google.com" target="_blank">fonts.google.com</a>.</li>
+        <li>Välj ett typsnitt för rubriker och ett för brödtext.</li>
+        <li>Inkludera båda med <code>&lt;link&gt;</code> i din HTML-fil.</li>
+        <li>Applicera dem: rubriker (<code>h1, h2</code>) med rubriktypsnittet, <code>body</code> med brödtextypsnittet.</li>
+        <li>Testa att lägga till <code>letter-spacing</code> och <code>text-transform: uppercase</code> på något element.</li>
+      </ol>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag 3.2 — Jämför typsnitt</h3>
+      <ol>
+        <li>Skapa en sida med en rubrik och ett par meningar text.</li>
+        <li>Testa tre olika typsnittskombinationer från Google Fonts.</li>
+        <li>Vilken kombination passar bäst för ditt ämne? Varför?</li>
+        <li>Öppna Inspektera → Network → fliken "Font" för att se vilka typsnittsfilerna laddas och hur stora de är.</li>
+      </ol>
+    </div>
+
+    <p class="back-top"><a href="#toppen">↑ Tillbaka till toppen</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 4 — PRAKTISKT PROJEKT
+     Ny CSS: transition + allt ihop
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="lektion-4" class="lektion">
+  <div class="inner">
+    <h2>Lektion 4: Praktiskt — Infoga media och använd passande typsnitt</h2>
+    <p class="lektion-meta">Lektion 4 av 4</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — STEG 4: transition + allt ihop</strong><br>
+      Sista CSS-nyhet: <code>transition</code>. Det gör att CSS-ändringar (t.ex. på hover) animeras smidigt istället för att hugga till direkt.<br>
+      <br>
+      <code>transition: egenskap varaktighet timing-function</code><br>
+      <br>
+      Exempel: <code>transition: transform 0.25s ease</code> — animera <code>transform</code> under 0,25 sekunder med ease-kurva.<br>
+      <br>
+      I det här avsnittet kombinerar vi <strong>object-fit</strong> (bilder), <strong>aspect-ratio</strong> (video), <strong>Google Fonts</strong> (typsnitt) och <strong>transition</strong> (hover-effekter) i ett riktigt projekt.
+    </div>
+
+    <p><strong>Nu sätter vi ihop allt.</strong> Du har bildformat, video, ljud och typsnitt i ryggsäcken. Den här lektionen handlar om att kombinera dem till en sida som faktiskt ser bra ut.</p>
+
+    <h3>transition — animerade hover-effekter</h3>
+
+    <div class="kodexempel">
+      <pre><code>/* transition-syntax: */
+/* transition: [egenskap] [varaktighet] [timing-function] [fördröjning]; */
+
+.knapp {
+  background-color: #e94560;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;  /* Animera bara bakgrundsfärgen */
+}
+
+.knapp:hover {
+  background-color: #c73350;  /* Webbläsaren animerar mjukt till den här färgen */
+}
+
+/* Animera flera egenskaper */
+.kort {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.kort:hover {
+  transform: translateY(-4px);   /* Lyft upp kortet 4px */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);  /* Djupare skugga vid hover */
+}
+
+/* transform: scale() — zooma in --&gt; bilden i kortet */
+.kort img {
+  transition: transform 0.35s ease;
+}
+
+.kort:hover img {
+  transform: scale(1.05);  /* 5% zoom vid hover på hela kortet */
+}</code></pre>
+    </div>
+
+    <div class="info-ruta">
+      <strong>Timing-functions:</strong> <code>ease</code> (börjar och slutar lugnt, standard), <code>linear</code> (konstant hastighet), <code>ease-in</code> (börjar lugnt, slutar snabbt), <code>ease-out</code> (börjar snabbt, slutar lugnt). Testa dem i Inspektera — det finns en kurv-editor!
+    </div>
+
+    <h3>Exempel: Mediekort med alla tekniker</h3>
+
+    <p>Kortkomponenten nedan kombinerar <code>object-fit</code>, <code>aspect-ratio</code>, Google Fonts och <code>transition</code>. Hovra över korten:</p>
+
+    <div class="kortgrid">
+      <div class="medie-kort">
+        <img
+          class="kort-bild"
+          src="https://picsum.photos/seed/game1/600/340"
+          alt="Spelscenario med dramatisk belysning"
+        >
+        <div class="kort-innehall">
+          <h3 class="kort-rubrik">Elden Ring</h3>
+          <p class="kort-text">Open world action-RPG. Svårt, vackert och omöjligt att sluta spela.</p>
+        </div>
+      </div>
+      <div class="medie-kort">
+        <img
+          class="kort-bild"
+          src="https://picsum.photos/seed/game2/600/340"
+          alt="Futuristisk spelvärldsscen"
+        >
+        <div class="kort-innehall">
+          <h3 class="kort-rubrik">Cyberpunk 2077</h3>
+          <p class="kort-text">Night City är en av spelhistoriens mest detaljerade öppna världar.</p>
+        </div>
+      </div>
+      <div class="medie-kort">
+        <img
+          class="kort-bild"
+          src="https://picsum.photos/seed/game3/600/340"
+          alt="Naturbild från äventyrsspel"
+        >
+        <div class="kort-innehall">
+          <h3 class="kort-rubrik">Zelda: TotK</h3>
+          <p class="kort-text">Byggsystem, Hyrule och hundratals timmar att försvinna i.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Planera sidan innan du kodar</h3>
+
+    <p>Proffsutvecklare skissar innan de kodar. Inte för att de måste — för att det sparar tid. En skiss på 5 minuter kan spara en timme av om-kodning.</p>
+
+    <p>Tänk på det här innan du börjar projektet:</p>
+
+    <ul>
+      <li><strong>Vad är ämnet?</strong> Film, spel, artist, sport — välj något du faktiskt bryr dig om.</li>
+      <li><strong>Vilka sektioner behövs?</strong> Hero-bild, info, video, ljud, galleri, footer?</li>
+      <li><strong>Vilket typsnitt passar stämningen?</strong> Action → bold sans-serif. Klassiskt → serif. Tech → monospace.</li>
+      <li><strong>Vilka bilder och media behövs?</strong> Egna foton, stockbilder (Unsplash, Pexels), YouTube-videos?</li>
+    </ul>
+
+    <h3>Komplett sidstruktur — en mall</h3>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Min media-sida&lt;/title&gt;
+
+  &lt;!-- Google Fonts --&gt;
+  &lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"&gt;
+
+  &lt;style&gt;
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      background-color: #111;
+      color: #eee;
+    }
+
+    h1, h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Hero med bild och object-fit */
+    .hero {
+      width: 100%;
+      height: 60vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+
+    .hero-text {
+      position: absolute;
+      bottom: 32px;
+      left: 32px;
+    }
+
+    .hero-text h1 {
+      font-size: 3.5em;
+      margin: 0;
+      color: white;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    }
+
+    /* Video med aspect-ratio */
+    .video-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Kortgrid med transition */
+    .kortgrid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .kort {
+      flex: 1 1 240px;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #1a1a2e;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .kort:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .kort img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+
+    .kort:hover img {
+      transform: scale(1.05);
+    }
+
+    .kort-info {
+      padding: 16px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;!-- HERO med stor bild --&gt;
+  &lt;div class="hero"&gt;
+    &lt;img src="hero.jpg" alt="Hero-bild för ämnet"&gt;
+    &lt;div class="hero-text"&gt;
+      &lt;h1&gt;Ditt ämne här&lt;/h1&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- YOUTUBE-VIDEO --&gt;
+  &lt;section style="padding: 40px 20px;"&gt;
+    &lt;h2 style="text-align: center;"&gt;Officiell trailer&lt;/h2&gt;
+    &lt;div class="video-container"&gt;
+      &lt;iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- AUDIO --&gt;
+  &lt;section style="padding: 20px;"&gt;
+    &lt;h2&gt;Lyssna&lt;/h2&gt;
+    &lt;audio controls src="ljud.mp3"&gt;&lt;/audio&gt;
+  &lt;/section&gt;
+
+  &lt;!-- KORTGRID --&gt;
+  &lt;div class="kortgrid"&gt;
+    &lt;div class="kort"&gt;
+      &lt;img src="bild1.jpg" alt="Beskrivning"&gt;
+      &lt;div class="kort-info"&gt;
+        &lt;h2&gt;Rubrik&lt;/h2&gt;
+        &lt;p&gt;Text om detta&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- Fler kort... --&gt;
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <hr class="separator">
+
+    <h3>Bra resurser för media</h3>
+
+    <table>
+      <tr>
+        <th>Resurs</th>
+        <th>Vad du hittar där</th>
+        <th>Gratis?</th>
+      </tr>
+      <tr>
+        <td><a href="https://unsplash.com" target="_blank">Unsplash</a></td>
+        <td>Högkvalitativa foton</td>
+        <td>Ja</td>
+      </tr>
+      <tr>
+        <td><a href="https://www.pexels.com" target="_blank">Pexels</a></td>
+        <td>Foton och videos</td>
+        <td>Ja</td>
+      </tr>
+      <tr>
+        <td><a href="https://freesound.org" target="_blank">Freesound</a></td>
+        <td>Ljud och ljudeffekter</td>
+        <td>Ja (med konto)</td>
+      </tr>
+      <tr>
+        <td><a href="https://fonts.google.com" target="_blank">Google Fonts</a></td>
+        <td>Typsnitt</td>
+        <td>Ja</td>
+      </tr>
+      <tr>
+        <td><a href="https://svgrepo.com" target="_blank">SVG Repo</a></td>
+        <td>Gratis SVG-ikoner</td>
+        <td>Ja</td>
+      </tr>
+      <tr>
+        <td><a href="https://picsum.photos" target="_blank">Lorem Picsum</a></td>
+        <td>Slumpmässiga platshållarfoton för testning</td>
+        <td>Ja</td>
+      </tr>
+    </table>
+
+    <hr class="separator">
+
+    <h3>CSS-sammanfattning — Modul 4</h3>
+
+    <div class="css-spaning">
+      <strong>Allt vi gick igenom:</strong>
+      <ol style="margin:12px 0 0; padding-left:20px; color:#ccc;">
+        <li><strong>Steg 1</strong> (Lektion 1): <code>object-fit</code>, <code>object-position</code> — bilder fyller containers snyggt utan att deformeras.</li>
+        <li><strong>Steg 2</strong> (Lektion 2): <code>aspect-ratio</code> — videocontainers håller alltid rätt proportioner på alla skärmstorlekar.</li>
+        <li><strong>Steg 3</strong> (Lektion 3): <code>@import</code>, <code>font-display: swap</code>, <code>letter-spacing</code>, <code>text-transform</code> — egna typsnitt och proffsig textstyling.</li>
+        <li><strong>Steg 4</strong> (Lektion 4): <code>transition</code>, <code>transform</code> + hover — mjuka animationer som gör sidan levande.</li>
+      </ol>
+      <p style="margin:12px 0 0;">Nästa modul: <strong>Modul 5 — Tillgänglighet</strong>. Vi ser till att de snygga sidorna vi bygger faktiskt funkar för alla.</p>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Projekt: Sida om ett spel, film eller artist</h3>
+      <p>Skapa en komplett media-rik sida om något du gillar — ett spel, en film, en serie eller en artist. Sidan ska:</p>
+      <ul>
+        <li>Ha ett <strong>Google Font-par</strong> (rubrik + brödtext) som passar stämningen</li>
+        <li>Ha minst <strong>2 bilder</strong> som använder <code>object-fit: cover</code> i containers med fast storlek</li>
+        <li>Ha <strong>1 inbäddad YouTube-video</strong> i en container med <code>aspect-ratio: 16 / 9</code></li>
+        <li>Ha <strong>1 audio-element</strong> (tema-musik, intervju, vad som helst passande)</li>
+        <li>Ha <strong>hover-effekter</strong> med <code>transition</code> på minst ett element</li>
+        <li>Använda <code>letter-spacing</code> och/eller <code>text-transform</code> på rubriker eller etiketter</li>
+        <li>Vara responsiv — funka på både mobil och desktop</li>
+      </ul>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Boss-level: Bildgalleri med hover-zoom</h3>
+      <ol>
+        <li>Skapa ett galleri med minst 6 bilder i ett CSS-grid eller flexbox-layout.</li>
+        <li>Varje bild ska ha en fast höjd och <code>object-fit: cover</code>.</li>
+        <li>Lägg till <code>transition: transform 0.3s ease</code> och en zoom-effekt (<code>transform: scale(1.05)</code>) vid hover.</li>
+        <li>Bonus: lägg till en mörk overlay med text som dyker upp vid hover (testa med <code>position: absolute</code> och <code>opacity: 0</code> → <code>opacity: 1</code> vid hover).</li>
+      </ol>
+    </div>
+
+    <p class="back-top"><a href="#toppen">↑ Tillbaka till toppen</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODULNAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<div style="text-align: center; padding: 24px 0 8px;">
+  <a href="test-modul-4.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em; font-family: 'Segoe UI', system-ui, sans-serif;">Gå till testet för Modul 4 →</a>
+</div>
+
+<nav class="modul-nav" aria-label="Modulnavigation">
+  <div class="inner">
+    <a href="modul-3-responsiv-design.html">← Modul 3: Responsiv design</a>
+    <div class="nav-center">
+      <p>Modul 4 av 8 — Media och typsnitt</p>
+    </div>
+    <a href="modul-5-tillganglighet.html">Modul 5: Tillgänglighet →</a>
+  </div>
+</nav>
+
+</body>
+</html>

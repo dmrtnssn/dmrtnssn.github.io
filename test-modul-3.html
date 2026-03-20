@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test – Modul 3: Responsiv design</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface-deep: #0f0f23;
+      --border: #2a2a4a;
+      --text: #e0e0e0;
+      --text-muted: #a0a0b0;
+      --accent-red: #e94560;
+      --accent-blue: #0db5e6;
+      --green: #27ae60;
+      --green-bg: #0d2818;
+      --red-bg: #2e0d16;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Flexbox-baserad nav */
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      color: var(--accent-red);
+      margin-bottom: 0.5rem;
+    }
+
+    .intro {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .question.correct {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .question.wrong {
+      border-color: var(--accent-red);
+      background: var(--red-bg);
+    }
+
+    .question-number {
+      color: var(--accent-blue);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    /* Flex-baserade alternativ för att visa kodelement bättre */
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.55rem 0.85rem;
+      margin-bottom: 0.4rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1.5;
+    }
+
+    .options label:hover {
+      background: var(--border);
+    }
+
+    .options input[type="radio"] {
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+      accent-color: var(--accent-blue);
+    }
+
+    .options label.selected-correct {
+      background: #1a4a2a;
+      border-color: var(--green);
+      color: #5dde8a;
+    }
+
+    .options label.selected-wrong {
+      background: #4a1a22;
+      border-color: var(--accent-red);
+      color: #f07090;
+    }
+
+    .options label.correct-answer {
+      background: #1a4a2a;
+      border-color: var(--green);
+      color: #5dde8a;
+    }
+
+    .explanation {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .explanation.correct {
+      background: #0d3320;
+      border-left: 3px solid var(--green);
+      color: #90d8aa;
+    }
+
+    .explanation.wrong {
+      background: #3a0d18;
+      border-left: 3px solid var(--accent-red);
+      color: #f0a0b0;
+    }
+
+    .check-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent-red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .check-btn:hover { background: #c73550; }
+    .check-btn:active { transform: scale(0.99); }
+    .check-btn:disabled { background: #444; cursor: not-allowed; transform: none; }
+
+    .result-box {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .result-box.pass { background: var(--green-bg); border: 2px solid var(--green); }
+    .result-box.fail { background: var(--red-bg); border: 2px solid var(--accent-red); }
+
+    .result-score {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .result-box.pass .result-score { color: var(--green); }
+    .result-box.fail .result-score { color: var(--accent-red); }
+
+    .result-message {
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .retry-btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: var(--accent-blue);
+      color: var(--bg);
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .retry-btn:hover { background: #0990ba; }
+
+    .next-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.75rem 2rem;
+      background: var(--green);
+      color: white;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .next-link:hover { background: #1e8a4a; text-decoration: none; }
+
+    code {
+      background: var(--surface-deep);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.88em;
+      color: var(--accent-blue);
+    }
+
+    pre {
+      background: var(--surface-deep);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: #c8c8e0;
+      border-left: 3px solid var(--accent-blue);
+      line-height: 1.6;
+    }
+
+    /* Media query demo för sidans eget utseende */
+    @media (max-width: 600px) {
+      .question {
+        padding: 1.1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav-links">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-3-responsiv-design.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <h1>Test – Modul 3: Responsiv design</h1>
+    <p class="intro">Svara på alla frågor och klicka sedan på "Rätta testet". Du behöver 100% rätt för att bli godkänd.</p>
+
+    <form id="quiz-form">
+
+      <div class="question" id="q1">
+        <div class="question-number">Fråga 1 av 10</div>
+        <div class="question-text">Vad innebär responsiv webbdesign?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> Att webbplatsen svarar snabbt på serverförfrågningar</label>
+          <label><input type="radio" name="q1" value="b"> Att webbplatsen anpassar sin layout och innehåll till olika skärmstorlekar och enheter</label>
+          <label><input type="radio" name="q1" value="c"> Att webbplatsen har animationer som reagerar på musrörelser</label>
+          <label><input type="radio" name="q1" value="d"> Att webbplatsen bara fungerar på mobiltelefoner</label>
+        </div>
+        <div class="explanation" id="exp1"></div>
+      </div>
+
+      <div class="question" id="q2">
+        <div class="question-number">Fråga 2 av 10</div>
+        <div class="question-text">Varför behöver man viewport-metataggen när man bygger responsiva sidor för mobila enheter?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> Den ändrar sidans bakgrundsfärg på mobila enheter</label>
+          <label><input type="radio" name="q2" value="b"> Den hindrar mobila webbläsare från att zooma ut och simulera en bred skärm, så att CSS-breakpoints fungerar korrekt</label>
+          <label><input type="radio" name="q2" value="c"> Den gör att sidan laddas snabbare på 4G</label>
+          <label><input type="radio" name="q2" value="d"> Den är obligatorisk för att använda Google Fonts</label>
+        </div>
+        <div class="explanation" id="exp2"></div>
+      </div>
+
+      <div class="question" id="q3">
+        <div class="question-number">Fråga 3 av 10</div>
+        <div class="question-text">Vilken av dessa media queries aktiveras när skärmen är <em>högst</em> 768px bred?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> <code>@media (min-width: 768px) { }</code></label>
+          <label><input type="radio" name="q3" value="b"> <code>@media screen: 768px { }</code></label>
+          <label><input type="radio" name="q3" value="c"> <code>@media (max-width: 768px) { }</code></label>
+          <label><input type="radio" name="q3" value="d"> <code>@media width(768px) { }</code></label>
+        </div>
+        <div class="explanation" id="exp3"></div>
+      </div>
+
+      <div class="question" id="q4">
+        <div class="question-number">Fråga 4 av 10</div>
+        <div class="question-text">Vad menas med "mobile-first" i CSS-sammanhang?</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"> Man designar och kodar basstilarna för mobil, och lägger sedan till styles med min-width-media queries för större skärmar</label>
+          <label><input type="radio" name="q4" value="b"> Man designar för desktop och använder max-width-media queries för att krympa ner till mobil</label>
+          <label><input type="radio" name="q4" value="c"> Man skapar en separat mobil-version av webbplatsen på en annan URL</label>
+          <label><input type="radio" name="q4" value="d"> Man prioriterar att sidan laddas snabbt, oavsett enhet</label>
+        </div>
+        <div class="explanation" id="exp4"></div>
+      </div>
+
+      <div class="question" id="q5">
+        <div class="question-number">Fråga 5 av 10</div>
+        <div class="question-text">Titta på koden. Vad gör <code>justify-content</code> i en flexbox-container?
+<pre>.container {
+  display: flex;
+  justify-content: space-between;
+}</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="a"> Det centrerar alla flex-items vertikalt längs tvärsaxeln</label>
+          <label><input type="radio" name="q5" value="b"> Det distribuerar flex-items längs huvudaxeln – med space-between sprids de ut med lika stort mellanrum</label>
+          <label><input type="radio" name="q5" value="c"> Det bestämmer hur många items som får plats per rad</label>
+          <label><input type="radio" name="q5" value="d"> Det sätter bredden på varje flex-item</label>
+        </div>
+        <div class="explanation" id="exp5"></div>
+      </div>
+
+      <div class="question" id="q6">
+        <div class="question-number">Fråga 6 av 10</div>
+        <div class="question-text">Vad händer om man lägger till <code>flex-wrap: wrap</code> på en flex-container?</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="a"> Texten i alla flex-items börjar radbrytas automatiskt</label>
+          <label><input type="radio" name="q6" value="b"> Flex-items som inte får plats på en rad börjar automatiskt på en ny rad istället för att tryckas ihop</label>
+          <label><input type="radio" name="q6" value="c"> Containern ändrar flex-direction till column</label>
+          <label><input type="radio" name="q6" value="d"> Flex-items döljs om de inte får plats</label>
+        </div>
+        <div class="explanation" id="exp6"></div>
+      </div>
+
+      <div class="question" id="q7">
+        <div class="question-number">Fråga 7 av 10</div>
+        <div class="question-text">Vad är skillnaden mellan <code>em</code> och <code>rem</code> i CSS?</div>
+        <div class="options">
+          <label><input type="radio" name="q7" value="a"> em är relativ till root-elementets font-size, rem är relativ till förälderns font-size</label>
+          <label><input type="radio" name="q7" value="b"> em är relativ till förälderns font-size, rem är relativ till root-elementets (html) font-size</label>
+          <label><input type="radio" name="q7" value="c"> De är identiska, bara olika stavningar för samma enhet</label>
+          <label><input type="radio" name="q7" value="d"> em används för padding, rem används bara för font-size</label>
+        </div>
+        <div class="explanation" id="exp7"></div>
+      </div>
+
+      <div class="question" id="q8">
+        <div class="question-number">Fråga 8 av 10</div>
+        <div class="question-text">Du ska sätta bredden på en bild så att den alltid tar upp 50% av sin förälders bredd, oavsett skärmstorlek. Vilken enhet passar bäst?</div>
+        <div class="options">
+          <label><input type="radio" name="q8" value="a"> <code>px</code> – t.ex. <code>width: 400px;</code></label>
+          <label><input type="radio" name="q8" value="b"> <code>%</code> – t.ex. <code>width: 50%;</code></label>
+          <label><input type="radio" name="q8" value="c"> <code>em</code> – t.ex. <code>width: 50em;</code></label>
+          <label><input type="radio" name="q8" value="d"> <code>pt</code> – t.ex. <code>width: 50pt;</code></label>
+        </div>
+        <div class="explanation" id="exp8"></div>
+      </div>
+
+      <div class="question" id="q9">
+        <div class="question-number">Fråga 9 av 10</div>
+        <div class="question-text">Vad gör följande CSS-kod?
+<pre>.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q9" value="a"> Skapar ett flexbox-layout med tre rader</label>
+          <label><input type="radio" name="q9" value="b"> Skapar ett CSS Grid-layout med tre lika breda kolumner och 1rem mellanrum mellan cellerna</label>
+          <label><input type="radio" name="q9" value="c"> Skapar tre separata div-element automatiskt</label>
+          <label><input type="radio" name="q9" value="d"> Skapar ett grid med tre rader och oändligt antal kolumner</label>
+        </div>
+        <div class="explanation" id="exp9"></div>
+      </div>
+
+      <div class="question" id="q10">
+        <div class="question-number">Fråga 10 av 10</div>
+        <div class="question-text">Hitta felet i denna responsiva layout-kod:
+<pre>.card-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.card {
+  width: 300px;  /* Problemet finns här */
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+  }
+}</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q10" value="a"> flex-wrap: wrap är ett ogiltigt värde</label>
+          <label><input type="radio" name="q10" value="b"> En fast width: 300px på .card gör att korten kan flöda utanför containern på mellanstora skärmar – bättre att använda flex: 1 1 300px eller min-width/max-width</label>
+          <label><input type="radio" name="q10" value="c"> gap fungerar inte i kombination med flex-wrap</label>
+          <label><input type="radio" name="q10" value="d"> Det är ingenting fel med koden</label>
+        </div>
+        <div class="explanation" id="exp10"></div>
+      </div>
+
+      <button type="button" class="check-btn" id="check-btn" onclick="rattaTest()">Rätta testet</button>
+    </form>
+
+    <div class="result-box" id="result-box">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-message" id="result-message"></div>
+      <div id="result-actions"></div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'test-modul-3-godkand';
+    const TOTAL = 10;
+
+    const answers = {
+      q1: 'b',
+      q2: 'b',
+      q3: 'c',
+      q4: 'a',
+      q5: 'b',
+      q6: 'b',
+      q7: 'b',
+      q8: 'b',
+      q9: 'b',
+      q10: 'b'
+    };
+
+    const explanations = {
+      q1: {
+        correct: 'Rätt! Responsiv design innebär att en och samma webbplats anpassar sig automatiskt till olika skärmstorlekar – mobil, surfplatta, dator.',
+        wrong: 'Fel. Responsiv webbdesign handlar om att <strong>layouten och innehållet anpassar sig</strong> till olika skärmstorlekar och enheter. Samma HTML-kod fungerar på mobil och desktop, men med olika utseende.'
+      },
+      q2: {
+        correct: 'Rätt! Utan viewport-metataggen zoomar mobila webbläsare ut och simulerar en bredare skärm, vilket gör att mobil-breakpoints aldrig triggas.',
+        wrong: 'Fel. Viewport-metataggen (<code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code>) berättar för mobila webbläsare att de ska <strong>använda enhetens faktiska bredd</strong> istället för att zooma ut och simulera en desktop-skärm.'
+      },
+      q3: {
+        correct: 'Rätt! max-width: 768px innebär "tillämpa dessa stilar när skärmen är högst 768px bred" – alltså på mobiler och mindre surfplattor.',
+        wrong: 'Fel. <strong>@media (max-width: 768px)</strong> aktiveras när skärmbredden är 768px eller smalare. "max-width" sätter ett tak. "min-width" hade aktiverat vid 768px och bredare.'
+      },
+      q4: {
+        correct: 'Rätt! Mobile-first: skriv basstilarna för mobil, använd sedan min-width-media queries för att lägga till stilar för bredare skärmar. Det ger bättre prestanda på mobil.',
+        wrong: 'Fel. <strong>Mobile-first</strong> betyder att man skriver basstilarna för den minsta skärmen (mobil) och sedan utökar med <strong>min-width</strong>-media queries för större skärmar. Det är motsatsen till desktop-first som använder max-width.'
+      },
+      q5: {
+        correct: 'Rätt! justify-content styr fördelningen längs huvudaxeln (horisontellt som standard). space-between placerar första och sista elementet vid kanterna, med jämnt mellanrum emellan.',
+        wrong: 'Fel. <strong>justify-content</strong> styr hur flex-items fördelas längs <strong>huvudaxeln</strong> (horisontellt om flex-direction är row). space-between sprider ut items med lika stort mellanrum mellan dem. align-items styr tvärsaxeln (vertikalt).'
+      },
+      q6: {
+        correct: 'Rätt! flex-wrap: wrap tillåter flex-items att brytas till nästa rad om de inte får plats, vilket är grundläggande för responsiva flex-layouts.',
+        wrong: 'Fel. <strong>flex-wrap: wrap</strong> gör att flex-items som inte ryms på en rad <strong>automatiskt börjar på nästa rad</strong>. Utan det (nowrap som är standard) trycks items ihop eller flödar utanför containern.'
+      },
+      q7: {
+        correct: 'Rätt! em är relativ till förälderns font-size (kan kaskaderas), rem är relativ till root-elementets (html) font-size – förutsägbart och enklare att använda konsekvent.',
+        wrong: 'Fel. <strong>em</strong> är relativ till <strong>förälderns</strong> font-size – om du kapslar element med em-storlekar kan de kaskaderas oförutsägbart. <strong>rem</strong> (root em) är alltid relativ till <strong>html-elementets</strong> font-size, vilket är enklare och mer förutsägbart.'
+      },
+      q8: {
+        correct: 'Rätt! Procentenheter (%) är relativa till förälderns storlek och passar perfekt för responsiva bredder som ska skalas med skärmen.',
+        wrong: 'Fel. För en bredd som alltid ska vara <strong>50% av föräldern</strong>, oavsett skärmstorlek, används <strong>%</strong>. px är absolut och ändras inte. em/rem baseras på font-storlek, inte container-bredd. pt är för tryck.'
+      },
+      q9: {
+        correct: 'Rätt! display: grid aktiverar CSS Grid, grid-template-columns: repeat(3, 1fr) skapar tre kolumner som delar på tillgängligt utrymme jämnt (fr = fraction), och gap sätter mellanrummet.',
+        wrong: 'Fel. Koden skapar ett <strong>CSS Grid</strong> (inte flexbox) med <strong>tre lika breda kolumner</strong>. repeat(3, 1fr) är kortform för "tre kolumner á 1 bråkdel av tillgängligt utrymme". gap sätter 1rem mellanrum i både rader och kolumner.'
+      },
+      q10: {
+        correct: 'Rätt! En fast width: 300px kan orsaka problem på mellanstora skärmar där korten varken är 300px (för smalt) eller 100% (bredpunkten har inte triggats). Bättre: flex: 1 1 300px eller max-width: 300px kombinerat med width: 100%.',
+        wrong: 'Fel. Problemet är att <strong>width: 300px</strong> är ett absolut fast värde. På skärmar som är, säg, 500-700px breda får man kanske plats med ett kort men det ser konstigt ut. En bättre lösning är <strong>flex: 1 1 300px</strong> (grow, shrink, basis) eller att kombinera width: 100% med max-width: 300px.'
+      }
+    };
+
+    let answered = false;
+
+    function rattaTest() {
+      if (answered) return;
+
+      let score = 0;
+      let firstWrong = null;
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const questionEl = document.getElementById(key);
+        const expEl = document.getElementById('exp' + i);
+        const labels = questionEl.querySelectorAll('.options label');
+
+        questionEl.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+
+        if (!selected) {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = '<strong>Du svarade inte på denna fråga.</strong> ' + explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          expEl.style.display = 'block';
+          if (!firstWrong) firstWrong = questionEl;
+          continue;
+        }
+
+        const userVal = selected.value;
+        const correctVal = answers[key];
+        const isCorrect = userVal === correctVal;
+
+        labels.forEach(label => {
+          const radio = label.querySelector('input');
+          if (!radio) return;
+          if (radio.value === userVal && isCorrect) label.classList.add('selected-correct');
+          else if (radio.value === userVal && !isCorrect) label.classList.add('selected-wrong');
+          if (radio.value === correctVal && !isCorrect) label.classList.add('correct-answer');
+        });
+
+        if (isCorrect) {
+          score++;
+          questionEl.classList.add('correct');
+          expEl.innerHTML = explanations[key].correct;
+          expEl.className = 'explanation correct';
+        } else {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          if (!firstWrong) firstWrong = questionEl;
+        }
+
+        expEl.style.display = 'block';
+      }
+
+      answered = true;
+      document.getElementById('check-btn').disabled = true;
+
+      const resultBox = document.getElementById('result-box');
+      const resultScore = document.getElementById('result-score');
+      const resultMessage = document.getElementById('result-message');
+      const resultActions = document.getElementById('result-actions');
+
+      resultScore.textContent = score + ' av ' + TOTAL + ' rätt';
+      resultBox.style.display = 'block';
+
+      if (score === TOTAL) {
+        localStorage.setItem(STORAGE_KEY, 'true');
+        resultBox.className = 'result-box pass';
+        resultMessage.innerHTML = 'Fantastiskt! Du klarade testet med full poäng och är nu godkänd på Modul 3.';
+        resultActions.innerHTML = '<a href="modul-4-media-och-typsnitt.html" class="next-link">Gå vidare till Modul 4 →</a>';
+      } else {
+        resultBox.className = 'result-box fail';
+        const numWrong = TOTAL - score;
+        resultMessage.innerHTML = 'Du hade ' + numWrong + ' fel svar. Du behöver 100% rätt för att bli godkänd. Läs förklaringarna och försök igen.';
+        resultActions.innerHTML = '<button class="retry-btn" onclick="resetTest()">Försök igen</button>';
+        if (firstWrong) {
+          setTimeout(() => firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+      }
+
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetTest() {
+      answered = false;
+      document.getElementById('check-btn').disabled = false;
+      document.getElementById('result-box').style.display = 'none';
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const questionEl = document.getElementById(key);
+        questionEl.classList.remove('correct', 'wrong');
+
+        const expEl = document.getElementById('exp' + i);
+        expEl.style.display = 'none';
+        expEl.innerHTML = '';
+
+        questionEl.querySelectorAll('input[type="radio"]').forEach(r => {
+          r.checked = false;
+          r.disabled = false;
+        });
+
+        questionEl.querySelectorAll('.options label').forEach(l => {
+          l.classList.remove('selected-correct', 'selected-wrong', 'correct-answer');
+        });
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+  </script>
+</body>
+</html>

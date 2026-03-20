@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test: Modul 8 – Lagar och etik</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       SISTA MODULEN — CSS bygger på allt från modul 1–7
+       NYA CSS-koncept i den här filen (matchar modul 8):
+         • CSS counters för automatisk numrering av frågor
+         • @media print — sidan kan skrivas ut snyggt
+         • CSS custom properties (från modul 7)
+       ═══════════════════════════════════════════════════════════ */
+
+    :root {
+      --färg-bakgrund:      #1a1a2e;
+      --färg-yta:           #16213e;
+      --färg-yta-djup:      #0d1117;
+      --färg-kant:          rgba(255, 255, 255, 0.08);
+      --färg-text:          #e0e0e0;
+      --färg-text-dämpad:   #a0a0b8;
+      --färg-accent-röd:    #e94560;
+      --färg-accent-blå:    #0db5e6;
+      --färg-accent-grön:   #2ecc71;
+      --färg-accent-lila:   #9b59b6;
+
+      --typsnitt-text:      'Segoe UI', system-ui, sans-serif;
+      --typsnitt-kod:       'Consolas', 'Courier New', monospace;
+
+      --space-s:   8px;
+      --space-m:   16px;
+      --space-l:   24px;
+      --space-xl:  40px;
+      --radie:     10px;
+      --radie-liten: 6px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--typsnitt-text);
+      background-color: var(--färg-bakgrund);
+      color: var(--färg-text);
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-m) 60px;
+    }
+
+    a {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--färg-accent-blå);
+      outline-offset: 3px;
+      border-radius: var(--radie-liten);
+    }
+
+    /* Navigation */
+    nav.kurs-nav {
+      display: flex;
+      gap: var(--space-m);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-xl);
+    }
+
+    nav.kurs-nav a {
+      color: var(--färg-accent-blå);
+      text-decoration: none;
+      font-size: 0.9em;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      padding: var(--space-s) var(--space-m);
+      border-radius: var(--radie-liten);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    nav.kurs-nav a:hover {
+      background-color: rgba(13, 181, 230, 0.1);
+      border-color: rgba(13, 181, 230, 0.6);
+    }
+
+    /* Header */
+    header.test-header {
+      background: linear-gradient(135deg, var(--färg-yta) 0%, var(--färg-bakgrund) 100%);
+      border: 1px solid rgba(155, 89, 182, 0.3);
+      border-radius: var(--radie);
+      padding: var(--space-xl) var(--space-xl);
+      margin-bottom: var(--space-xl);
+    }
+
+    header.test-header .modul-etikett {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--färg-accent-lila);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-s);
+    }
+
+    header.test-header h1 {
+      font-size: 1.8em;
+      color: var(--färg-text);
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    header.test-header p {
+      color: var(--färg-text-dämpad);
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    /* ── CSS COUNTER — nytt i modul 8! ──
+       Frågorna numreras automatiskt utan att vi behöver skriva
+       siffror i HTML. counter-reset startar räknaren,
+       counter-increment ökar den, counter() visar värdet. */
+
+    #quiz-form {
+      counter-reset: fraga-rakna;
+    }
+
+    .fraga {
+      background-color: var(--färg-yta);
+      border: 1px solid var(--färg-kant);
+      border-radius: var(--radie);
+      padding: var(--space-l) 28px;
+      margin-bottom: var(--space-m);
+      transition: border-color 0.3s, background-color 0.3s;
+      /* Öka CSS-räknaren för varje .fraga-element */
+      counter-increment: fraga-rakna;
+    }
+
+    .fraga.ratt {
+      border-color: var(--färg-accent-grön);
+      background-color: rgba(46, 204, 113, 0.06);
+    }
+
+    .fraga.fel {
+      border-color: var(--färg-accent-röd);
+      background-color: rgba(233, 69, 96, 0.06);
+    }
+
+    /* .fraga-nummer använder counter() för att visa räknaren */
+    .fraga-nummer {
+      font-size: 0.75em;
+      font-weight: 600;
+      color: var(--färg-accent-lila);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-s);
+    }
+
+    /* ::before-pseudoelement visar frågenumret via CSS counter */
+    .fraga-nummer::before {
+      content: "Fråga " counter(fraga-rakna) " av 8 — ";
+    }
+
+    .fraga h2 {
+      font-size: 1.05em;
+      font-weight: 600;
+      color: var(--färg-text);
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+
+    .fraga code {
+      font-family: var(--typsnitt-kod);
+      background-color: rgba(0, 0, 0, 0.35);
+      color: var(--färg-accent-blå);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    /* Svarsalternativ */
+    .alternativ-lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+
+    .alternativ-lista li label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px var(--space-m);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    .alternativ-lista li label:hover {
+      background-color: rgba(155, 89, 182, 0.06);
+      border-color: rgba(155, 89, 182, 0.3);
+    }
+
+    .alternativ-lista input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      accent-color: var(--färg-accent-lila);
+      cursor: pointer;
+    }
+
+    .alternativ-lista li.markera-ratt label {
+      background-color: rgba(46, 204, 113, 0.12);
+      border-color: var(--färg-accent-grön);
+      color: var(--färg-accent-grön);
+      cursor: default;
+    }
+
+    .alternativ-lista li.markera-fel label {
+      background-color: rgba(233, 69, 96, 0.12);
+      border-color: var(--färg-accent-röd);
+      color: var(--färg-accent-röd);
+      cursor: default;
+    }
+
+    /* Förklaring */
+    .forklaring {
+      display: none;
+      margin-top: var(--space-m);
+      padding: 12px var(--space-m);
+      border-radius: var(--radie-liten);
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+
+    .forklaring.visa { display: block; }
+
+    .forklaring.ratt-forklaring {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 3px solid var(--färg-accent-grön);
+      color: #a0e8b8;
+    }
+
+    .forklaring.fel-forklaring {
+      background-color: rgba(233, 69, 96, 0.1);
+      border-left: 3px solid var(--färg-accent-röd);
+      color: #f0a0b0;
+    }
+
+    /* Knappar */
+    .rattnings-sektion {
+      text-align: center;
+      margin-top: var(--space-xl);
+    }
+
+    .knapp-ratta {
+      background-color: var(--färg-accent-röd);
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, transform 0.15s;
+      font-family: var(--typsnitt-text);
+    }
+
+    .knapp-ratta:hover { background-color: #c73652; }
+    .knapp-ratta:active { transform: scale(0.97); }
+
+    /* Resultat */
+    .resultat {
+      display: none;
+      margin-top: var(--space-xl);
+      padding: var(--space-xl);
+      border-radius: var(--radie);
+      text-align: center;
+    }
+
+    .resultat.godkant {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.04));
+      border: 2px solid var(--färg-accent-grön);
+    }
+
+    .resultat.underkant {
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.12), rgba(233, 69, 96, 0.04));
+      border: 2px solid var(--färg-accent-röd);
+    }
+
+    .resultat h2 {
+      font-size: 1.6em;
+      margin: 0 0 10px;
+    }
+
+    .resultat.godkant h2 { color: var(--färg-accent-grön); }
+    .resultat.underkant h2 { color: var(--färg-accent-röd); }
+
+    .resultat .poang {
+      font-size: 2.8em;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .resultat.godkant .poang { color: var(--färg-accent-grön); }
+    .resultat.underkant .poang { color: var(--färg-accent-röd); }
+
+    .resultat p {
+      color: var(--färg-text-dämpad);
+      margin: var(--space-s) 0;
+    }
+
+    .knapp-forsok {
+      display: inline-block;
+      margin-top: var(--space-m);
+      background-color: transparent;
+      color: var(--färg-accent-röd);
+      border: 2px solid var(--färg-accent-röd);
+      padding: 12px 28px;
+      font-size: 0.95em;
+      font-weight: 600;
+      border-radius: var(--radie-liten);
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: var(--typsnitt-text);
+    }
+
+    .knapp-forsok:hover {
+      background-color: rgba(233, 69, 96, 0.1);
+    }
+
+    /* Firande — special för sista testet */
+    .firande {
+      font-size: 1.1em;
+      color: var(--färg-text);
+      margin: var(--space-m) 0;
+      padding: var(--space-m);
+      background-color: rgba(155, 89, 182, 0.12);
+      border: 1px solid rgba(155, 89, 182, 0.4);
+      border-radius: var(--radie-liten);
+    }
+
+    .kursöversikt-lank {
+      display: inline-block;
+      margin-top: var(--space-m);
+      background: linear-gradient(135deg, var(--färg-accent-lila), var(--färg-accent-blå));
+      color: #fff;
+      padding: 16px 36px;
+      font-size: 1.05em;
+      font-weight: 700;
+      border-radius: var(--radie-liten);
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .kursöversikt-lank:hover {
+      opacity: 0.9;
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    /* ── @media print — nytt i modul 8! ──
+       Styla sidan för utskrift. Testas med Ctrl+P / Cmd+P.
+       Döljer navigation, knappen och färgade bakgrunder. */
+    @media print {
+      body {
+        background-color: #fff;
+        color: #000;
+      }
+
+      nav.kurs-nav,
+      .rattnings-sektion,
+      .resultat,
+      .knapp-ratta,
+      .knapp-forsok {
+        display: none !important;
+      }
+
+      header.test-header {
+        background: none;
+        border: 1px solid #ccc;
+        color: #000;
+      }
+
+      header.test-header h1,
+      header.test-header .modul-etikett,
+      header.test-header p {
+        color: #000;
+      }
+
+      .fraga {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .fraga h2 {
+        color: #000;
+      }
+
+      .fraga-nummer {
+        color: #333;
+      }
+
+      .alternativ-lista li label {
+        border-color: #ccc;
+        color: #000;
+      }
+
+      /* Visa sidans URL vid utskrift */
+      @page {
+        margin: 2cm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav class="kurs-nav" aria-label="Navigering">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-8-lagar-och-etik.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <header class="test-header">
+      <div class="modul-etikett">Modul 8 — Sista testet</div>
+      <h1>Lagar och etik</h1>
+      <p>Svara på alla frågor och klicka sedan "Rätta testet". Du behöver 100&nbsp;% rätt för att bli godkänd. Det här är kursens sista test!</p>
+    </header>
+
+    <main id="huvud-innehall">
+      <form id="quiz-form" novalidate>
+
+        <!-- Fråga 1 — CSS counter räknar automatiskt från 1 -->
+        <div class="fraga" id="fraga-1">
+          <div class="fraga-nummer">Upphovsrätt</div>
+          <h2>Hur fungerar <strong>upphovsrätt</strong> i Sverige för en webbplats eller ett konstverk du skapar?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f1" value="a"> <span>Du måste registrera verket hos Patent- och registreringsverket (PRV) för att ha upphovsrätt.</span></label></li>
+            <li><label><input type="radio" name="f1" value="b"> <span>Upphovsrätten uppstår automatiskt när du skapar något originellt — ingen registrering krävs.</span></label></li>
+            <li><label><input type="radio" name="f1" value="c"> <span>Upphovsrätten gäller bara i 5 år och måste sedan förnyas.</span></label></li>
+            <li><label><input type="radio" name="f1" value="d"> <span>Allt publicerat på internet är automatiskt fritt att använda.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-1">
+            I Sverige (och de flesta länder) uppstår upphovsrätten <em>automatiskt</em> när du skapar ett originellt verk — text, bilder, kod, musik, design. Ingen registrering behövs. Upphovsrätten gäller i 70 år efter upphovsmannens död för litterära och konstnärliga verk. För vanliga fotografier (utan tillräcklig originalitet) gäller en kortare skyddstid: 50 år från det att bilden togs. Det är <strong>olagligt</strong> att använda andras verk utan tillstånd, även om de ligger fritt tillgängliga på internet.
+          </div>
+        </div>
+
+        <!-- Fråga 2 -->
+        <div class="fraga" id="fraga-2">
+          <div class="fraga-nummer">Creative Commons</div>
+          <h2>En bild är licensierad som <strong>CC BY 4.0</strong>. Vad innebär det?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f2" value="a"> <span>Bilden är helt fri att använda utan krav — som public domain.</span></label></li>
+            <li><label><input type="radio" name="f2" value="b"> <span>Du får bara se bilden, inte ladda ner den.</span></label></li>
+            <li><label><input type="radio" name="f2" value="c"> <span>Du får använda, dela och ändra bilden fritt — men du <em>måste</em> ange vem som skapat den (attribution).</span></label></li>
+            <li><label><input type="radio" name="f2" value="d"> <span>Du får bara använda bilden på icke-kommersiella webbplatser.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-2">
+            <strong>CC BY</strong> = Creative Commons Attribution. Den enda skyldigheten är att ange upphovsmannen (BY = "by [person]"). Du får använda bilden kommersiellt, modifiera den och sprida den vidare. Andra CC-licenser lägger till begränsningar: <code>NC</code> = ej kommersiellt, <code>ND</code> = inga derivat, <code>SA</code> = dela lika.
+          </div>
+        </div>
+
+        <!-- Fråga 3 -->
+        <div class="fraga" id="fraga-3">
+          <div class="fraga-nummer">Creative Commons Zero</div>
+          <h2>Vad innebär licensen <strong>CC0</strong> (Creative Commons Zero)?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f3" value="a"> <span>Bilden kostar noll kronor men har fortfarande upphovsrätt.</span></label></li>
+            <li><label><input type="radio" name="f3" value="b"> <span>Upphovsmannen avsäger sig alla rättigheter — verket är i praktiken public domain och får användas fritt utan attribution.</span></label></li>
+            <li><label><input type="radio" name="f3" value="c"> <span>Verket är gratis att ladda ner men inte att använda kommersiellt.</span></label></li>
+            <li><label><input type="radio" name="f3" value="d"> <span>Licensen gäller bara i noll år — direkt efter publicering är det upphovsrättsskyddat.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-3">
+            CC0 är den mest fria Creative Commons-licensen. Upphovsmannen avsäger sig alla upphovsrättsliga och närstående rättigheter. Verket kan användas, kopieras, modifieras och distribueras för vilket syfte som helst — inklusive kommersiellt — utan attribution. Pixabay använde tidigare CC0 men har numera en egen Pixabay-licens som liknar CC0. Observera att Unsplash sedan 2017 använder en egen Unsplash-licens, som liknar CC0 men inte är identisk med den.
+          </div>
+        </div>
+
+        <!-- Fråga 4 -->
+        <div class="fraga" id="fraga-4">
+          <div class="fraga-nummer">GDPR</div>
+          <h2>Vad är <strong>GDPR</strong> och vem gäller det för?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f4" value="a"> <span>En teknisk standard för att bygga säkra webbplatser, som bara gäller banker och myndigheter.</span></label></li>
+            <li><label><input type="radio" name="f4" value="b"> <span>EU:s dataskyddsförordning (General Data Protection Regulation) som reglerar hur personuppgifter får samlas in och behandlas — gäller alla som behandlar uppgifter om personer som befinner sig inom EU.</span></label></li>
+            <li><label><input type="radio" name="f4" value="c"> <span>En frivillig uppförandekod för webbföretag i Sverige.</span></label></li>
+            <li><label><input type="radio" name="f4" value="d"> <span>En lag om upphovsrätt för digitalt innehåll.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-4">
+            GDPR (Dataskyddsförordningen) trädde i kraft 2018 och gäller i hela EU. Den reglerar hur organisationer och företag får samla in, lagra och använda personuppgifter. Brott mot GDPR kan leda till böter på upp till 4 % av ett företags globala omsättning eller 20 miljoner euro. Den gäller för alla som behandlar uppgifter om personer som befinner sig inom EU — oavsett var företaget befinner sig i världen.
+          </div>
+        </div>
+
+        <!-- Fråga 5 -->
+        <div class="fraga" id="fraga-5">
+          <div class="fraga-nummer">Personuppgifter</div>
+          <h2>Vilka av följande räknas som <strong>personuppgifter</strong> enligt GDPR?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f5" value="a"> <span>Bara namn och personnummer.</span></label></li>
+            <li><label><input type="radio" name="f5" value="b"> <span>Namn, e-postadress, IP-adress, fotografier och platsdata — i princip allt som kan kopplas till en levande individ.</span></label></li>
+            <li><label><input type="radio" name="f5" value="c"> <span>Bara känsliga uppgifter som sjukdomshistoria och politisk åsikt.</span></label></li>
+            <li><label><input type="radio" name="f5" value="d"> <span>Uppgifter är personuppgifter bara om de lagras i en databas.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-5">
+            GDPR definierar personuppgifter brett: all information som direkt eller indirekt kan identifiera en levande person. Det inkluderar namn, adress, e-post, telefonnummer, IP-adress, cookieidentifierare, fotografier, GPS-koordinater och mycket mer. Anonymiserade uppgifter (som inte ens indirekt kan kopplas till en person) faller utanför GDPR.
+          </div>
+        </div>
+
+        <!-- Fråga 6 -->
+        <div class="fraga" id="fraga-6">
+          <div class="fraga-nummer">Cookies och samtycke</div>
+          <h2>Varför visas <strong>cookie-banners</strong> på de flesta webbplatser?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f6" value="a"> <span>Det är en frivillig marknadsföringsgrej för att verka seriös.</span></label></li>
+            <li><label><input type="radio" name="f6" value="b"> <span>EU-lagstiftningen (e-Privacy-direktivet och GDPR) kräver att användaren aktivt samtycker till icke-nödvändiga cookies (t.ex. spårnings- och analyskookies) innan de sätts.</span></label></li>
+            <li><label><input type="radio" name="f6" value="c"> <span>Alla cookies är olagliga utan samtycke, inklusive cookies som håller dig inloggad.</span></label></li>
+            <li><label><input type="radio" name="f6" value="d"> <span>Webbläsare kräver det av tekniska skäl.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-6">
+            Cookies som är nödvändiga för sidans funktion (t.ex. inloggningssession, varukorg) behöver inget samtycke. Men spårningscookies, annonscookies och analytiska cookies kräver frivilligt, informerat och aktivt samtycke <em>innan</em> de sätts. "Aktivt" innebär att förvald ikryssning inte räknas — användaren måste själv kryssa i eller klicka "Acceptera".
+          </div>
+        </div>
+
+        <!-- Fråga 7 -->
+        <div class="fraga" id="fraga-7">
+          <div class="fraga-nummer">Mörka mönster</div>
+          <h2>Vad är ett <strong>dark pattern</strong> (mörkt mönster) inom webbdesign?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f7" value="a"> <span>En webbplats med mörkt färgschema (dark mode).</span></label></li>
+            <li><label><input type="radio" name="f7" value="b"> <span>En designteknik som medvetet manipulerar eller lurar användaren att göra något de inte avsåg — t.ex. prenumerera, dela data eller svårligen avboka.</span></label></li>
+            <li><label><input type="radio" name="f7" value="c"> <span>CSS-kod som gör webbplatsen svår att läsa.</span></label></li>
+            <li><label><input type="radio" name="f7" value="d"> <span>En säkerhetssårbarhet i JavaScript.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-7">
+            Dark patterns är oetiska (och ofta olagliga enligt GDPR) designval som lurar användare. Exempel: förvalt ikryssad nyhetsbrev-prenumeration, "roach motel" (lätt att gå med, svårt att lämna), bekräftationsbias ("Ja, spara mina data" vs. "Nej, jag vill inte ha erbjudanden"), dold avbokningsknapp, och förvirrande dubbelnegationer ("Avmarkera för att inte avanmäla dig").
+          </div>
+        </div>
+
+        <!-- Fråga 8 -->
+        <div class="fraga" id="fraga-8">
+          <div class="fraga-nummer">Fair use i Sverige</div>
+          <h2>Kan man använda andras upphovsrättsskyddade material i Sverige med hänvisning till "fair use"?</h2>
+          <ul class="alternativ-lista">
+            <li><label><input type="radio" name="f8" value="a"> <span>Ja, fair use är en etablerad princip i svensk upphovsrättslagstiftning.</span></label></li>
+            <li><label><input type="radio" name="f8" value="b"> <span>Ja, men bara för material från USA.</span></label></li>
+            <li><label><input type="radio" name="f8" value="c"> <span>Nej — "fair use" finns inte i svensk lag. I Sverige finns mer begränsade undantag som citaträtten och undervisningssyftet, men inget brett fair use-undantag.</span></label></li>
+            <li><label><input type="radio" name="f8" value="d"> <span>Ja, all icke-kommersiell användning räknas som fair use i Sverige.</span></label></li>
+          </ul>
+          <div class="forklaring" id="fork-8">
+            "Fair use" är en amerikansk juridisk princip och existerar inte i Sverige eller EU. Upphovsrättslagen (URL) i Sverige har specifika, mer begränsade undantag: <strong>citaträtten</strong> (korta citat med källhänvisning), <strong>undervisning</strong> (viss kopiering för klassrumsbruk) och <strong>parodi</strong>. Utanför dessa undantag krävs alltid tillstånd från upphovsmannen.
+          </div>
+        </div>
+
+        <div class="rattnings-sektion">
+          <button type="button" class="knapp-ratta" id="ratta-knapp">Rätta testet</button>
+        </div>
+
+      </form>
+
+      <div class="resultat" id="resultat-ruta" aria-live="polite">
+        <h2 id="resultat-rubrik"></h2>
+        <div class="poang" id="resultat-poang"></div>
+        <p id="resultat-text"></p>
+        <div id="resultat-firande"></div>
+        <div id="resultat-knappar"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Rätta svar
+    const rattaSvar = {
+      f1: 'b',
+      f2: 'c',
+      f3: 'b',
+      f4: 'b',
+      f5: 'b',
+      f6: 'b',
+      f7: 'b',
+      f8: 'c'
+    };
+
+    const antalFragor = Object.keys(rattaSvar).length;
+
+    document.getElementById('ratta-knapp').addEventListener('click', function () {
+      let antalRatt = 0;
+      let forstaFel = null;
+
+      // Inaktivera alla radioknappar
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+        radio.disabled = true;
+      });
+
+      // Gå igenom varje fråga
+      for (let i = 1; i <= antalFragor; i++) {
+        const fragaDiv = document.getElementById('fraga-' + i);
+        const fragaKey = 'f' + i;
+        const valtSvar = document.querySelector('input[name="' + fragaKey + '"]:checked');
+        const forklaringDiv = document.getElementById('fork-' + i);
+
+        fragaDiv.classList.remove('ratt', 'fel');
+        fragaDiv.querySelectorAll('li').forEach(function (li) {
+          li.classList.remove('markera-ratt', 'markera-fel');
+        });
+
+        const rattSvar = rattaSvar[fragaKey];
+
+        const rattInput = fragaDiv.querySelector('input[value="' + rattSvar + '"]');
+        if (rattInput) {
+          rattInput.closest('li').classList.add('markera-ratt');
+        }
+
+        if (valtSvar && valtSvar.value === rattSvar) {
+          fragaDiv.classList.add('ratt');
+          forklaringDiv.className = 'forklaring ratt-forklaring visa';
+          antalRatt++;
+        } else {
+          fragaDiv.classList.add('fel');
+          forklaringDiv.className = 'forklaring fel-forklaring visa';
+
+          if (valtSvar) {
+            valtSvar.closest('li').classList.add('markera-fel');
+          }
+
+          if (!forstaFel) {
+            forstaFel = fragaDiv;
+          }
+        }
+      }
+
+      this.style.display = 'none';
+
+      const resultatRuta = document.getElementById('resultat-ruta');
+      const resultatRubrik = document.getElementById('resultat-rubrik');
+      const resultatPoang = document.getElementById('resultat-poang');
+      const resultatText = document.getElementById('resultat-text');
+      const resultatFirande = document.getElementById('resultat-firande');
+      const resultatKnappar = document.getElementById('resultat-knappar');
+
+      resultatPoang.textContent = antalRatt + ' av ' + antalFragor + ' rätt';
+
+      if (antalRatt === antalFragor) {
+        // Spara godkänt i localStorage
+        localStorage.setItem('test-modul-8-godkand', 'true');
+
+        resultatRuta.className = 'resultat godkant';
+        resultatRubrik.textContent = 'Perfekt! Du är godkänd!';
+        resultatText.textContent = 'Du kan lagar och etik inom webbpublicering. Ditt resultat är sparat.';
+
+        // Kontrollera om alla moduler är godkända
+        const allaGodkanda =
+          localStorage.getItem('test-modul-1-godkand') === 'true' &&
+          localStorage.getItem('test-modul-2-godkand') === 'true' &&
+          localStorage.getItem('test-modul-3-godkand') === 'true' &&
+          localStorage.getItem('test-modul-4-godkand') === 'true' &&
+          localStorage.getItem('test-modul-5-godkand') === 'true' &&
+          localStorage.getItem('test-modul-6-godkand') === 'true' &&
+          localStorage.getItem('test-modul-7-godkand') === 'true' &&
+          localStorage.getItem('test-modul-8-godkand') === 'true';
+
+        if (allaGodkanda) {
+          // Specialfirande om hela kursen är klar
+          resultatFirande.innerHTML =
+            '<div class="firande">' +
+            '<strong>Du har klarat hela kursen!</strong><br>' +
+            'Du har godkänts på samtliga åtta modulers tester. ' +
+            'Du har gått igenom HTML, CSS, responsiv design, media och typsnitt, ' +
+            'tillgänglighet, JavaScript, projektplanering och nu lagar och etik. ' +
+            'Det är en gedigen grund i modern webbutveckling.' +
+            '</div>';
+        } else {
+          resultatFirande.innerHTML =
+            '<div class="firande">' +
+            'Det var sista testet! Bra jobbat med modul 8. ' +
+            'Kontrollera kursöversikten för att se vilka moduler du har klarat.' +
+            '</div>';
+        }
+
+        resultatKnappar.innerHTML =
+          '<a href="index.html" class="kursöversikt-lank">Tillbaka till kursöversikten</a>';
+
+      } else {
+        resultatRuta.className = 'resultat underkant';
+        resultatRubrik.textContent = 'Inte riktigt än';
+        resultatText.textContent = 'Du behöver 100 % för att bli godkänd. Läs förklaringarna noggrant och prova igen.';
+        resultatFirande.innerHTML = '';
+        resultatKnappar.innerHTML = '<button class="knapp-forsok" onclick="location.reload()">Försök igen ↺</button>';
+
+        if (forstaFel) {
+          setTimeout(function () {
+            forstaFel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      }
+
+      resultatRuta.style.display = 'block';
+      resultatRuta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+</body>
+</html>

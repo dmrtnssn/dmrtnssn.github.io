@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 2: CSS — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Modul 1 slutade med: font-family, margin, background-color, ║
+    ║  color, padding, font-size, font-weight, border,             ║
+    ║  border-radius, text-decoration, :hover, max-width,          ║
+    ║  border-left accenter, outline/:focus.                       ║
+    ║                                                              ║
+    ║  Den här filen BÖRJAR där modul 1 slutade och bygger vidare  ║
+    ║  progressivt. Varje lektion introducerar de CSS-egenskaper   ║
+    ║  som lektionen handlar om.                                   ║
+    ║                                                              ║
+    ║  Tips: Högerklicka → Inspektera för att se vilken CSS        ║
+    ║  som gäller för varje del!                                   ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — Allt vi hade i slutet av Modul 1.
+       Det här är startpunkten: mörkt tema, sans-serif,
+       boxmodellen, länkstyling, bilder, fokus.
+       ═══════════════════════════════════════════════════════════ */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      padding: 30px;
+      line-height: 1.6;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      font-weight: 700;
+    }
+
+    h3 {
+      color: #e94560;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus {
+      outline: 3px solid #e94560;
+      outline-offset: 2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 12px 0;
+    }
+
+    .kodexempel {
+      background-color: #12121a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      color: #e0e0e0;
+    }
+
+    .uppdrag {
+      border-left: 4px solid #e94560;
+      padding: 16px 20px;
+      margin: 20px 0;
+      background-color: #16213e;
+    }
+
+    .info-ruta {
+      background-color: #0d1b2a;
+      border-left: 4px solid #0db5e6;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-ruta strong {
+      color: #0db5e6;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d1b2a;
+      color: #e94560;
+    }
+
+    .separator {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 40px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CSS-spaning-rutor — samma stil som Modul 1
+       ═══════════════════════════════════════════════════════════ */
+
+    .css-spaning {
+      background-color: #0a0a1a;
+      color: #ccc;
+      border: 2px dashed #0db5e6;
+      border-color: #0db5e6;
+      padding: 12px 16px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .css-spaning strong {
+      color: #e94560;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 1 — Lektion 1: Selektorer i aktion
+       Vi använder class- och type-selektorer synligt.
+       Egenskaper: inga NYA egenskaper, men vi demonstrerar
+       att SELEKTORER styr vilka element som påverkas.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Type selector — alla <p> i lektion 1+ får extra radavstånd */
+    .lektion-1 p,
+    .lektion-2 p,
+    .lektion-3 p,
+    .lektion-4 p {
+      margin-bottom: 12px;
+    }
+
+    /* Class selector demo — .highlight-selektor markerar nyckelbegrepp */
+    .highlight-selektor {
+      border-bottom: 2px solid #e94560;
+      padding-bottom: 1px;
+    }
+
+    /* ID selector demo */
+    #css-regel-demo {
+      border-left: 4px solid #e94560;
+      padding-left: 16px;
+      margin: 16px 0;
+    }
+
+    /* Group selector — stilar som delas */
+    .lektion-1 h2,
+    .lektion-1 h3 {
+      letter-spacing: 0.5px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 2 — Lektion 2: Färger och typsnitt
+       Nya CSS-egenskaper: rgba(), font-style, line-height,
+       olika font-stacks
+       ═══════════════════════════════════════════════════════════ */
+
+    .lektion-2 .rgba-demo {
+      background-color: rgba(233, 69, 96, 0.15);
+      border: 1px solid rgba(233, 69, 96, 0.4);
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 6px;
+    }
+
+    .lektion-2 .rgba-demo-blue {
+      background-color: rgba(13, 181, 230, 0.12);
+      border: 1px solid rgba(13, 181, 230, 0.35);
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 6px;
+    }
+
+    .lektion-2 .font-serif-demo {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      line-height: 1.8;
+    }
+
+    .lektion-2 .font-mono-demo {
+      font-family: 'Consolas', 'Courier New', monospace;
+      line-height: 1.5;
+    }
+
+    .lektion-2 .font-sans-demo {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    .lektion-2,
+    .lektion-3,
+    .lektion-4 {
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 3 — Lektion 3: Boxmodellen och layout
+       Nya CSS-egenskaper: box-sizing: border-box,
+       max-width + margin: 0 auto för centrering,
+       display: block/inline/inline-block, width, height
+       ═══════════════════════════════════════════════════════════ */
+
+    .lektion-3,
+    .lektion-4 {
+      box-sizing: border-box;
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Se till att alla barn ärver box-sizing */
+    .lektion-3 *,
+    .lektion-4 * {
+      box-sizing: border-box;
+    }
+
+    .box-demo {
+      border: 2px solid #e94560;
+      padding: 12px;
+      margin: 8px 0;
+    }
+
+    .box-demo-content {
+      background-color: #2a2a4a;
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed #0db5e6;
+    }
+
+    .display-demo-block {
+      background-color: #16213e;
+      border: 1px solid #0db5e6;
+      padding: 10px;
+      margin: 6px 0;
+      width: 100%;
+    }
+
+    .display-demo-inline {
+      background-color: #16213e;
+      border: 1px solid #0db5e6;
+      padding: 4px 10px;
+    }
+
+    .display-demo-inline-block {
+      display: inline-block;
+      background-color: #16213e;
+      border: 1px solid #e94560;
+      padding: 10px 20px;
+      margin: 4px;
+      width: 150px;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 4 — Lektion 4: Allt ihop — polerad look
+       Använder alla ackumulerade tekniker.
+       ═══════════════════════════════════════════════════════════ */
+
+    .lektion-4 .steg-ruta {
+      background-color: rgba(13, 181, 230, 0.08);
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      border-radius: 6px;
+      padding: 20px;
+      margin: 16px 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .lektion-4 .steg-ruta h4 {
+      color: #0db5e6;
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .lektion-4 .sammanfattning-tabell th {
+      background-color: rgba(233, 69, 96, 0.2);
+      color: #e94560;
+      font-weight: 700;
+    }
+
+    .lektion-4 .sammanfattning-tabell td code {
+      color: #0db5e6;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SAMMANFATTNING — sista sektionen
+       ═══════════════════════════════════════════════════════════ */
+
+    .sammanfattning {
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+
+    .sammanfattning * {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="toppen">
+  <h1>Modul 2: CSS</h1>
+  <p>Nu klär vi på skelettet. I Modul 1 byggde du HTML — strukturen. Nu lär du dig CSS — språket som bestämmer hur allt <em>ser ut</em>.</p>
+  <p><em>Modul 2 av 8 — 4 lektioner</em></p>
+
+  <h2>Innehåll</h2>
+  <ol>
+    <li><a href="#lektion-1">Introduktion till CSS — syntax och selektorer</a></li>
+    <li><a href="#lektion-2">Färger, typsnitt, marginaler och padding</a></li>
+    <li><a href="#lektion-3">Boxmodellen och enkel layout</a></li>
+    <li><a href="#lektion-4">Praktiskt — Styla din HTML-sida</a></li>
+  </ol>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning:</strong> Den här presentationen <em>börjar</em> där Modul 1 slutade. All styling du ser här — mörk bakgrund, sans-serif-typsnitt, färgade rubriker, stilade länkar, kodrutor med ramar — det är CSS du redan har sett växa fram lektion för lektion. Nu ska du lära dig skriva det själv. Varje lektion nedan lägger till ny CSS som matchar det du lär dig. Håll utkik efter CSS-spaning-rutorna!
+  </div>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — INTRODUKTION TILL CSS
+     CSS-nivå: STEG 1 — Selektorer i aktion.
+     Vi demonstrerar type selectors, class selectors, id selectors
+     och group selectors synligt i stylingen.
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-1" class="lektion-1">
+  <h2>Lektion 1: Introduktion till CSS — syntax och selektorer</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 1:</strong> Den här sektionen använder <em>selektorer</em> på riktigt. Vi har en <strong>kombinerad selektor</strong> (<code>.lektion-1 p</code>) — en class selector kombinerad med en type selector (descendant selector) — som ger alla paragrafer extra mellanrum. En <strong>class selector</strong> (<code>.highlight-selektor</code>) som markerar nyckelord med en röd understrykning. En <strong>id selector</strong> (<code>#css-regel-demo</code>) som ger en unik ruta en röd vänsterkant. Och en <strong>group selector</strong> (<code>.lektion-1 h2, .lektion-1 h3</code>) som ger båda rubriknivåerna extra teckenavstånd. Allt det du lär dig i den här lektionen — i aktion!
+  </div>
+
+  <p><strong>CSS = Cascading Style Sheets.</strong> Det är språket som bestämmer hur HTML-element ser ut. Utan CSS ser alla webbsidor ut som tråkiga textdokument från 1995. Med CSS kan du göra vad som helst — färger, layout, animationer, allt.</p>
+
+  <p>Du har redan sett CSS i aktion genom hela Modul 1. Nu ska du lära dig <em>skriva</em> det.</p>
+
+  <h3>Tre sätt att lägga till CSS</h3>
+
+  <table>
+    <tr><th>Metod</th><th>Hur</th><th>När?</th></tr>
+    <tr>
+      <td><strong>Inline</strong></td>
+      <td><code>&lt;p style="color: red;"&gt;</code></td>
+      <td>Snabba tester. Använd <em>inte</em> i riktiga projekt.</td>
+    </tr>
+    <tr>
+      <td><strong>Intern (style-tagg)</strong></td>
+      <td><code>&lt;style&gt;</code> i <code>&lt;head&gt;</code></td>
+      <td>Enkla sidor, övningar. Den här presentationen använder det!</td>
+    </tr>
+    <tr>
+      <td><strong>Extern (.css-fil)</strong></td>
+      <td><code>&lt;link rel="stylesheet" href="style.css"&gt;</code></td>
+      <td>Alltid i riktiga projekt. Bästa sättet.</td>
+    </tr>
+  </table>
+
+  <div class="info-ruta">
+    <strong>Varför extern?</strong> Med en extern CSS-fil kan du styla flera HTML-sidor med samma fil. Ändra en rad CSS — och hela webbplatsen uppdateras. Den här presentationen använder en intern <code>&lt;style&gt;</code>-tagg (metod 2) för att allt ska vara i en fil, men i dina egna projekt ska du använda en extern <code>.css</code>-fil.
+  </div>
+
+  <h3>CSS-syntax — en regel i taget</h3>
+
+  <p>All CSS bygger på samma mönster:</p>
+
+  <div class="kodexempel" id="css-regel-demo">
+    <pre><code>selektor {
+  egenskap: värde;
+  egenskap: värde;
+}</code></pre>
+  </div>
+
+  <p>Exempel — gör alla paragrafer blåa med större text:</p>
+
+  <div class="kodexempel">
+    <pre><code>p {
+  color: blue;
+  font-size: 18px;
+}</code></pre>
+  </div>
+
+  <p><span class="highlight-selektor">Selektorn</span> bestämmer <em>vilka</em> element som påverkas. <span class="highlight-selektor">Egenskaperna</span> bestämmer <em>vad</em> som ändras. Glöm inte semikolon efter varje rad!</p>
+
+  <h3>Selektorer — vem ska stylas?</h3>
+
+  <table>
+    <tr><th>Typ</th><th>Syntax</th><th>Exempel</th><th>Vad den väljer</th></tr>
+    <tr>
+      <td><strong>Type</strong></td>
+      <td><code>taggnamn</code></td>
+      <td><code>p { ... }</code></td>
+      <td>Alla <code>&lt;p&gt;</code>-element på sidan.</td>
+    </tr>
+    <tr>
+      <td><strong>Class</strong></td>
+      <td><code>.klassnamn</code></td>
+      <td><code>.intro { ... }</code></td>
+      <td>Alla element med <code>class="intro"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>ID</strong></td>
+      <td><code>#idnamn</code></td>
+      <td><code>#header { ... }</code></td>
+      <td>Det ENE elementet med <code>id="header"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Grupp</strong></td>
+      <td><code>a, b</code></td>
+      <td><code>h1, h2 { ... }</code></td>
+      <td>Alla <code>&lt;h1&gt;</code> OCH alla <code>&lt;h2&gt;</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Universell</strong></td>
+      <td><code>*</code></td>
+      <td><code>* { ... }</code></td>
+      <td>ALLA element. Använd sparsamt.</td>
+    </tr>
+  </table>
+
+  <h3>Class vs ID — vad är skillnaden?</h3>
+
+  <p>Tänk så här: en <strong>class</strong> är som en t-shirt — flera personer kan ha samma. Ett <strong>id</strong> är som ett personnummer — bara EN person har det.</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;!-- Class: kan användas på flera element --&gt;
+&lt;p class="viktigt"&gt;Första viktiga texten.&lt;/p&gt;
+&lt;p class="viktigt"&gt;Andra viktiga texten.&lt;/p&gt;
+
+&lt;!-- ID: unikt — bara ETT element --&gt;
+&lt;h1 id="huvudrubrik"&gt;Välkommen!&lt;/h1&gt;
+
+&lt;!-- CSS --&gt;
+.viktigt {
+  color: red;
+  font-weight: bold;
+}
+
+#huvudrubrik {
+  font-size: 3em;
+  text-align: center;
+}</code></pre>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Selektorer</h3>
+    <ol>
+      <li>Skapa en ny HTML-fil med en intern <code>&lt;style&gt;</code>-tagg.</li>
+      <li>Lägg till tre paragrafer. Ge två av dem class <code>"highlight"</code> och en av dem id <code>"special"</code>.</li>
+      <li>Skriv CSS som gör: alla <code>&lt;p&gt;</code> mörkgrå, alla med class <code>highlight</code> gula, och den med id <code>special</code> röd och fet.</li>
+      <li>Lägg till en <code>h1</code> och en <code>h2</code> och skriv en group selector som ger båda samma typsnitt.</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Selektor-jakt</h3>
+    <ol>
+      <li>Öppna den här presentationen i webbläsaren.</li>
+      <li>Högerklicka → Inspektera på olika element.</li>
+      <li>Hitta minst en type selector, en class selector och en id selector i CSS:en. Skriv ner dem!</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — FÄRGER, TYPSNITT, MARGINALER OCH PADDING
+     CSS-nivå: STEG 2 — rgba(), font-stacks, font-style, line-height
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-2" class="lektion-2">
+  <h2>Lektion 2: Färger, typsnitt, marginaler och padding</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 2:</strong> Nu har vi lagt till <code>rgba()</code>-färger! Se rutorna nedan — de har halvgenomskinliga bakgrunder: <code>rgba(233, 69, 96, 0.15)</code> (röd, 15% synlig) och <code>rgba(13, 181, 230, 0.12)</code> (blå, 12% synlig). Du kan se den mörka bakgrunden skina igenom! Vi demonstrerar också tre olika <strong>font-stacks</strong> med serif, sans-serif och monospace. Dessutom har <code>line-height</code> ökats till <code>1.7</code> — texten andas lite mer.
+  </div>
+
+  <h3>Färger i CSS</h3>
+
+  <p>Det finns flera sätt att ange färger. Alla gör samma sak — de bestämmer en färg — men de skrivs olika.</p>
+
+  <table>
+    <tr><th>Format</th><th>Exempel</th><th>När?</th></tr>
+    <tr>
+      <td><strong>Namngivna</strong></td>
+      <td><code>color: red;</code></td>
+      <td>Snabba tester. Det finns ~140 färgnamn.</td>
+    </tr>
+    <tr>
+      <td><strong>Hex</strong></td>
+      <td><code>color: #ff0000;</code></td>
+      <td>Vanligast. 6 tecken: RR GG BB (hexadecimalt).</td>
+    </tr>
+    <tr>
+      <td><strong>RGB</strong></td>
+      <td><code>color: rgb(255, 0, 0);</code></td>
+      <td>Samma som hex men med decimaltal (0-255).</td>
+    </tr>
+    <tr>
+      <td><strong>RGBA</strong></td>
+      <td><code>color: rgba(255, 0, 0, 0.5);</code></td>
+      <td>Som RGB men med genomskinlighet! Sista värdet (alpha) = 0 (osynlig) till 1 (helt synlig).</td>
+    </tr>
+  </table>
+
+  <div class="rgba-demo">
+    <p><strong>Den här rutan har en rgba-bakgrund!</strong> <code>background-color: rgba(233, 69, 96, 0.15)</code> — röd färg med bara 15% synlighet. Bakgrunden skiner igenom. Snyggt, eller hur?</p>
+  </div>
+
+  <div class="rgba-demo-blue">
+    <p><strong>Den här är blå.</strong> <code>background-color: rgba(13, 181, 230, 0.12)</code>. Samma grej, annan färg. RGBA är perfekt för subtila bakgrunder som inte tar över.</p>
+  </div>
+
+  <h3>Typsnitt (font)</h3>
+
+  <p>Tre viktiga saker om typsnitt:</p>
+
+  <p><strong>1. Font-stacks — alltid ha en backup.</strong> Inte alla datorer har samma typsnitt installerat. Därför listar du flera alternativ:</p>
+
+  <div class="kodexempel">
+    <pre><code>/* Webbläsaren testar det första typsnittet.
+   Finns det inte → nästa i listan. Och så vidare. */
+
+font-family: 'Segoe UI', system-ui, sans-serif;
+font-family: Georgia, 'Times New Roman', serif;
+font-family: 'Consolas', 'Courier New', monospace;</code></pre>
+  </div>
+
+  <p class="font-serif-demo">Den här texten använder <strong>Georgia (serif)</strong> — med klackar på bokstäverna. Känns lite mer som en bok eller tidning. Vi har också lagt till <code>font-style: italic</code> och <code>line-height: 1.8</code>.</p>
+
+  <p class="font-mono-demo">Den här texten använder <strong>Consolas (monospace)</strong> — varje tecken är lika brett. Perfekt för kod, men konstigt för brödtext.</p>
+
+  <p class="font-sans-demo">Den här texten använder <strong>Segoe UI (sans-serif)</strong> — rent och modernt. Utan klackar. Vanligast på webben idag.</p>
+
+  <p><strong>2. Storlek — px, em och rem.</strong></p>
+
+  <table>
+    <tr><th>Enhet</th><th>Vad det betyder</th><th>Exempel</th></tr>
+    <tr>
+      <td><code>px</code></td>
+      <td>Pixlar. Fast storlek.</td>
+      <td><code>font-size: 16px;</code></td>
+    </tr>
+    <tr>
+      <td><code>em</code></td>
+      <td>Relativt till förälderns fontstorlek (för <code>font-size</code>) eller elementets egen fontstorlek (för <code>padding</code>, <code>margin</code> m.m.). 2em = dubbelt så stort.</td>
+      <td><code>font-size: 1.2em;</code></td>
+    </tr>
+    <tr>
+      <td><code>rem</code></td>
+      <td>Relativt till <code>&lt;html&gt;</code>-elementets storlek. Förutsägbart.</td>
+      <td><code>font-size: 1rem;</code></td>
+    </tr>
+  </table>
+
+  <p><strong>3. Andra font-egenskaper:</strong></p>
+
+  <div class="kodexempel">
+    <pre><code>p {
+  font-family: 'Segoe UI', sans-serif;  /* Typsnitt */
+  font-size: 16px;                       /* Storlek */
+  font-weight: bold;                     /* Tjocklek: normal, bold, 100-900 */
+  font-style: italic;                    /* Stil: normal, italic */
+  line-height: 1.6;                      /* Radavstånd — 1.6 = 160% av textstorleken */
+}</code></pre>
+  </div>
+
+  <h3>Margin vs padding — jacka-metaforen</h3>
+
+  <p>Det här är den viktigaste skillnaden att förstå:</p>
+
+  <div class="info-ruta">
+    <strong>Tänk dig att du har en jacka på dig.</strong><br>
+    <strong>Padding</strong> = kuddarna <em>inuti</em> jackan. Mer padding = mer luft mellan dig (innehållet) och jackans ytterkant (ramen).<br>
+    <strong>Margin</strong> = avståndet till <em>personen bredvid dig</em>. Mer margin = mer luft mellan din jacka och grannen.
+  </div>
+
+  <div class="kodexempel">
+    <pre><code>/* Padding — luft INUTI elementet */
+padding: 20px;              /* Samma på alla sidor */
+padding: 10px 20px;         /* 10px topp/botten, 20px vänster/höger */
+padding-top: 10px;          /* Bara toppen */
+
+/* Margin — avstånd UTANFÖR elementet */
+margin: 20px;               /* Samma på alla sidor */
+margin: 10px 20px;          /* 10px topp/botten, 20px vänster/höger */
+margin: 10px 20px 30px 40px; /* topp, höger, botten, vänster (medurs!) */
+margin-bottom: 30px;        /* Bara botten */</code></pre>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Färg och typsnitt</h3>
+    <ol>
+      <li>Skapa en HTML-fil med en intern <code>&lt;style&gt;</code>-tagg.</li>
+      <li>Sätt bakgrundsfärgen till valfri hex-färg och textfärgen till en annan.</li>
+      <li>Skapa tre stycken (<code>&lt;p&gt;</code>) med tre olika font-stacks (serif, sans-serif, monospace).</li>
+      <li>Ge ett element en <code>rgba()</code>-bakgrund med 50% genomskinlighet.</li>
+      <li>Testa skillnaden mellan <code>padding: 20px</code> och <code>margin: 20px</code> — inspektera med F12!</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Hex-utmaningen</h3>
+    <ol>
+      <li>Utan att googla — vad blir färgen <code>#000000</code>? Och <code>#ffffff</code>?</li>
+      <li>Kan du gissa vad <code>#ff0000</code>, <code>#00ff00</code> och <code>#0000ff</code> ger?</li>
+      <li>Testa dina gissningar i CSS!</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — BOXMODELLEN OCH ENKEL LAYOUT
+     CSS-nivå: STEG 3 — box-sizing: border-box, max-width med
+     margin: 0 auto, display-typer, width, height
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-3" class="lektion-3">
+  <h2>Lektion 3: Boxmodellen och enkel layout</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 3:</strong> Den här sektionen har fått <code>box-sizing: border-box</code> på alla element (via <code>.lektion-3 *</code>) och <code>max-width: 860px</code> med <code>margin-left: auto; margin-right: auto</code> — det centrerar hela innehållet! Märker du att texten inte längre sträcker sig hela vägen till kanterna? Jämför med lektion 1 och 2 ovan. Det är enklaste sättet att göra en sida mer läsbar.
+  </div>
+
+  <p><strong>Allt i CSS är en låda.</strong> Varje element — varje rubrik, varje paragraf, varje bild — är en rektangulär låda. Förstår du boxmodellen, förstår du CSS-layout.</p>
+
+  <h3>Boxmodellen — fyra lager</h3>
+
+  <p>Tänk dig en tavla i en ram:</p>
+
+  <div class="kodexempel">
+    <pre><code>┌────────────────────────── MARGIN (avstånd till grannen) ──┐
+│                                                           │
+│  ┌──────────────────── BORDER (ramen) ──────────────────┐ │
+│  │                                                      │ │
+│  │  ┌──────────── PADDING (luft innanför ramen) ──────┐ │ │
+│  │  │                                                 │ │ │
+│  │  │          ┌── CONTENT (själva tavlan) ──┐        │ │ │
+│  │  │          │                             │        │ │ │
+│  │  │          │    Din text, dina bilder     │        │ │ │
+│  │  │          │                             │        │ │ │
+│  │  │          └─────────────────────────────┘        │ │ │
+│  │  │                                                 │ │ │
+│  │  └─────────────────────────────────────────────────┘ │ │
+│  │                                                      │ │
+│  └──────────────────────────────────────────────────────┘ │
+│                                                           │
+└───────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+
+  <h3>box-sizing: border-box — din nya bästa kompis</h3>
+
+  <p>Utan <code>border-box</code> händer konstiga saker. Kolla:</p>
+
+  <div class="kodexempel">
+    <pre><code>/* UTAN border-box (standard) */
+div {
+  width: 300px;
+  padding: 20px;
+  border: 10px solid black;
+}
+/* Totalbredd = 300 + 20 + 20 + 10 + 10 = 360px!!! */
+
+/* MED border-box */
+div {
+  box-sizing: border-box;
+  width: 300px;
+  padding: 20px;
+  border: 10px solid black;
+}
+/* Totalbredd = 300px. Punkt. Padding och border ryms inuti. */</code></pre>
+  </div>
+
+  <p>Därför börjar nästan alla moderna projekt med den här regeln:</p>
+
+  <div class="kodexempel">
+    <pre><code>* {
+  box-sizing: border-box;
+}
+/* Stjärnan (*) = universell selektor = ALLA element */</code></pre>
+  </div>
+
+  <h3>display — hur element beter sig</h3>
+
+  <p>Varje HTML-element har ett <code>display</code>-värde som bestämmer hur det placeras:</p>
+
+  <table>
+    <tr><th>Värde</th><th>Beteende</th><th>Exempel-element</th></tr>
+    <tr>
+      <td><code>block</code></td>
+      <td>Tar hela bredden. Börjar på ny rad.</td>
+      <td><code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code></td>
+    </tr>
+    <tr>
+      <td><code>inline</code></td>
+      <td>Tar bara den plats det behöver. Flöder med texten. Kan INTE ha width/height.</td>
+      <td><code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code></td>
+    </tr>
+    <tr>
+      <td><code>inline-block</code></td>
+      <td>Flöder med texten MEN kan ha width/height. Bäst av båda världar.</td>
+      <td>Knappar, taggar, badges.</td>
+    </tr>
+  </table>
+
+  <p><strong>Se skillnaden:</strong></p>
+
+  <p><strong>Block</strong> — varje element tar hela raden:</p>
+  <div class="display-demo-block">Jag är ett block-element</div>
+  <div class="display-demo-block">Jag också — ny rad!</div>
+
+  <p><strong>Inline</strong> — flöder med texten: <span class="display-demo-inline">inline 1</span> <span class="display-demo-inline">inline 2</span> <span class="display-demo-inline">inline 3</span></p>
+
+  <p><strong>Inline-block</strong> — flöder med texten men kan ha storlek:</p>
+  <div>
+    <span class="display-demo-inline-block">Box A</span>
+    <span class="display-demo-inline-block">Box B</span>
+    <span class="display-demo-inline-block">Box C</span>
+  </div>
+
+  <h3>Centrera innehåll — det klassiska tricket</h3>
+
+  <div class="kodexempel">
+    <pre><code>.container {
+  max-width: 800px;       /* Innehållet blir aldrig bredare än 800px */
+  margin: 0 auto;         /* auto på vänster och höger = centrerat! */
+}
+
+/* "auto" säger åt webbläsaren: "fördela utrymmet jämnt"
+   Resultat: lika mycket marginal på båda sidor = centrerat. */</code></pre>
+  </div>
+
+  <div class="info-ruta">
+    <strong>Tips:</strong> Den här lektionens sektion använder just det tricket! <code>max-width: 860px</code> och <code>margin-left: auto; margin-right: auto</code>. Gör webbläsarfönstret smalare och bredare — se hur texten aldrig blir bredare än 860px men alltid förblir centrerad.
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Boxmodellen live</h3>
+    <ol>
+      <li>Skapa en HTML-fil med en <code>&lt;div&gt;</code> som har <code>width: 300px</code>, <code>padding: 20px</code> och <code>border: 5px solid red</code>.</li>
+      <li>Inspektera den med F12 och titta på "Box Model"-diagrammet — hur bred är den totalt?</li>
+      <li>Lägg till <code>box-sizing: border-box</code> — titta igen. Vad ändrades?</li>
+      <li>Centrera en <code>&lt;div&gt;</code> med <code>max-width: 600px</code> och <code>margin: 0 auto</code>.</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Display-experiment</h3>
+    <ol>
+      <li>Skapa tre <code>&lt;div&gt;</code>-element med bakgrundsfärg och text.</li>
+      <li>De är block som standard — de ligger under varandra.</li>
+      <li>Ändra till <code>display: inline-block</code> — vad händer?</li>
+      <li>Ge dem <code>width: 30%</code> — nu har du en enkel tre-kolumnslayout!</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 4 — PRAKTISKT: STYLA DIN HTML-SIDA
+     CSS-nivå: STEG 4 — Allt ihop. Extern CSS-fil.
+     Full polering med alla ackumulerade tekniker.
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="lektion-4" class="lektion-4">
+  <h2>Lektion 4: Praktiskt — Styla din HTML-sida</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 4:</strong> Den här sektionen använder <em>allt</em> vi lärt oss: <code>box-sizing: border-box</code>, centrerad layout med <code>max-width</code>, <code>rgba()</code>-bakgrunder på steg-rutorna, font-stacks, border-radius, padding, margin — hela paketet. Steg-rutorna nedan (<code>.steg-ruta</code>) har <code>rgba(13, 181, 230, 0.08)</code> som bakgrund och en subtil blå ram. Sammanfattningstabellen har <code>rgba()</code>-färg i rubrikraden. Det här är vad en "polerad" CSS-design ser ut som.
+  </div>
+
+  <p><strong>Nu kopplar du ihop allt.</strong> Du har en HTML-sida från Modul 1. Den har struktur, rubriker, listor, länkar, bilder. Men den ser fortfarande ut som ett raw-dokument. Dags att ge den stil.</p>
+
+  <h3>Steg 1: Skapa en extern CSS-fil</h3>
+
+  <div class="steg-ruta">
+    <h4>Koppla CSS till HTML</h4>
+    <p>Skapa en fil som heter <code>style.css</code> i samma mapp som din HTML-fil. Lägg sedan till den här raden i <code>&lt;head&gt;</code>:</p>
+    <div class="kodexempel">
+      <pre><code>&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Min sida&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;</code></pre>
+    </div>
+    <p>Det är allt. Nu kan du skriva CSS i <code>style.css</code> och den gäller för din HTML-sida.</p>
+  </div>
+
+  <h3>Steg 2: Börja med grunden</h3>
+
+  <div class="steg-ruta">
+    <h4>Reset och bas-styling</h4>
+    <p>Det första du gör i din CSS-fil — alltid:</p>
+    <div class="kodexempel">
+      <pre><code>/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Bas */
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+/* Centrera innehållet */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+}</code></pre>
+    </div>
+  </div>
+
+  <h3>Steg 3: Styla rubriker och text</h3>
+
+  <div class="steg-ruta">
+    <h4>Typografi</h4>
+    <div class="kodexempel">
+      <pre><code>h1 {
+  font-size: 2em;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 1.5em;
+  color: #16213e;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 16px;
+}</code></pre>
+    </div>
+  </div>
+
+  <h3>Steg 4: Styla länkar och listor</h3>
+
+  <div class="steg-ruta">
+    <h4>Interaktiva element</h4>
+    <div class="kodexempel">
+      <pre><code>a {
+  color: #0db5e6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 3px solid #e94560;
+  outline-offset: 2px;
+}
+
+ul, ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+li {
+  margin-bottom: 6px;
+}</code></pre>
+    </div>
+  </div>
+
+  <h3>Steg 5: Bilder och detaljer</h3>
+
+  <div class="steg-ruta">
+    <h4>Sista touchen</h4>
+    <div class="kodexempel">
+      <pre><code>img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px 0;
+  border-radius: 6px;
+}
+
+footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+  color: #666;
+  font-size: 0.9em;
+}</code></pre>
+    </div>
+  </div>
+
+  <h3>Checklista: Har du allt?</h3>
+
+  <table class="sammanfattning-tabell">
+    <tr><th>Vad?</th><th>CSS-egenskap</th><th>Klar?</th></tr>
+    <tr><td>Typsnitt valt</td><td><code>font-family</code></td><td></td></tr>
+    <tr><td>Bakgrundsfärg</td><td><code>background-color</code></td><td></td></tr>
+    <tr><td>Textfärg</td><td><code>color</code></td><td></td></tr>
+    <tr><td>Radavstånd</td><td><code>line-height</code></td><td></td></tr>
+    <tr><td>Rubrikstorlekar</td><td><code>font-size</code>, <code>font-weight</code></td><td></td></tr>
+    <tr><td>Luft runt innehåll</td><td><code>padding</code>, <code>margin</code></td><td></td></tr>
+    <tr><td>Centrerat innehåll</td><td><code>max-width</code> + <code>margin: 0 auto</code></td><td></td></tr>
+    <tr><td>Länkar stylade</td><td><code>text-decoration</code>, <code>:hover</code></td><td></td></tr>
+    <tr><td>Bilder responsiva</td><td><code>max-width: 100%</code></td><td></td></tr>
+    <tr><td>Fokus synlig</td><td><code>outline</code>, <code>:focus</code></td><td></td></tr>
+    <tr><td>box-sizing fixad</td><td><code>* { box-sizing: border-box }</code></td><td></td></tr>
+  </table>
+
+  <div class="uppdrag">
+    <h3>Projekt: Styla din Modul 1-sida</h3>
+    <p><strong>Dags att använda allt du lärt dig.</strong> Ta HTML-sidan du skapade i Modul 1 och ge den full CSS-styling med en extern <code>.css</code>-fil.</p>
+    <p><strong>Krav:</strong></p>
+    <ul>
+      <li>En extern <code>style.css</code>-fil kopplad med <code>&lt;link&gt;</code>.</li>
+      <li><code>* { box-sizing: border-box; }</code> som första regel.</li>
+      <li>Valt typsnitt med en font-stack (minst 3 alternativ).</li>
+      <li>Bakgrundsfärg och textfärg som har bra kontrast.</li>
+      <li>Rubrikerna har egen storlek och färg.</li>
+      <li>Padding och margin för luft och avstånd.</li>
+      <li>Centrerat innehåll med <code>max-width</code> och <code>margin: 0 auto</code>.</li>
+      <li>Länkar har färg, hover-effekt och synlig fokus.</li>
+      <li>Bilder skalas med <code>max-width: 100%</code>.</li>
+    </ul>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Eget färgtema</h3>
+    <ol>
+      <li>Gå till <a href="https://coolors.co/" target="_blank">coolors.co</a> och generera en färgpalett.</li>
+      <li>Använd minst 3 färger från paletten i din styling.</li>
+      <li>Använd <code>rgba()</code> för minst en halvgenomskinlig bakgrund.</li>
+      <li>Visa din sida för en kompis — fråga om den ser "professionell" ut.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CSS-SAMMANFATTNING
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="sammanfattning" class="sammanfattning">
+  <h2>CSS-sammanfattning: Alla egenskaper från Modul 2</h2>
+
+  <p>Här är alla CSS-egenskaper och koncept du har lärt dig i den här modulen, sorterade efter kategori.</p>
+
+  <h3>Selektorer</h3>
+  <table>
+    <tr><th>Selektor</th><th>Syntax</th><th>Vad den gör</th></tr>
+    <tr><td>Type selector</td><td><code>p { }</code></td><td>Väljer alla element av en typ.</td></tr>
+    <tr><td>Class selector</td><td><code>.namn { }</code></td><td>Väljer alla element med den classen.</td></tr>
+    <tr><td>ID selector</td><td><code>#namn { }</code></td><td>Väljer det unika elementet med det id:t.</td></tr>
+    <tr><td>Group selector</td><td><code>h1, h2 { }</code></td><td>Väljer flera selektorer med samma regler.</td></tr>
+    <tr><td>Universell selector</td><td><code>* { }</code></td><td>Väljer alla element.</td></tr>
+  </table>
+
+  <h3>Färger</h3>
+  <table>
+    <tr><th>Format</th><th>Exempel</th></tr>
+    <tr><td>Namngivna färger</td><td><code>color: red;</code></td></tr>
+    <tr><td>Hexadecimalt</td><td><code>color: #ff0000;</code></td></tr>
+    <tr><td>RGB</td><td><code>color: rgb(255, 0, 0);</code></td></tr>
+    <tr><td>RGBA (med genomskinlighet)</td><td><code>color: rgba(255, 0, 0, 0.5);</code></td></tr>
+  </table>
+
+  <h3>Typsnitt och text</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Exempel</th><th>Vad den gör</th></tr>
+    <tr><td><code>font-family</code></td><td><code>'Segoe UI', sans-serif</code></td><td>Väljer typsnitt med fallback-lista.</td></tr>
+    <tr><td><code>font-size</code></td><td><code>16px</code>, <code>1.2em</code>, <code>1rem</code></td><td>Textstorlek i px, em eller rem.</td></tr>
+    <tr><td><code>font-weight</code></td><td><code>bold</code>, <code>700</code></td><td>Textens tjocklek.</td></tr>
+    <tr><td><code>font-style</code></td><td><code>italic</code>, <code>normal</code></td><td>Kursiv eller rak text.</td></tr>
+    <tr><td><code>line-height</code></td><td><code>1.6</code></td><td>Radavstånd.</td></tr>
+  </table>
+
+  <h3>Boxmodellen</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Exempel</th><th>Vad den gör</th></tr>
+    <tr><td><code>margin</code></td><td><code>20px</code>, <code>10px 20px</code></td><td>Yttre avstånd (till grannen).</td></tr>
+    <tr><td><code>padding</code></td><td><code>16px</code>, <code>10px 20px</code></td><td>Inre avstånd (kudden inuti).</td></tr>
+    <tr><td><code>border</code></td><td><code>1px solid #333</code></td><td>Ram runt elementet.</td></tr>
+    <tr><td><code>border-radius</code></td><td><code>6px</code></td><td>Rundade hörn.</td></tr>
+    <tr><td><code>box-sizing</code></td><td><code>border-box</code></td><td>Padding och border räknas IN i width.</td></tr>
+    <tr><td><code>width</code> / <code>height</code></td><td><code>300px</code>, <code>100%</code></td><td>Elementets bredd/höjd.</td></tr>
+    <tr><td><code>max-width</code></td><td><code>800px</code></td><td>Maximal bredd — perfekt för centrering.</td></tr>
+  </table>
+
+  <h3>Layout och display</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Värden</th><th>Vad den gör</th></tr>
+    <tr><td><code>display</code></td><td><code>block</code></td><td>Tar hela bredden, ny rad.</td></tr>
+    <tr><td><code>display</code></td><td><code>inline</code></td><td>Flöder med texten, ingen width/height.</td></tr>
+    <tr><td><code>display</code></td><td><code>inline-block</code></td><td>Flöder med texten men KAN ha width/height.</td></tr>
+    <tr><td><code>margin: 0 auto</code></td><td>—</td><td>Centrerar ett block-element horisontellt.</td></tr>
+  </table>
+
+  <h3>Övrigt</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Exempel</th><th>Vad den gör</th></tr>
+    <tr><td><code>color</code></td><td><code>#e0e0e0</code></td><td>Textfärg.</td></tr>
+    <tr><td><code>background-color</code></td><td><code>#1a1a2e</code></td><td>Bakgrundsfärg.</td></tr>
+    <tr><td><code>text-decoration</code></td><td><code>none</code>, <code>underline</code></td><td>Under-/överstrykning.</td></tr>
+    <tr><td><code>outline</code></td><td><code>3px solid #e94560</code></td><td>Konturlinje (utanför border).</td></tr>
+    <tr><td><code>:hover</code></td><td><code>a:hover { ... }</code></td><td>Stil vid hovring med musen.</td></tr>
+    <tr><td><code>:focus</code></td><td><code>a:focus { ... }</code></td><td>Stil vid tangentbordsfokus.</td></tr>
+  </table>
+
+  <div class="css-spaning">
+    <strong>CSS-sammanfattning:</strong> Under den här modulen har du gått från att <em>se</em> CSS till att <em>förstå</em> det. Här är varje steg:
+    <ol>
+      <li><strong>Steg 1</strong> (Lektion 1): Selektorer — type, class, id, group, universell. Vilka element som påverkas.</li>
+      <li><strong>Steg 2</strong> (Lektion 2): Färger (<code>hex</code>, <code>rgb</code>, <code>rgba</code>), font-stacks, <code>font-style</code>, <code>line-height</code>, margin vs padding.</li>
+      <li><strong>Steg 3</strong> (Lektion 3): Boxmodellen, <code>box-sizing: border-box</code>, <code>display</code>-typer, centrering med <code>max-width</code> + <code>margin: 0 auto</code>.</li>
+      <li><strong>Steg 4</strong> (Lektion 4): Allt ihop — extern CSS-fil, fullständig styling från grunden.</li>
+    </ol>
+    <p>I <strong>Modul 3</strong> tar vi nästa steg: Flexbox, responsiv design och mer avancerad layout!</p>
+  </div>
+
+  <hr class="separator">
+
+  <p style="text-align: center; margin: 24px 0 8px;">
+    <a href="test-modul-2.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em; font-family: 'Segoe UI', system-ui, sans-serif;">Gå till testet för Modul 2 →</a>
+  </p>
+
+  <p style="text-align: center; font-size: 1.1em;">
+    <a href="modul-1-html-grunder-v2.html">← Modul 1: HTML-grunder</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <strong><a href="modul-3-responsiv-design.html">Nästa modul: Modul 3 — Responsiv design →</a></strong>
+  </p>
+
+  <p><a href="#toppen">↑ Tillbaka till toppen</a></p>
+</div>
+
+</body>
+</html>

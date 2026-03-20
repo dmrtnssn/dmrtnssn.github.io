@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 3: Responsiv design — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Den här filen bygger vidare på CSS från Modul 1 och 2.      ║
+    ║  Modul 2 slutade med: class/id-selektorer, rgba-färger,      ║
+    ║  font stacks, box-sizing: border-box, max-width med          ║
+    ║  margin: 0 auto, display: block/inline/inline-block,         ║
+    ║  width/height, shorthand margin/padding.                     ║
+    ║                                                              ║
+    ║  I den här modulen introduceras responsiv design progressivt:║
+    ║  Lektion 1: @media queries — sidan börjar reagera på storlek║
+    ║  Lektion 2: Flexbox — layout med display: flex               ║
+    ║  Lektion 3: Flexbox + media queries kombinerat               ║
+    ║  Lektion 4: CSS-enheter, grid-teaser, rem/vh/vw              ║
+    ║                                                              ║
+    ║  PROVA: Ändra storleken på webbläsarfönstret medan du        ║
+    ║  läser — layouten ändras! Det ÄR lektionen.                  ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — Allt vi har från Modul 1 och 2.
+       Font stack, box-sizing, max-width-centrering, dark theme.
+       ═══════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      font-size: 2em;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0;
+    }
+
+    h3 {
+      color: #e94560;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus {
+      outline: 3px solid #e94560;
+      outline-offset: 2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 12px 0;
+    }
+
+    /* Kodexempel */
+    .kodexempel {
+      background-color: #12121a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      color: #e0e0e0;
+    }
+
+    /* Uppdrag-rutor */
+    .uppdrag {
+      border-left: 4px solid #e94560;
+      padding: 16px 20px;
+      margin: 20px 0;
+      background-color: #16213e;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Info-rutor */
+    .info-ruta {
+      background-color: #0d1b2a;
+      border-left: 4px solid #0db5e6;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-ruta strong {
+      color: #0db5e6;
+    }
+
+    /* Tabeller */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d1b2a;
+      color: #e94560;
+    }
+
+    /* CSS-spaning-rutor */
+    .css-spaning {
+      background-color: #0a0a1a;
+      color: #ccc;
+      border: 2px dashed #0db5e6;
+      padding: 12px 16px;
+      margin: 20px 0;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    .css-spaning strong {
+      color: #e94560;
+    }
+
+    /* Separator */
+    .separator {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 1 — Media queries (Lektion 1)
+       Presentationen själv börjar reagera på skärmstorlek!
+       Nya egenskaper: @media (max-width: ...)
+       ═══════════════════════════════════════════════════════════ */
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      h2 {
+        font-size: 1.4em;
+      }
+
+      .container {
+        padding: 20px 15px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 8px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3em;
+      }
+
+      h2 {
+        font-size: 1.2em;
+      }
+
+      .kodexempel {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 2 — Flexbox (Lektion 2)
+       Navigationen och innehållssektioner använder nu flexbox!
+       Nya egenskaper: display: flex, flex-wrap, justify-content,
+       align-items, flex-direction, flex: 1
+       ═══════════════════════════════════════════════════════════ */
+
+    .nav-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+    }
+
+    .nav-lista li {
+      flex: 1 1 auto;
+    }
+
+    .nav-lista a {
+      display: block;
+      padding: 10px 16px;
+      background-color: #16213e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .nav-lista a:hover {
+      background-color: #1a2a4e;
+      text-decoration: none;
+    }
+
+    /* Flex-demo: visar flexbox-egenskaper live */
+    .flex-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .flex-demo-item {
+      flex: 1 1 200px;
+      background-color: #16213e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .flex-demo-item h4 {
+      color: #0db5e6;
+      margin: 0 0 8px 0;
+      font-size: 1em;
+    }
+
+    .flex-demo-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 3 — Flexbox + media queries kombinerat (Lektion 3)
+       Kort-layout som går från 3 kolumner till 1 kolumn.
+       Navigation som byter riktning.
+       ═══════════════════════════════════════════════════════════ */
+
+    .kort-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .kort {
+      flex: 1 1 250px;
+      background-color: #16213e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .kort h4 {
+      color: #e94560;
+      margin: 0 0 10px 0;
+    }
+
+    .kort p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-lista {
+        flex-direction: column;
+      }
+
+      .nav-lista li {
+        flex: 1 1 100%;
+      }
+
+      .kort {
+        flex: 1 1 100%;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STEG 4 — Relativa enheter och grid-teaser (Lektion 4)
+       Nya egenskaper: rem, %, vw/vh, display: grid,
+       grid-template-columns, object-fit
+       ═══════════════════════════════════════════════════════════ */
+
+    .enheter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    .enhet-kort {
+      background-color: #16213e;
+      border: 1px solid #333;
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+    }
+
+    .enhet-kort h4 {
+      color: #0db5e6;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .enhet-kort code {
+      color: #e94560;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .enhet-kort p {
+      margin: 0.25rem 0 0 0;
+      font-size: 0.9rem;
+    }
+
+    /* Responsiv-notis — den lilla rutan som säger "ändra storlek!" */
+    .resize-notis {
+      background: linear-gradient(135deg, #e94560, #0db5e6);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 20px 0;
+    }
+
+    /* Visa/dölj text beroende på skärmstorlek — pedagogisk demo */
+    .visa-mobil { display: none; }
+    .visa-desktop { display: inline; }
+
+    @media (max-width: 600px) {
+      .visa-mobil { display: inline; }
+      .visa-desktop { display: none; }
+
+      .resize-notis {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVIGATION OCH INTRODUKTION
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="toppen">
+  <h1>Modul 3: Responsiv design</h1>
+  <p>Bygg webbsidor som ser bra ut på alla skärmar — från mobilen i fickan till skärmen på skrivbordet.</p>
+  <p><em>Modul 3 av 8 — 4 lektioner + fördjupning</em></p>
+
+  <div class="resize-notis">
+    <span class="visa-desktop">Dra i kanten av webbläsarfönstret och gör det smalare — layouten ändras! Det här ÄR lektionen.</span>
+    <span class="visa-mobil">Du läser på en smal skärm — layouten har redan anpassat sig! Prova att rotera telefonen.</span>
+  </div>
+
+  <h2>Innehåll</h2>
+  <ul class="nav-lista">
+    <li><a href="#lektion-1">1. Media queries</a></li>
+    <li><a href="#lektion-2">2. Flexbox</a></li>
+    <li><a href="#lektion-3">3. Praktiskt</a></li>
+    <li><a href="#lektion-4">4. Fördjupning</a></li>
+    <li><a href="#sammanfattning">Sammanfattning</a></li>
+  </ul>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning:</strong> Den här presentationen startar med all CSS från Modul 1 och 2: <code>box-sizing: border-box</code>, <code>max-width</code> med <code>margin: 0 auto</code> för centrering, class/id-selektorer, <code>rgba</code>-färger, font stacks och shorthand-egenskaper. Navigationen ovan använder redan <code>display: flex</code> och <code>flex-wrap: wrap</code> — men det är Lektion 2-material. Gör webbläsaren smalare och se hur navigeringen byter från rad till kolumn!
+  </div>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — INTRODUKTION TILL RESPONSIV DESIGN OCH MEDIA QUERIES
+     CSS-nivå: STEG 1! @media queries introduceras.
+     Nya egenskaper: @media (max-width: ...), viewport meta
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="lektion-1">
+  <h2>Lektion 1: Introduktion till responsiv design och media queries</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 1:</strong> Här introducerar vi <code>@media</code>-queries! Den här presentationen har redan en media query som ändrar <code>font-size</code> på rubriker och <code>padding</code> på containern när skärmen är smalare än 768px. Gör fönstret smalare — ser du hur rubrikerna krymper? Det är en <code>@media (max-width: 768px)</code>-regel i aktion.
+  </div>
+
+  <p><strong>Varför responsiv design?</strong> Över 60% av all webbtrafik kommer från mobiler. Om din sida bara ser bra ut på en stor skärm missar du mer än hälften av dina besökare. Det är som att öppna en butik men låsa dörren för alla som inte kör bil dit.</p>
+
+  <h3>Viewport-taggen — steg ett</h3>
+
+  <p>Innan vi gör något annat behöver vi en viktig rad i <code>&lt;head&gt;</code>:</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+  </div>
+
+  <p>Utan den här raden kommer mobilen att låtsas att den är en desktop-skärm och zooma ut allt till en miniversion. Med den säger vi: "Hej mobil, din bredd ÄR din bredd — visa sidan i rätt storlek."</p>
+
+  <div class="info-ruta">
+    <strong>Kolla själv:</strong> Den här sidan har viewport-taggen. Öppna den på din mobil — texten ska vara läsbar utan att zooma. Om du tar bort viewport-taggen blir allt pyttelitet.
+  </div>
+
+  <h3>Media queries — CSS som lyssnar på skärmen</h3>
+
+  <p>En media query är en CSS-regel som bara gäller om ett villkor är sant. Tänk det som en if-sats för CSS:</p>
+
+  <div class="kodexempel">
+    <pre><code>/* Vanlig CSS — gäller alltid */
+h1 {
+  font-size: 2em;
+}
+
+/* Media query — gäller BARA om skärmen är 768px eller smalare */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.4em;
+  }
+}
+
+/* Du kan ha flera breakpoints */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.2em;
+  }
+}</code></pre>
+  </div>
+
+  <h3>Vanliga breakpoints</h3>
+
+  <table>
+    <tr><th>Enhet</th><th>Bredd</th><th>Typisk breakpoint</th></tr>
+    <tr><td>Mobil</td><td>< 600px</td><td><code>@media (max-width: 600px)</code></td></tr>
+    <tr><td>Tablet</td><td>600–900px</td><td><code>@media (max-width: 900px)</code></td></tr>
+    <tr><td>Desktop</td><td>> 900px</td><td>Ingen query — det är "default"</td></tr>
+  </table>
+
+  <div class="info-ruta">
+    <strong>OBS:</strong> Det finns inga "rätta" breakpoints. Välj breakpoints baserat på din design, inte på specifika enheter. Om layouten ser konstig ut vid 750px — lägg en breakpoint där!
+  </div>
+
+  <h3>Mobile-first vs desktop-first</h3>
+
+  <p>Det finns två sätt att tänka:</p>
+
+  <div class="kodexempel">
+    <pre><code>/* DESKTOP-FIRST: börja med desktop, anpassa neråt */
+/* "Normalt" = desktop-layout */
+.container { width: 900px; }
+
+@media (max-width: 768px) {
+  .container { width: 100%; }  /* Skärmen är liten — ta hela bredden */
+}
+
+/* ─────────────────────────────────── */
+
+/* MOBILE-FIRST: börja med mobil, anpassa uppåt */
+/* "Normalt" = mobil-layout */
+.container { width: 100%; }
+
+@media (min-width: 768px) {
+  .container { width: 900px; }  /* Skärmen är stor — begränsa bredden */
+}</code></pre>
+  </div>
+
+  <p><strong>Mobile-first</strong> anses vara bäst idag. Du börjar med den enklaste layouten (mobil) och lägger till komplexitet för större skärmar. Det tvingar dig att tänka: "Vad är viktigast?" — och det ger oftast bättre resultat.</p>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Din första media query</h3>
+    <ol>
+      <li>Skapa en HTML-sida med en rubrik, tre paragrafer och en bakgrundsfärg.</li>
+      <li>Lägg till en <code>@media (max-width: 600px)</code> som ändrar bakgrundsfärgen till en annan färg.</li>
+      <li>Lägg till en till media query som ändrar fontstorleken vid 480px.</li>
+      <li>Dra i webbläsarfönstret och se färgen skifta — magi!</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Utmaning: Breakpoint-detektiv</h3>
+    <ol>
+      <li>Öppna Chrome DevTools (F12) och klicka på enhetsikonen (Ctrl+Shift+M).</li>
+      <li>Välj "Responsive" och dra i bredden.</li>
+      <li>Besök tre sajter du gillar — vid vilka bredder ändras layouten? Skriv ner breakpoints!</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — FLEXBOX
+     CSS-nivå: STEG 2! display: flex, flex-direction, justify-content,
+     align-items, flex-wrap, flex: 1
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="lektion-2">
+  <h2>Lektion 2: Flexbox — introduktion och responsiv layout</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 2:</strong> Nu använder presentationen <code>display: flex</code> på riktigt! Navigationen i toppen är en flexbox-lista med <code>flex-wrap: wrap</code> och <code>gap: 8px</code>. Demo-rutorna nedan använder <code>flex: 1 1 200px</code> — de fyller raden och radbryts automatiskt. Det här är kraften med flexbox: en rad CSS ändrar allt.
+  </div>
+
+  <p><strong>Flexbox är det bästa som hänt CSS.</strong> Innan flexbox var det en mardröm att centrera saker, lägga element bredvid varandra eller fördela utrymme jämnt. Med flexbox? En rad: <code>display: flex</code>.</p>
+
+  <h3>Grundkonceptet: container och items</h3>
+
+  <p>Flexbox har alltid två delar:</p>
+  <ul>
+    <li><strong>Flex container</strong> — föräldern som har <code>display: flex</code></li>
+    <li><strong>Flex items</strong> — barnen som automatiskt placeras i rad</li>
+  </ul>
+
+  <div class="kodexempel">
+    <pre><code>&lt;div class="container"&gt;       &lt;!-- FLEX CONTAINER --&gt;
+  &lt;div class="item"&gt;A&lt;/div&gt;  &lt;!-- FLEX ITEM --&gt;
+  &lt;div class="item"&gt;B&lt;/div&gt;  &lt;!-- FLEX ITEM --&gt;
+  &lt;div class="item"&gt;C&lt;/div&gt;  &lt;!-- FLEX ITEM --&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.container {
+  display: flex;   /* En rad — och barnen lägger sig i rad! */
+}
+&lt;/style&gt;</code></pre>
+  </div>
+
+  <h3>flex-direction: rad eller kolumn</h3>
+
+  <div class="kodexempel">
+    <pre><code>.container {
+  display: flex;
+  flex-direction: row;      /* Standard — horisontell rad (→) */
+  flex-direction: column;   /* Vertikal kolumn (↓) */
+}</code></pre>
+  </div>
+
+  <h3>justify-content: fördela utrymme längs huvudaxeln (horisontellt som standard)</h3>
+
+  <table>
+    <tr><th>Värde</th><th>Vad det gör</th></tr>
+    <tr><td><code>flex-start</code></td><td>Alla items i början (standard)</td></tr>
+    <tr><td><code>center</code></td><td>Alla items i mitten</td></tr>
+    <tr><td><code>flex-end</code></td><td>Alla items i slutet</td></tr>
+    <tr><td><code>space-between</code></td><td>Jämnt fördelat, inget utrymme i kanterna</td></tr>
+    <tr><td><code>space-around</code></td><td>Jämnt fördelat, halva utrymmet i kanterna</td></tr>
+    <tr><td><code>space-evenly</code></td><td>Exakt lika mycket utrymme överallt</td></tr>
+  </table>
+
+  <h3>align-items: justera längs tväraxeln (vertikalt som standard)</h3>
+
+  <table>
+    <tr><th>Värde</th><th>Vad det gör</th></tr>
+    <tr><td><code>stretch</code></td><td>Items sträcker sig till containerns höjd (standard)</td></tr>
+    <tr><td><code>center</code></td><td>Centrerat vertikalt</td></tr>
+    <tr><td><code>flex-start</code></td><td>Överst</td></tr>
+    <tr><td><code>flex-end</code></td><td>Nederst</td></tr>
+  </table>
+
+  <h3>flex-wrap: radbrytning</h3>
+
+  <p>Utan <code>flex-wrap</code> tvingas alla items in på en enda rad — de krymper istället för att radbrytas. Med <code>flex-wrap: wrap</code> hoppar de ner till nästa rad om de inte får plats. <strong>Det här är nyckeln till responsivitet!</strong></p>
+
+  <div class="kodexempel">
+    <pre><code>.container {
+  display: flex;
+  flex-wrap: wrap;     /* Items radbryter vid behov */
+  gap: 16px;           /* Avstånd mellan items */
+}
+
+.item {
+  flex: 1 1 250px;     /* Minst 250px bred, men växer om det finns plats */
+}
+
+/* flex: 1 1 250px är shorthand för:
+   flex-grow: 1     — item får växa
+   flex-shrink: 1   — item får krympa
+   flex-basis: 250px — utgångsstorlek */</code></pre>
+  </div>
+
+  <h3>Live-demo: Flexbox i aktion</h3>
+
+  <p>De här rutorna nedan använder <code>display: flex</code> med <code>flex-wrap: wrap</code>. Gör fönstret smalare — de hoppar ner under varandra!</p>
+
+  <div class="flex-demo">
+    <div class="flex-demo-item">
+      <h4>display: flex</h4>
+      <p>Lägger barnen i en rad (eller kolumn). En rad som ändrar allt.</p>
+    </div>
+    <div class="flex-demo-item">
+      <h4>flex-wrap: wrap</h4>
+      <p>Låter items radbrytas istället för att krympa till ingenting.</p>
+    </div>
+    <div class="flex-demo-item">
+      <h4>gap: 16px</h4>
+      <p>Avstånd mellan items. Mycket enklare än margin-hack!</p>
+    </div>
+  </div>
+
+  <div class="info-ruta">
+    <strong>Det magiska tricket:</strong> <code>flex: 1 1 250px</code> på items + <code>flex-wrap: wrap</code> på containern = en responsiv layout utan media queries. Items fyller raden, och när de inte får plats radbryts de. Prova det ovan!
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Flexbox-kort</h3>
+    <ol>
+      <li>Skapa en sida med en container-div och 4 kort-divar inuti.</li>
+      <li>Ge containern <code>display: flex</code>, <code>flex-wrap: wrap</code> och <code>gap: 16px</code>.</li>
+      <li>Ge varje kort <code>flex: 1 1 200px</code>, en bakgrundsfärg och padding.</li>
+      <li>Gör fönstret smalare — korten ska radbrytas automatiskt!</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Utmaning: Centrera allt</h3>
+    <ol>
+      <li>Skapa en div med <code>height: 100vh</code> (hela skärmens höjd).</li>
+      <li>Använd <code>display: flex</code>, <code>justify-content: center</code> och <code>align-items: center</code>.</li>
+      <li>Lägg en rubrik inuti — den ska vara perfekt centrerad. Det som brukade kräva 10 rader CSS tar nu 3.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 3 — PRAKTISKT: ANPASSA WEBBPLATSEN
+     CSS-nivå: STEG 3! Flexbox + media queries kombineras.
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="lektion-3">
+  <h2>Lektion 3: Praktiskt — Anpassa webbplatsen</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 3:</strong> Nu kombineras flexbox och media queries! Navigationen i toppen har en <code>@media (max-width: 768px)</code> som byter <code>flex-direction</code> till <code>column</code>. Korten nedan har <code>flex: 1 1 250px</code> normalt men <code>flex: 1 1 100%</code> vid 768px. Gör fönstret smalare och se hur allt anpassar sig — det är exakt vad du ska lära dig bygga.
+  </div>
+
+  <p><strong>Nu sätter vi ihop allt.</strong> Media queries och flexbox var för sig är bra. Tillsammans är de oslagbara. I den här lektionen bygger vi responsiva mönster som du kommer använda om och om igen.</p>
+
+  <h3>Mönster 1: Responsiv navigation</h3>
+
+  <p>De flesta sajter har en horisontell meny på desktop som blir vertikal (eller en hamburgermeny) på mobil. Så här gör du den enklaste versionen:</p>
+
+  <div class="kodexempel">
+    <pre><code>&lt;nav&gt;
+  &lt;ul class="nav-meny"&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Hem&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Om oss&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Kontakt&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;style&gt;
+.nav-meny {
+  display: flex;
+  list-style: none;
+  gap: 16px;
+  padding: 0;
+}
+
+/* På små skärmar: byt till kolumn */
+@media (max-width: 600px) {
+  .nav-meny {
+    flex-direction: column;
+  }
+}
+&lt;/style&gt;</code></pre>
+  </div>
+
+  <p>Titta på navigationen i toppen av den här sidan — den gör exakt det här!</p>
+
+  <h3>Mönster 2: Kort-layout som anpassar sig</h3>
+
+  <p>Tre kort i rad på desktop, en i taget på mobil. Det här mönstret ser du överallt — bloggar, nyheter, produktsidor:</p>
+
+  <div class="kodexempel">
+    <pre><code>.kort-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.kort {
+  flex: 1 1 300px;   /* Minst 300px — radbryts automatiskt */
+  padding: 20px;
+  background: #16213e;
+  border-radius: 8px;
+}
+
+/* Eller med media query för mer kontroll: */
+@media (max-width: 768px) {
+  .kort {
+    flex: 1 1 100%;  /* Ta hela bredden på tablet och mobil */
+  }
+}</code></pre>
+  </div>
+
+  <h3>Live-demo: Responsiva kort</h3>
+
+  <p>Gör fönstret smalare — se hur korten nedan går från tre kolumner till en:</p>
+
+  <div class="kort-grid">
+    <div class="kort">
+      <h4>Mobil</h4>
+      <p>Under 600px. En kolumn. Allt staplas vertikalt. Touch-vänliga knappar. Stor text.</p>
+    </div>
+    <div class="kort">
+      <h4>Tablet</h4>
+      <p>600–900px. Två kolumner kanske. Mer luft. Bilder får mer plats.</p>
+    </div>
+    <div class="kort">
+      <h4>Desktop</h4>
+      <p>Över 900px. Tre kolumner eller fler. Sidomenyer. Mycket info synlig samtidigt.</p>
+    </div>
+  </div>
+
+  <h3>Mönster 3: Bilder som skalar</h3>
+
+  <div class="kodexempel">
+    <pre><code>img {
+  max-width: 100%;    /* Aldrig bredare än sin container */
+  height: auto;       /* Behåll proportionerna */
+  display: block;     /* Tar bort extra utrymme under bilden */
+}</code></pre>
+  </div>
+
+  <p>De här tre raderna borde finnas på varje sida du bygger. De ser till att bilder aldrig "spränger" layouten på små skärmar.</p>
+
+  <h3>Chrome DevTools: din bästa kompis</h3>
+
+  <p>Du behöver inte en mobil för att testa responsivitet. Chrome har ett inbyggt verktyg:</p>
+
+  <ol>
+    <li>Öppna DevTools: <strong>Ctrl+Shift+I</strong> (eller F12)</li>
+    <li>Klicka på enhetsikonen (eller tryck <strong>Ctrl+Shift+M</strong>)</li>
+    <li>Välj "Responsive" i dropdown-menyn</li>
+    <li>Dra i bredden — se hur sidan reagerar</li>
+    <li>Testa specifika enheter: iPhone, iPad, Galaxy...</li>
+  </ol>
+
+  <div class="info-ruta">
+    <strong>Proffs-tips:</strong> Håll DevTools öppna medan du kodar CSS. Ändra bredden fram och tillbaka. Om layouten ser konstig ut vid någon bredd — lägg till en media query just där. Designa för din design, inte för specifika enheter.
+  </div>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Responsiv profilsida</h3>
+    <ol>
+      <li>Skapa en sida med en <code>&lt;header&gt;</code> (med ditt namn), en <code>&lt;nav&gt;</code> (med 3–4 länkar) och en <code>&lt;main&gt;</code> med 3 kort (intressen, skola, kontakt).</li>
+      <li>Använd flexbox för navigationen och korten.</li>
+      <li>Lägg till en media query vid 768px som gör navigationen vertikal och korten fulla bredden.</li>
+      <li>Testa i DevTools med minst 3 olika skärmstorlekar.</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Responsiv bildgalleri</h3>
+    <ol>
+      <li>Hitta 6 bilder (t.ex. från <a href="https://unsplash.com" target="_blank">Unsplash</a>).</li>
+      <li>Skapa ett galleri med flexbox: 3 kolumner på desktop, 2 på tablet, 1 på mobil.</li>
+      <li>Alla bilder ska ha <code>max-width: 100%</code> och bra alt-text.</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 4 — FÖRDJUPNING I RESPONSIV DESIGN
+     CSS-nivå: STEG 4! rem, %, vw/vh, CSS Grid-teaser, object-fit
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="lektion-4">
+  <h2>Lektion 4: Fördjupning i responsiv design</h2>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — STEG 4:</strong> Den här sektionens enhets-rutor använder <code>display: grid</code> med <code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))</code> — det är CSS Grid! Padding och margins använder nu <code>rem</code> istället för <code>px</code>. Ändra webbläsarens standard-fontstorlek (Inställningar → Utseende) och se hur rem-baserade värden skalar med.
+  </div>
+
+  <p><strong>Pixlar är inte alltid svaret.</strong> Hittills har vi mest använt <code>px</code> — fasta pixelvärden. Men responsiv design handlar om att saker ska vara <em>flexibla</em>. Dags att lära sig fler enheter.</p>
+
+  <h3>CSS-enheter: px vs em vs rem vs % vs vw/vh</h3>
+
+  <div class="enheter-grid">
+    <div class="enhet-kort">
+      <h4><code>px</code> — pixlar</h4>
+      <p>Fast storlek. 16px är alltid 16px. Bra för borders och skuggor. Dåligt för fontstorlekar om du vill att sidan ska vara tillgänglig.</p>
+    </div>
+    <div class="enhet-kort">
+      <h4><code>em</code> — relativt till föräldern (eller elementet självt)</h4>
+      <p>1em = förälderns fontstorlek (för <code>font-size</code>) eller elementets <em>egen</em> fontstorlek (för <code>padding</code>, <code>margin</code> m.m.). Om föräldern har 16px är 1.5em = 24px. Kan bli förvirrande med nästlade element!</p>
+    </div>
+    <div class="enhet-kort">
+      <h4><code>rem</code> — relativt till root</h4>
+      <p>1rem = html-elementets fontstorlek (oftast 16px). Konsekvent och förutsägbar. <strong>Använd rem för fontstorlekar!</strong></p>
+    </div>
+    <div class="enhet-kort">
+      <h4><code>%</code> — procent</h4>
+      <p>Relativt till föräldern. <code>width: 50%</code> = halva förälderns bredd. Perfekt för flexibla layouter.</p>
+    </div>
+    <div class="enhet-kort">
+      <h4><code>vw / vh</code> — viewport</h4>
+      <p>1vw = 1% av fönstrets bredd. 1vh = 1% av fönstrets höjd. Bra för hero-sektioner: <code>height: 100vh</code>.</p>
+    </div>
+  </div>
+
+  <h3>När ska du använda vad?</h3>
+
+  <table>
+    <tr><th>Situation</th><th>Bästa enheten</th><th>Varför</th></tr>
+    <tr><td>Fontstorlekar</td><td><code>rem</code></td><td>Respekterar användarens inställningar</td></tr>
+    <tr><td>Padding / margin</td><td><code>rem</code> eller <code>em</code></td><td>Skalar med texten</td></tr>
+    <tr><td>Bredd på containrar</td><td><code>%</code> eller <code>max-width</code> i px</td><td>Flexibelt men med gränser</td></tr>
+    <tr><td>Borders</td><td><code>px</code></td><td>1px border ska vara 1px</td></tr>
+    <tr><td>Hero-sektioner</td><td><code>vh</code></td><td>Fyller exakt skärmens höjd</td></tr>
+    <tr><td>Responsiv text</td><td><code>clamp()</code> eller <code>vw</code></td><td>Text som skalar med fönstret</td></tr>
+  </table>
+
+  <h3>min-width, max-width, min-height</h3>
+
+  <p>De här egenskaperna sätter gränser. De är guld värda för fluid design:</p>
+
+  <div class="kodexempel">
+    <pre><code>.container {
+  width: 90%;         /* Flexibel: 90% av föräldern */
+  max-width: 900px;   /* Men aldrig bredare än 900px */
+  min-width: 300px;   /* Och aldrig smalare än 300px */
+  margin: 0 auto;     /* Centrerad */
+}
+
+img {
+  width: 100%;
+  max-width: 600px;   /* Bilden växer med containern, men max 600px */
+  min-height: 200px;  /* Alltid minst 200px hög */
+}</code></pre>
+  </div>
+
+  <h3>CSS Grid — en sneak peek</h3>
+
+  <p>Flexbox är bra för en-dimensionella layouter (en rad eller en kolumn). Men ibland vill du ha ett riktigt rutnät — rader OCH kolumner. Då finns <strong>CSS Grid</strong>:</p>
+
+  <div class="kodexempel">
+    <pre><code>.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* 3 lika breda kolumner */
+  gap: 16px;
+}
+
+/* Responsiv grid med auto-fit: */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+/* Kolumnerna anpassar sig automatiskt efter tillgänglig plats! */</code></pre>
+  </div>
+
+  <div class="info-ruta">
+    <strong>Flexbox vs Grid?</strong> Tumregel: <strong>Flexbox</strong> för en dimension (en meny, en rad knappar). <strong>Grid</strong> för två dimensioner (hela sidlayouter, bildgallerier). Du kan (och bör!) använda båda i samma projekt. Vi kommer djupdyka i Grid i en senare modul.
+  </div>
+
+  <h3>Responsiva bilder med object-fit</h3>
+
+  <div class="kodexempel">
+    <pre><code>img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;   /* Fyller utrymmet utan att förvrängas */
+}
+
+/* object-fit-värden:
+   cover    — fyller hela ytan, klipper om det behövs
+   contain  — hela bilden syns, men kan få tomrum
+   fill     — sträcker bilden (förvränger!)
+   none     — originalstorlek
+*/</code></pre>
+  </div>
+
+  <p><code>object-fit: cover</code> är perfekt för kort-layouts där alla bilder ska vara lika höga men kan ha olika proportioner.</p>
+
+  <div class="uppdrag">
+    <h3>Uppdrag: Enhetsexperiment</h3>
+    <ol>
+      <li>Skapa en sida med en rubrik i <code>rem</code>, en paragraf i <code>em</code> och en container i <code>%</code>.</li>
+      <li>Ändra webbläsarens standardfontstorlek (Chrome → Inställningar → Utseende → Teckenstorlek). Vad händer med rem-värdena? Med px-värdena?</li>
+      <li>Skapa en div med <code>height: 100vh</code> och en bakgrundsfärg. Vad händer när du skrollar?</li>
+    </ol>
+  </div>
+
+  <div class="uppdrag">
+    <h3>Boss-level: Grid-galleri</h3>
+    <ol>
+      <li>Skapa ett bildgalleri med <code>display: grid</code> och <code>grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))</code>.</li>
+      <li>Ge alla bilder <code>object-fit: cover</code> och en fast höjd.</li>
+      <li>Galleriets kolumner ska anpassas automatiskt — ingen media query behövs!</li>
+    </ol>
+  </div>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+<hr class="separator">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SAMMANFATTNING — ALLA CSS-EGENSKAPER MODUL 1–3
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container" id="sammanfattning">
+  <h2>Sammanfattning: CSS-egenskaper du kan efter Modul 1–3</h2>
+
+  <p>Här är allt du har lärt dig hittills — tre moduler, från noll till responsiv design. Det är rätt imponerande!</p>
+
+  <h3>Modul 1: HTML-grunder (CSS-grunder)</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Vad den gör</th></tr>
+    <tr><td><code>font-family</code></td><td>Väljer typsnitt</td></tr>
+    <tr><td><code>font-size</code></td><td>Textstorlek</td></tr>
+    <tr><td><code>font-weight</code></td><td>Fetstil (400 normal, 700 bold)</td></tr>
+    <tr><td><code>color</code></td><td>Textfärg</td></tr>
+    <tr><td><code>background-color</code></td><td>Bakgrundsfärg</td></tr>
+    <tr><td><code>margin</code></td><td>Yttre avstånd</td></tr>
+    <tr><td><code>padding</code></td><td>Inre avstånd</td></tr>
+    <tr><td><code>border</code></td><td>Ram runt element</td></tr>
+    <tr><td><code>border-radius</code></td><td>Rundade hörn</td></tr>
+    <tr><td><code>text-decoration</code></td><td>Understrykng, overline m.m.</td></tr>
+    <tr><td><code>max-width</code></td><td>Maximal bredd</td></tr>
+    <tr><td><code>height: auto</code></td><td>Automatisk höjd (proportionella bilder)</td></tr>
+    <tr><td><code>outline</code>, <code>:focus</code></td><td>Fokusstyling för tillgänglighet</td></tr>
+    <tr><td><code>:hover</code></td><td>Styling vid hovring</td></tr>
+  </table>
+
+  <h3>Modul 2: CSS (layout och selektorer)</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Vad den gör</th></tr>
+    <tr><td><code>.klass</code> / <code>#id</code></td><td>Class- och id-selektorer</td></tr>
+    <tr><td><code>rgba()</code></td><td>Färger med genomskinlighet</td></tr>
+    <tr><td>Font stacks</td><td>Reservtypsnitt: <code>'Segoe UI', system-ui, sans-serif</code></td></tr>
+    <tr><td><code>box-sizing: border-box</code></td><td>Padding och border räknas in i width</td></tr>
+    <tr><td><code>max-width</code> + <code>margin: 0 auto</code></td><td>Centrerad container</td></tr>
+    <tr><td><code>display: block/inline/inline-block</code></td><td>Hur element beter sig i flödet</td></tr>
+    <tr><td><code>width</code> / <code>height</code></td><td>Explicit storlek</td></tr>
+    <tr><td>Shorthand <code>margin</code> / <code>padding</code></td><td><code>margin: 10px 20px</code> (top/bottom, left/right)</td></tr>
+  </table>
+
+  <h3>Modul 3: Responsiv design (det här!)</h3>
+  <table>
+    <tr><th>Egenskap</th><th>Vad den gör</th></tr>
+    <tr><td><code>@media (max-width: ...)</code></td><td>CSS som bara gäller vid viss skärmbredd</td></tr>
+    <tr><td><code>@media (min-width: ...)</code></td><td>Mobile-first breakpoints</td></tr>
+    <tr><td><code>display: flex</code></td><td>Flexbox-container</td></tr>
+    <tr><td><code>flex-direction</code></td><td>Rad (<code>row</code>) eller kolumn (<code>column</code>)</td></tr>
+    <tr><td><code>justify-content</code></td><td>Fördela utrymme längs huvudaxeln</td></tr>
+    <tr><td><code>align-items</code></td><td>Justera längs tväraxeln</td></tr>
+    <tr><td><code>flex-wrap: wrap</code></td><td>Tillåt radbrytning av flex-items</td></tr>
+    <tr><td><code>flex: 1 1 250px</code></td><td>Shorthand: grow, shrink, basis</td></tr>
+    <tr><td><code>gap</code></td><td>Avstånd mellan flex/grid-items</td></tr>
+    <tr><td><code>rem</code>, <code>em</code>, <code>%</code>, <code>vw</code>, <code>vh</code></td><td>Relativa CSS-enheter</td></tr>
+    <tr><td><code>min-width</code> / <code>max-width</code></td><td>Begränsa storlek för fluid design</td></tr>
+    <tr><td><code>display: grid</code></td><td>CSS Grid-container</td></tr>
+    <tr><td><code>grid-template-columns</code></td><td>Definiera kolumner i grid</td></tr>
+    <tr><td><code>object-fit: cover</code></td><td>Bild som fyller sin container utan förvrängning</td></tr>
+  </table>
+
+  <div class="css-spaning">
+    <strong>CSS-sammanfattning:</strong> Under den här modulen har presentationen själv gått igenom fyra steg:
+    <ol>
+      <li><strong>Bas</strong>: All CSS från Modul 1–2 (<code>box-sizing</code>, class-selektorer, <code>max-width</code>-centrering, font stacks, mörkt tema).</li>
+      <li><strong>Steg 1</strong> (Lektion 1): <code>@media</code>-queries — rubriker och padding anpassas vid 768px och 480px.</li>
+      <li><strong>Steg 2</strong> (Lektion 2): <code>display: flex</code>, <code>flex-wrap</code>, <code>gap</code> — navigationen och demo-rutor använder flexbox.</li>
+      <li><strong>Steg 3</strong> (Lektion 3): Flexbox + media queries kombinerat — navigation byter riktning, kort tar full bredd på mobil.</li>
+      <li><strong>Steg 4</strong> (Lektion 4): <code>rem</code>-enheter, <code>display: grid</code>, <code>grid-template-columns</code> med <code>auto-fit</code> och <code>minmax()</code>.</li>
+    </ol>
+    <p>I <strong>Modul 4</strong> fortsätter vi med mer avancerad CSS — animationer, transitions och mer!</p>
+  </div>
+
+  <div class="resize-notis">
+    <span class="visa-desktop">Prova en sista gång: dra i webbläsarfönstret och se hur hela sidan — navigation, kort, grid, tabeller — anpassar sig. Du förstår nu hur det fungerar!</span>
+    <span class="visa-mobil">Du har läst hela modulen på mobilen — och allt har anpassat sig. Nu vet du hur det fungerar!</span>
+  </div>
+
+  <hr class="separator">
+
+  <p style="text-align: center; margin: 24px 0 8px;">
+    <a href="test-modul-3.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em; font-family: 'Segoe UI', system-ui, sans-serif;">Gå till testet för Modul 3 →</a>
+  </p>
+
+  <p style="text-align: center; font-size: 1.1em;">
+    <a href="modul-2-css.html">← Modul 2: CSS</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="modul-4-media-och-typsnitt.html">Nästa modul: Modul 4 — Media och typsnitt →</a>
+  </p>
+
+  <p><a href="#toppen">Tillbaka till toppen</a></p>
+</div>
+
+</body>
+</html>

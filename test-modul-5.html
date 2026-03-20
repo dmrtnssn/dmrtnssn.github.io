@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test: Modul 5 – Tillgänglighet och standarder</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       BAS — samma mörka tema som kursen
+       NYA CSS-koncept i den här filen (matchar modul 5):
+         • :focus-visible för tangentbordsfokus
+         • @media prefers-reduced-motion
+         • @media prefers-color-scheme (light override)
+         • Skip-link mönster
+       ═══════════════════════════════════════════════════════════ */
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Skip-link — precis som vi lärde oss i modul 5 */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background-color: #e94560;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 0 0 6px 6px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      z-index: 9999;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+
+    /* :focus-visible — bara synligt vid tangentbordsnavigation */
+    :focus-visible {
+      outline: 3px solid #0db5e6;
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+
+    /* Ta bort outline vid musklick */
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    nav.kurs-nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    nav.kurs-nav a {
+      color: #0db5e6;
+      text-decoration: none;
+      font-size: 0.9em;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    nav.kurs-nav a:hover {
+      background-color: rgba(13, 181, 230, 0.1);
+      border-color: rgba(13, 181, 230, 0.6);
+    }
+
+    header.test-header {
+      background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+      border: 1px solid rgba(13, 181, 230, 0.2);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 36px;
+    }
+
+    header.test-header .modul-etikett {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: #0db5e6;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    header.test-header h1 {
+      font-size: 1.8em;
+      color: #e0e0e0;
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    header.test-header p {
+      color: #a0a0b8;
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    /* ── Frågekortet ── */
+    .fraga {
+      background-color: #16213e;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .fraga.ratt {
+      border-color: #2ecc71;
+      background-color: rgba(46, 204, 113, 0.06);
+    }
+
+    .fraga.fel {
+      border-color: #e94560;
+      background-color: rgba(233, 69, 96, 0.06);
+    }
+
+    .fraga-nummer {
+      font-size: 0.75em;
+      font-weight: 600;
+      color: #0db5e6;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .fraga h2 {
+      font-size: 1.05em;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+
+    /* Kod i frågor */
+    .fraga code {
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      background-color: rgba(0, 0, 0, 0.35);
+      color: #0db5e6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .fraga pre {
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      background-color: #0d1117;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.85em;
+      color: #cdd9e5;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      line-height: 1.6;
+    }
+
+    /* Svarsalternativ */
+    .alternativ-lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alternativ-lista li label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    .alternativ-lista li label:hover {
+      background-color: rgba(13, 181, 230, 0.06);
+      border-color: rgba(13, 181, 230, 0.3);
+    }
+
+    .alternativ-lista input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      accent-color: #0db5e6;
+      cursor: pointer;
+    }
+
+    /* Rätt/Fel-markering på alternativ */
+    .alternativ-lista li.markera-ratt label {
+      background-color: rgba(46, 204, 113, 0.12);
+      border-color: #2ecc71;
+      color: #2ecc71;
+    }
+
+    .alternativ-lista li.markera-fel label {
+      background-color: rgba(233, 69, 96, 0.12);
+      border-color: #e94560;
+      color: #e94560;
+    }
+
+    /* Förklaring per fråga */
+    .forklaring {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+
+    .forklaring.ratt-forklaring {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 3px solid #2ecc71;
+      color: #a0e8b8;
+    }
+
+    .forklaring.fel-forklaring {
+      background-color: rgba(233, 69, 96, 0.1);
+      border-left: 3px solid #e94560;
+      color: #f0a0b0;
+    }
+
+    .forklaring.visa {
+      display: block;
+    }
+
+    /* Rättningsknapp */
+    .rattnings-sektion {
+      text-align: center;
+      margin-top: 36px;
+    }
+
+    .knapp-ratta {
+      background-color: #e94560;
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .knapp-ratta:hover {
+      background-color: #c73652;
+    }
+
+    .knapp-ratta:active {
+      transform: scale(0.97);
+    }
+
+    /* Resultatruta */
+    .resultat {
+      display: none;
+      margin-top: 32px;
+      padding: 32px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .resultat.godkant {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05));
+      border: 2px solid #2ecc71;
+    }
+
+    .resultat.underkant {
+      background: linear-gradient(135deg, rgba(233, 69, 96, 0.12), rgba(233, 69, 96, 0.04));
+      border: 2px solid #e94560;
+    }
+
+    .resultat h2 {
+      font-size: 1.6em;
+      margin: 0 0 10px;
+    }
+
+    .resultat.godkant h2 { color: #2ecc71; }
+    .resultat.underkant h2 { color: #e94560; }
+
+    .resultat .poang {
+      font-size: 2.8em;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .resultat.godkant .poang { color: #2ecc71; }
+    .resultat.underkant .poang { color: #e94560; }
+
+    .resultat p {
+      color: #a0a0b8;
+      margin: 8px 0;
+    }
+
+    .knapp-forsok {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: transparent;
+      color: #e94560;
+      border: 2px solid #e94560;
+      padding: 12px 28px;
+      font-size: 0.95em;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .knapp-forsok:hover {
+      background-color: rgba(233, 69, 96, 0.1);
+    }
+
+    .nasta-modul-lank {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #2ecc71;
+      color: #0f0f1a;
+      padding: 14px 32px;
+      font-size: 1em;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .nasta-modul-lank:hover {
+      background-color: #27ae60;
+    }
+
+    /* @media prefers-reduced-motion — nytt i modul 5!
+       Stänger av animationer för användare som föredrar det. */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* @media prefers-color-scheme — nytt i modul 5! */
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: #f4f4f8;
+        color: #1a1a2e;
+      }
+
+      .fraga {
+        background-color: #ffffff;
+        border-color: rgba(0, 0, 0, 0.12);
+      }
+
+      header.test-header {
+        background: linear-gradient(135deg, #e8eaf6 0%, #f4f4f8 100%);
+      }
+
+      nav.kurs-nav a {
+        color: #0090b8;
+      }
+
+      .fraga h2 {
+        color: #1a1a2e;
+      }
+
+      .fraga pre {
+        background-color: #1e1e2e;
+        color: #cdd9e5;
+      }
+
+      .alternativ-lista li label {
+        color: #1a1a2e;
+      }
+
+      .resultat p {
+        color: #444;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#huvud-innehall" class="skip-link">Hoppa till innehållet</a>
+
+  <div class="container">
+    <nav class="kurs-nav" aria-label="Navigering">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-5-tillganglighet.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <header class="test-header">
+      <div class="modul-etikett">Modul 5 — Test</div>
+      <h1>Tillgänglighet och standarder</h1>
+      <p>Svara på alla frågor och klicka sedan "Rätta testet". Du behöver 100&nbsp;% rätt för att bli godkänd.</p>
+    </header>
+
+    <main id="huvud-innehall">
+      <form id="quiz-form" novalidate>
+
+        <!-- Fråga 1 -->
+        <div class="fraga" id="fraga-1">
+          <div class="fraga-nummer">Fråga 1 av 10</div>
+          <h2>Vilket av följande är ett bra <code>alt</code>-attribut för en bild som visar en hund som leker i snön?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f1" value="a"> <span>alt=""</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f1" value="b"> <span>alt="bild"</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f1" value="c"> <span>alt="Brun labrador leker med snöboll i en vinterpark"</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f1" value="d"> <span>alt="IMG_20231201_hundbild_final_v2.jpg"</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-1">
+            Ett bra alt-attribut beskriver vad som faktiskt visas på bilden på ett meningsfullt sätt. Tomt alt (<code>alt=""</code>) används bara för rent dekorativa bilder. Filnamn eller generiska ord som "bild" hjälper ingen skärmläsare.
+          </div>
+        </div>
+
+        <!-- Fråga 2 -->
+        <div class="fraga" id="fraga-2">
+          <div class="fraga-nummer">Fråga 2 av 10</div>
+          <h2>Vad är WCAG:s kontrastvärde-krav för <strong>normalstor text</strong> på nivå AA?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f2" value="a"> <span>Minst 3:1</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f2" value="b"> <span>Minst 4,5:1</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f2" value="c"> <span>Minst 7:1</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f2" value="d"> <span>Det finns inget specifikt krav</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-2">
+            WCAG AA kräver minst 4,5:1 i kontrastförhållande för normalstor text (under 18pt / 14pt bold). För stor text räcker 3:1. Nivå AAA kräver 7:1 för normalstor text.
+          </div>
+        </div>
+
+        <!-- Fråga 3 -->
+        <div class="fraga" id="fraga-3">
+          <div class="fraga-nummer">Fråga 3 av 10</div>
+          <h2>WCAG bygger på fyra principer — de kallas ofta POUR. Vad står POUR för?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f3" value="a"> <span>Printable, Organized, Unique, Readable</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f3" value="b"> <span>Perceivable, Operable, Understandable, Robust</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f3" value="c"> <span>Practical, Open, Universal, Responsive</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f3" value="d"> <span>Perceivable, Organized, Usable, Reliable</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-3">
+            POUR är WCAG:s fyra grundprinciper: <strong>Perceivable</strong> (uppfattbar), <strong>Operable</strong> (hanterbar), <strong>Understandable</strong> (begriplig) och <strong>Robust</strong>. All webbtillgänglighet utgår från dessa principer.
+          </div>
+        </div>
+
+        <!-- Fråga 4 -->
+        <div class="fraga" id="fraga-4">
+          <div class="fraga-nummer">Fråga 4 av 10</div>
+          <h2>Vad är skillnaden mellan <code>:focus</code> och <code>:focus-visible</code> i CSS?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f4" value="a"> <span>Det finns ingen skillnad — de är synonymer.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f4" value="b"> <span><code>:focus-visible</code> fungerar bara i Firefox.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f4" value="c"> <span><code>:focus-visible</code> aktiveras bara när webbläsaren bedömer att fokusmarkering behövs (t.ex. vid tangentbordsnavigation), inte vid musklick.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f4" value="d"> <span><code>:focus</code> fungerar bara på knappar, <code>:focus-visible</code> fungerar på allt.</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-4">
+            <code>:focus-visible</code> är smartare: webbläsaren visar fokusmarkeringen bara när användaren navigerar med tangentbordet (eller annat icke-pekarenhet). Vid musklick aktiveras <code>:focus</code> men INTE <code>:focus-visible</code>, vilket ger ett snyggare utseende utan att kompromissa med tillgängligheten.
+          </div>
+        </div>
+
+        <!-- Fråga 5 -->
+        <div class="fraga" id="fraga-5">
+          <div class="fraga-nummer">Fråga 5 av 10</div>
+          <h2>Vad är syftet med en <strong>skip-link</strong> (hoppa-länk)?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f5" value="a"> <span>Att snabba upp sidladdningen för mobila användare.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f5" value="b"> <span>Att låta tangentbordsanvändare och skärmläsaranvändare hoppa förbi upprepade navigationsmenyer direkt till huvudinnehållet.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f5" value="c"> <span>Att dölja innehåll från sökmotorer.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f5" value="d"> <span>Att länka till en annan webbplats.</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-5">
+            Skip-links är dolda länkar (synliga vid fokus) som låter tangentbordsanvändare hoppa direkt till t.ex. <code>#main-content</code> utan att behöva tabba igenom hela navigationsmenyn på varje sida. Det är ett krav enligt WCAG 2.4.1 (Bypass Blocks).
+          </div>
+        </div>
+
+        <!-- Fråga 6 -->
+        <div class="fraga" id="fraga-6">
+          <div class="fraga-nummer">Fråga 6 av 10</div>
+          <h2>Vad gör CSS-regeln <code>@media (prefers-reduced-motion: reduce)</code>?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f6" value="a"> <span>Den gör sidan snabbare genom att ta bort CSS-animationer.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f6" value="b"> <span>Den anpassar stilarna för användare som i sitt operativsystem valt att minska rörelse/animationer — t.ex. vid vestibulär störning.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f6" value="c"> <span>Den aktiveras automatiskt på mobila enheter.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f6" value="d"> <span>Den döljer videor och GIF-filer.</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-6">
+            <code>prefers-reduced-motion</code> är en media query som läser av operativsystemets inställning "Minska rörelse". Användare med t.ex. vestibulär störning, epilepsi eller rörelsekänslighet kan bli illamående av snabba animationer. Bra webbplatser respekterar den inställningen.
+          </div>
+        </div>
+
+        <!-- Fråga 7 -->
+        <div class="fraga" id="fraga-7">
+          <div class="fraga-nummer">Fråga 7 av 10</div>
+          <h2>Vilken organisation skapar och underhåller WCAG-riktlinjerna?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f7" value="a"> <span>Google</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f7" value="b"> <span>Mozilla Foundation</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f7" value="c"> <span>W3C (World Wide Web Consortium)</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f7" value="d"> <span>ISO (International Organization for Standardization)</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-7">
+            W3C (World Wide Web Consortium) är den internationella standardiseringsorganisationen för webben, grundad av Tim Berners-Lee 1994. De tar fram WCAG, HTML-standarden, CSS-specifikationen och många andra webbstandarder.
+          </div>
+        </div>
+
+        <!-- Fråga 8 -->
+        <div class="fraga" id="fraga-8">
+          <div class="fraga-nummer">Fråga 8 av 10</div>
+          <h2>Vad händer med ett elements <strong>tab-ordning</strong> om man sätter <code>tabindex="-1"</code>?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f8" value="a"> <span>Elementet hamnar sist i tab-ordningen.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f8" value="b"> <span>Elementet tas bort från tab-ordningen men kan fortfarande få fokus programmatiskt med JavaScript.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f8" value="c"> <span>Elementet döljs visuellt.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f8" value="d"> <span>Elementet hamnar först i tab-ordningen.</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-8">
+            <code>tabindex="-1"</code> tar bort ett element från den naturliga tab-ordningen (man kan inte tabba till det), men JavaScript kan fortfarande anropa <code>.focus()</code> på elementet. <code>tabindex="0"</code> lägger till ett element i normal tab-ordning. Positiva värden bör undvikas.
+          </div>
+        </div>
+
+        <!-- Fråga 9 -->
+        <div class="fraga" id="fraga-9">
+          <div class="fraga-nummer">Fråga 9 av 10</div>
+          <h2>Läs koden nedan. Vilket problem har den ur tillgänglighetssynpunkt?</h2>
+          <pre>&lt;div onclick="skickaFormular()"&gt;
+  Skicka
+&lt;/div&gt;</pre>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f9" value="a"> <span>Ingen — <code>onclick</code> fungerar på alla element.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f9" value="b"> <span>En <code>&lt;div&gt;</code> med onclick är inte nåbar via tangentbordet och har ingen semantisk roll för skärmläsare — använd <code>&lt;button&gt;</code> istället.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f9" value="c"> <span>JavaScript-funktionen bör ligga i en extern fil.</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f9" value="d"> <span>Texten "Skicka" är för kort.</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-9">
+            En <code>&lt;div&gt;</code> är inte interaktiv av naturen: den kan inte fokuseras med tangentbordet och skärmläsare vet inte att det är en knapp. En <code>&lt;button&gt;</code> är rätt semantiskt element — den är automatiskt nåbar via Tab och aktiverbar med Enter/Blanksteg, och skärmläsare annonserar den som "knapp".
+          </div>
+        </div>
+
+        <!-- Fråga 10 -->
+        <div class="fraga" id="fraga-10">
+          <div class="fraga-nummer">Fråga 10 av 10</div>
+          <h2>Vilka är WCAG:s tre nivåer av efterlevnad, i stigande svårighetsordning?</h2>
+          <ul class="alternativ-lista" role="radiogroup">
+            <li>
+              <label><input type="radio" name="f10" value="a"> <span>Bas, Standard, Avancerad</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f10" value="b"> <span>Brons, Silver, Guld</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f10" value="c"> <span>A, AA, AAA</span></label>
+            </li>
+            <li>
+              <label><input type="radio" name="f10" value="d"> <span>1, 2, 3</span></label>
+            </li>
+          </ul>
+          <div class="forklaring" id="fork-10">
+            WCAG definierar tre nivåer: <strong>A</strong> (minsta godtagbara nivå), <strong>AA</strong> (branschstandard — vad de flesta lagar och direktiv kräver, t.ex. EU:s tillgänglighetsdirektiv) och <strong>AAA</strong> (högsta nivån, ofta svår att uppnå för hela webbplatser).
+          </div>
+        </div>
+
+        <div class="rattnings-sektion">
+          <button type="button" class="knapp-ratta" id="ratta-knapp">Rätta testet</button>
+        </div>
+
+      </form>
+
+      <div class="resultat" id="resultat-ruta" aria-live="polite">
+        <h2 id="resultat-rubrik"></h2>
+        <div class="poang" id="resultat-poang"></div>
+        <p id="resultat-text"></p>
+        <div id="resultat-knappar"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ── Rätta svar ──
+    const rattaSvar = {
+      f1: 'c',
+      f2: 'b',
+      f3: 'b',
+      f4: 'c',
+      f5: 'b',
+      f6: 'b',
+      f7: 'c',
+      f8: 'b',
+      f9: 'b',
+      f10: 'c'
+    };
+
+    const antalFragor = Object.keys(rattaSvar).length;
+
+    document.getElementById('ratta-knapp').addEventListener('click', function () {
+      let antalRatt = 0;
+      let forstaFel = null;
+
+      // Inaktivera alla radioknappar direkt
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+        radio.disabled = true;
+      });
+
+      // Gå igenom varje fråga
+      for (let i = 1; i <= antalFragor; i++) {
+        const fragaDiv = document.getElementById('fraga-' + i);
+        const fragaKey = 'f' + i;
+        const valtSvar = document.querySelector('input[name="' + fragaKey + '"]:checked');
+        const forklaringDiv = document.getElementById('fork-' + i);
+
+        // Ta bort gamla markeringar
+        fragaDiv.classList.remove('ratt', 'fel');
+        fragaDiv.querySelectorAll('li').forEach(function (li) {
+          li.classList.remove('markera-ratt', 'markera-fel');
+        });
+
+        const rattSvar = rattaSvar[fragaKey];
+
+        // Markera rätt alternativ alltid
+        const rattLi = fragaDiv.querySelector('input[value="' + rattSvar + '"]');
+        if (rattLi) {
+          rattLi.closest('li').classList.add('markera-ratt');
+        }
+
+        if (valtSvar && valtSvar.value === rattSvar) {
+          // Rätt svar
+          fragaDiv.classList.add('ratt');
+          forklaringDiv.className = 'forklaring ratt-forklaring visa';
+          antalRatt++;
+        } else {
+          // Fel svar eller inget svar
+          fragaDiv.classList.add('fel');
+          forklaringDiv.className = 'forklaring fel-forklaring visa';
+
+          // Markera valt (fel) alternativ
+          if (valtSvar) {
+            valtSvar.closest('li').classList.add('markera-fel');
+          }
+
+          if (!forstaFel) {
+            forstaFel = fragaDiv;
+          }
+        }
+      }
+
+      // Dölj rättningsknappen
+      this.style.display = 'none';
+
+      // Visa resultatruta
+      const resultatRuta = document.getElementById('resultat-ruta');
+      const resultatRubrik = document.getElementById('resultat-rubrik');
+      const resultatPoang = document.getElementById('resultat-poang');
+      const resultatText = document.getElementById('resultat-text');
+      const resultatKnappar = document.getElementById('resultat-knappar');
+
+      resultatPoang.textContent = antalRatt + ' av ' + antalFragor + ' rätt';
+
+      if (antalRatt === antalFragor) {
+        // Godkänt — spara i localStorage
+        localStorage.setItem('test-modul-5-godkand', 'true');
+
+        resultatRuta.className = 'resultat godkant';
+        resultatRubrik.textContent = 'Utmärkt! Du är godkänd!';
+        resultatText.textContent = 'Du har visat att du behärskar tillgänglighet och webbstandarder. Ditt resultat är sparat.';
+        resultatKnappar.innerHTML = '<a href="modul-6-javascript.html" class="nasta-modul-lank">Gå till Modul 6: JavaScript →</a>';
+      } else {
+        // Underkänt
+        resultatRuta.className = 'resultat underkant';
+        resultatRubrik.textContent = 'Inte riktigt än';
+        resultatText.textContent = 'Du behöver 100 % för att bli godkänd. Gå igenom de röda frågorna och förklaringarna, sedan kan du försöka igen.';
+        resultatKnappar.innerHTML = '<button class="knapp-forsok" onclick="location.reload()">Försök igen ↺</button>';
+
+        // Scrolla till första fel
+        if (forstaFel) {
+          setTimeout(function () {
+            forstaFel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      }
+
+      resultatRuta.style.display = 'block';
+      resultatRuta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+</body>
+</html>

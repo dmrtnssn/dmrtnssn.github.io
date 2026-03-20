@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test – Modul 4: Media och typsnitt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface-deep: #0f0f23;
+      --border: #2a2a4a;
+      --text: #e0e0e0;
+      --text-muted: #a0a0b0;
+      --accent-red: #e94560;
+      --accent-blue: #0db5e6;
+      --green: #27ae60;
+      --green-bg: #0d2818;
+      --red-bg: #2e0d16;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: #5dd0f0;
+      text-decoration: underline;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--accent-red);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .question.correct {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .question.wrong {
+      border-color: var(--accent-red);
+      background: var(--red-bg);
+    }
+
+    .question-number {
+      color: var(--accent-blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.6rem 0.9rem;
+      margin-bottom: 0.4rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      line-height: 1.5;
+    }
+
+    .options label:hover {
+      background: var(--border);
+    }
+
+    .options input[type="radio"] {
+      margin-top: 0.25rem;
+      flex-shrink: 0;
+      accent-color: var(--accent-blue);
+    }
+
+    .options label.selected-correct {
+      background: #1a4a2a;
+      border-color: var(--green);
+      color: #5dde8a;
+    }
+
+    .options label.selected-wrong {
+      background: #4a1a22;
+      border-color: var(--accent-red);
+      color: #f07090;
+    }
+
+    .options label.correct-answer {
+      background: #1a4a2a;
+      border-color: var(--green);
+      color: #5dde8a;
+    }
+
+    .explanation {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .explanation.correct {
+      background: #0d3320;
+      border-left: 3px solid var(--green);
+      color: #90d8aa;
+    }
+
+    .explanation.wrong {
+      background: #3a0d18;
+      border-left: 3px solid var(--accent-red);
+      color: #f0a0b0;
+    }
+
+    .check-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent-red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: 'Inter', inherit;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+
+    .check-btn:hover {
+      background: #c73550;
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    }
+
+    .check-btn:active { transform: scale(0.99); }
+    .check-btn:disabled { background: #444; cursor: not-allowed; box-shadow: none; }
+
+    .result-box {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .result-box.pass { background: var(--green-bg); border: 2px solid var(--green); }
+    .result-box.fail { background: var(--red-bg); border: 2px solid var(--accent-red); }
+
+    .result-score {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .result-box.pass .result-score { color: var(--green); }
+    .result-box.fail .result-score { color: var(--accent-red); }
+
+    .result-message {
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .retry-btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: var(--accent-blue);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', inherit;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .retry-btn:hover {
+      background: #0990ba;
+      box-shadow: 0 4px 15px rgba(13, 181, 230, 0.35);
+    }
+
+    .next-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.75rem 2rem;
+      background: var(--green);
+      color: white;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .next-link:hover {
+      background: #1e8a4a;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(39, 174, 96, 0.35);
+      color: white;
+    }
+
+    code {
+      background: var(--surface-deep);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.87em;
+      color: var(--accent-blue);
+    }
+
+    pre {
+      background: var(--surface-deep);
+      padding: 1.1rem;
+      border-radius: 8px;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.84rem;
+      color: #c8c8e0;
+      border-left: 3px solid var(--accent-blue);
+      line-height: 1.65;
+    }
+
+    /* Liten bildformat-demo */
+    .format-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.88rem;
+    }
+
+    .format-table th {
+      background: var(--surface-deep);
+      color: var(--accent-blue);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .format-table td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .format-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav-links">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-4-media-och-typsnitt.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <h1>Test – Modul 4: Media och typsnitt</h1>
+    <p class="intro">Svara på alla frågor och klicka sedan på "Rätta testet". Du behöver 100% rätt för att bli godkänd.</p>
+
+    <form id="quiz-form">
+
+      <div class="question" id="q1">
+        <div class="question-number">Fråga 1 av 10</div>
+        <div class="question-text">Du ska välja bildformat för en skalbar logotyp som behåller skärpa oavsett storlek — från en liten favicon till en stor reklamskärm. Vilket format är det enda som klarar detta utan kvalitetsförlust?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> JPEG – eftersom det ger liten filstorlek</label>
+          <label><input type="radio" name="q1" value="b"> PNG – eftersom det stödjer transparens och är förlustfritt</label>
+          <label><input type="radio" name="q1" value="c"> SVG – eftersom det är ett vektorformat som kan skalas obegränsat utan att bli suddigt</label>
+          <label><input type="radio" name="q1" value="d"> WebP – eftersom det alltid är det bästa valet</label>
+        </div>
+        <div class="explanation" id="exp1"></div>
+      </div>
+
+      <div class="question" id="q2">
+        <div class="question-number">Fråga 2 av 10</div>
+        <div class="question-text">Vad stämmer om <strong>SVG</strong>-formatet?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> SVG är ett pixelbaserat format som passar för fotografier</label>
+          <label><input type="radio" name="q2" value="b"> SVG är ett vektorformat baserat på XML som kan skalas till vilken storlek som helst utan att bli suddigt</label>
+          <label><input type="radio" name="q2" value="c"> SVG stödjer inte transparens</label>
+          <label><input type="radio" name="q2" value="d"> SVG filer är alltid mycket stora och bör undvikas</label>
+        </div>
+        <div class="explanation" id="exp2"></div>
+      </div>
+
+      <div class="question" id="q3">
+        <div class="question-number">Fråga 3 av 10</div>
+        <div class="question-text">Vad gör <code>object-fit: cover</code> på en bild?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> Bilden sträcks ut för att fylla hela behållaren, oavsett proportioner</label>
+          <label><input type="radio" name="q3" value="b"> Bilden skalas upp/ner för att täcka hela behållaren och behåller proportionerna – delar av bilden kan klippas bort</label>
+          <label><input type="radio" name="q3" value="c"> Bilden skalas för att rymmas helt inuti behållaren – kan lämna tomrum</label>
+          <label><input type="radio" name="q3" value="d"> Bilden döljs om den är större än behållaren</label>
+        </div>
+        <div class="explanation" id="exp3"></div>
+      </div>
+
+      <div class="question" id="q4">
+        <div class="question-number">Fråga 4 av 10</div>
+        <div class="question-text">Titta på denna HTML5-videokod. Vilket viktigt attribut saknas för god tillgänglighet och användarupplevelse?
+<pre>&lt;video src="film.mp4" width="800"&gt;&lt;/video&gt;</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"> Det saknas ett <code>type</code>-attribut</label>
+          <label><input type="radio" name="q4" value="b"> Det saknas <code>controls</code>-attributet – utan det syns inga uppspelningskontroller</label>
+          <label><input type="radio" name="q4" value="c"> Det saknas ett <code>alt</code>-attribut</label>
+          <label><input type="radio" name="q4" value="d"> Det saknas <code>autoplay</code> – videon kan inte spelas utan det</label>
+        </div>
+        <div class="explanation" id="exp4"></div>
+      </div>
+
+      <div class="question" id="q5">
+        <div class="question-number">Fråga 5 av 10</div>
+        <div class="question-text">Hur bäddar man in en YouTube-video på en webbsida?</div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="a"> Med <code>&lt;video src="youtube.com/..."&gt;</code></label>
+          <label><input type="radio" name="q5" value="b"> Med ett <code>&lt;iframe&gt;</code>-element och YouTube:s embed-URL</label>
+          <label><input type="radio" name="q5" value="c"> Med <code>&lt;embed&gt;</code> och videons direktlänk</label>
+          <label><input type="radio" name="q5" value="d"> Det är inte möjligt att bädda in YouTube-videos</label>
+        </div>
+        <div class="explanation" id="exp5"></div>
+      </div>
+
+      <div class="question" id="q6">
+        <div class="question-number">Fråga 6 av 10</div>
+        <div class="question-text">Hur inkluderar man ett Google Fonts-typsnitt korrekt i ett HTML-dokument?</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="a"> Man laddar ner filen och lägger den i samma mapp som HTML-filen, ingen länk behövs</label>
+          <label><input type="radio" name="q6" value="b"> Man lägger en <code>&lt;link&gt;</code>-tagg i <code>&lt;head&gt;</code> som pekar på Google Fonts-URL:en, sedan använder man font-family i CSS</label>
+          <label><input type="radio" name="q6" value="c"> Man skriver <code>&lt;font family="Inter"&gt;</code> runt texten man vill stilsätta</label>
+          <label><input type="radio" name="q6" value="d"> Man importerar typsnittet direkt i body-taggens style-attribut</label>
+        </div>
+        <div class="explanation" id="exp6"></div>
+      </div>
+
+      <div class="question" id="q7">
+        <div class="question-number">Fråga 7 av 10</div>
+        <div class="question-text">Vad gör <code>font-display: swap</code> i en <code>@font-face</code>-deklaration?</div>
+        <div class="options">
+          <label><input type="radio" name="q7" value="a"> Det byter typsnitt när användaren hovrar över texten</label>
+          <label><input type="radio" name="q7" value="b"> Det gör att webbläsaren visar en reservfont direkt, och byter till webbtypsnittet när det är laddat – förhindrar osynlig text under laddning</label>
+          <label><input type="radio" name="q7" value="c"> Det aktiverar ett animerat byte mellan två typsnitt</label>
+          <label><input type="radio" name="q7" value="d"> Det förhindrar att typsnittet laddas ned för att spara bandbredd</label>
+        </div>
+        <div class="explanation" id="exp7"></div>
+      </div>
+
+      <div class="question" id="q8">
+        <div class="question-number">Fråga 8 av 10</div>
+        <div class="question-text">Vad gör <code>aspect-ratio: 16 / 9</code> på ett element?</div>
+        <div class="options">
+          <label><input type="radio" name="q8" value="a"> Det gör att elementet alltid är 16px brett och 9px högt</label>
+          <label><input type="radio" name="q8" value="b"> Det håller elementets bredd/höjd-förhållande konstant på 16:9 oavsett storlek – perfekt för videobehållare</label>
+          <label><input type="radio" name="q8" value="c"> Det dividerar elementets bredd med 16 och höjden med 9</label>
+          <label><input type="radio" name="q8" value="d"> Det är ett CSS Grid-egenskapsvärde för kolumnstorlekar</label>
+        </div>
+        <div class="explanation" id="exp8"></div>
+      </div>
+
+      <div class="question" id="q9">
+        <div class="question-number">Fråga 9 av 10</div>
+        <div class="question-text">Titta på CSS-koden. Vilken effekt ger <code>transition</code>-egenskapen?
+<pre>.knapp {
+  background: #e94560;
+  transition: background 0.3s ease;
+}
+
+.knapp:hover {
+  background: #0db5e6;
+}</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q9" value="a"> Bakgrunden ändras omedelbart till blå när man hovrar, och tillbaka direkt när man tar bort muspekaren</label>
+          <label><input type="radio" name="q9" value="b"> Bakgrunden animeras mjukt från röd till blå på 0,3 sekunder när man hovrar – och tillbaka när man tar bort muspekaren</label>
+          <label><input type="radio" name="q9" value="c"> Knappen roterar 0,3 varv vid hover</label>
+          <label><input type="radio" name="q9" value="d"> Knappen försvinner efter 0,3 sekunder</label>
+        </div>
+        <div class="explanation" id="exp9"></div>
+      </div>
+
+      <div class="question" id="q10">
+        <div class="question-number">Fråga 10 av 10</div>
+        <div class="question-text">Hitta felet i denna kod för en responsiv bildcontainer:
+<pre>.video-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;  /* ← Är detta rätt? */
+}</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q10" value="a"> aspect-ratio fungerar inte med width: 100%</label>
+          <label><input type="radio" name="q10" value="b"> <code>object-fit</code> gäller för bilder och video-element, inte för iframes – för iframes behövs inget object-fit, width/height: 100% räcker</label>
+          <label><input type="radio" name="q10" value="c"> iframe-elementet ska ha <code>display: block</code> för att fungera</label>
+          <label><input type="radio" name="q10" value="d"> Det är ingenting fel – koden fungerar korrekt</label>
+        </div>
+        <div class="explanation" id="exp10"></div>
+      </div>
+
+      <button type="button" class="check-btn" id="check-btn" onclick="rattaTest()">Rätta testet</button>
+    </form>
+
+    <div class="result-box" id="result-box">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-message" id="result-message"></div>
+      <div id="result-actions"></div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'test-modul-4-godkand';
+    const TOTAL = 10;
+
+    const answers = {
+      q1: 'c',
+      q2: 'b',
+      q3: 'b',
+      q4: 'b',
+      q5: 'b',
+      q6: 'b',
+      q7: 'b',
+      q8: 'b',
+      q9: 'b',
+      q10: 'b'
+    };
+
+    const explanations = {
+      q1: {
+        correct: 'Rätt! SVG är ett vektorformat – det beskriver grafik matematiskt och kan skalas till vilken storlek som helst utan att bli suddigt. Det är det enda formatet som klarar skalning från favicon till reklamskärm med bibehållen skärpa.',
+        wrong: 'Fel. Det enda formatet som behåller skärpan oavsett storlek är <strong>SVG</strong> – ett vektorformat som beskriver grafik med matematik istället för pixlar. PNG är pixelbaserat och blir suddigt vid uppförstoring. JPEG stödjer inte transparens och ger kompressionsartefakter. WebP är också pixelbaserat.'
+      },
+      q2: {
+        correct: 'Rätt! SVG (Scalable Vector Graphics) är XML-baserat och beskriver former matematiskt – det kan skalas hur stort som helst utan kvalitetsförlust, och filerna är ofta väldigt små för enkla grafiker.',
+        wrong: 'Fel. <strong>SVG</strong> är ett <strong>vektorformat</strong> baserat på XML. Det beskriver grafik med matematik (linjer, kurvor, former) istället för pixlar. Det kan skalas obegränsat utan att bli suddigt och passar utmärkt för logotyper, ikoner och illustrationer.'
+      },
+      q3: {
+        correct: 'Rätt! object-fit: cover skalar bilden proportionellt tills den täcker hela behållaren. Delar som sticker ut klipps bort. Perfekt för bildrutor som ska ha konsekvent storlek.',
+        wrong: 'Fel. <strong>object-fit: cover</strong> skalar bilden så att den <strong>täcker hela behållarens yta</strong> och behåller proportionerna. Delar av bilden kan klippas bort. object-fit: contain håller hela bilden synlig (men kan ge tomrum). object-fit: fill sträcker bilden och förvränger proportionerna.'
+      },
+      q4: {
+        correct: 'Rätt! Utan controls-attributet visas inga uppspelningskontroller – användaren kan varken starta, pausa eller reglera volymen. Undantaget är om man använder autoplay (vilket är dålig UX). Controls är nästan alltid nödvändigt.',
+        wrong: 'Fel. Det saknas <strong>controls</strong>-attributet. Utan det renderas videon men det syns inga knappar för att spela upp, pausa eller ändra volym. Korrekt: <code>&lt;video src="film.mp4" width="800" controls&gt;&lt;/video&gt;</code>. (video-element använder inte alt-attribut – det är för img.)'
+      },
+      q5: {
+        correct: 'Rätt! YouTube tillhandahåller en embed-URL (youtube.com/embed/VIDEO_ID) som man använder med ett iframe-element. Man kan inte länka direkt till en YouTube-sida i en video-tagg.',
+        wrong: 'Fel. YouTube-videos bäddas in med ett <strong>&lt;iframe&gt;</strong>-element och en speciell embed-URL från YouTube (t.ex. https://www.youtube.com/embed/VIDEO_ID). Man kan inte använda &lt;video src="youtube.com/..."&gt; direkt – YouTube serverar inte videofiler via direktlänkar.'
+      },
+      q6: {
+        correct: 'Rätt! Inkludera en link-tagg i head (gärna med rel="preconnect" för prestanda) som pekar på Google Fonts-URL:en. Sedan använder du font-family-värdet i din CSS.',
+        wrong: 'Fel. Google Fonts inkluderas med en <strong>&lt;link&gt;</strong>-tagg i &lt;head&gt; som pekar på en Google Fonts-URL. Sen anger man typsnittet i CSS med font-family. Exempel: <code>&lt;link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"&gt;</code>'
+      },
+      q7: {
+        correct: 'Rätt! font-display: swap löser FOIT-problemet (Flash of Invisible Text). Webbläsaren visar text med en systemfont direkt och byter till webbtypsnitt när det laddats klart. Föredras framför standard-beteendet.',
+        wrong: 'Fel. <strong>font-display: swap</strong> styr vad som händer när ett webbtypsnitt laddas. Med swap visas text direkt med en reservfont, och byts sedan ut när webbtypsnitt är laddat. Det förhindrar FOIT (Flash of Invisible Text) där text är osynlig under laddning.'
+      },
+      q8: {
+        correct: 'Rätt! aspect-ratio: 16 / 9 håller proportionen konstant. Är elementet 800px brett blir det automatiskt 450px högt (800 × 9/16). Perfekt för att göra videobehållare responsiva.',
+        wrong: 'Fel. <strong>aspect-ratio: 16 / 9</strong> anger ett <strong>proportionellt förhållande</strong> – när bredden ändras anpassas höjden automatiskt för att bibehålla 16:9-proportionen. Det är inte absoluta pixelvärden. Används ofta för videobehållare.'
+      },
+      q9: {
+        correct: 'Rätt! transition: background 0.3s ease gör att bakgrunden animeras mjukt med en ease-funktion (börjar snabbt, saktar ner) under 0,3 sekunder vid hover – och animeras tillbaka vid mouseout.',
+        wrong: 'Fel. <strong>transition: background 0.3s ease</strong> skapar en <strong>mjuk animation</strong> av background-egenskapen. "0.3s" är varaktigheten, "ease" är timing-funktionen (mjuk start och slut). Utan transition hade ändringen skett omedelbart utan animation.'
+      },
+      q10: {
+        correct: 'Rätt! object-fit är en egenskap för replaced elements som bilder (<img>) och video (<video>). Den fungerar inte på iframe-element. För iframes räcker det med width: 100% och height: 100% – iframen skalas som ett block-element.',
+        wrong: 'Fel. <strong>object-fit fungerar inte på &lt;iframe&gt;</strong>. Det är en egenskap som gäller för "replaced elements" som &lt;img&gt; och &lt;video&gt;. För att en iframe ska täcka sin container används bara width: 100% och height: 100%. object-fit: fill på en iframe har ingen effekt.'
+      }
+    };
+
+    let answered = false;
+
+    function rattaTest() {
+      if (answered) return;
+
+      let score = 0;
+      let firstWrong = null;
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const questionEl = document.getElementById(key);
+        const expEl = document.getElementById('exp' + i);
+        const labels = questionEl.querySelectorAll('.options label');
+
+        questionEl.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+
+        if (!selected) {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = '<strong>Du svarade inte på denna fråga.</strong> ' + explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          expEl.style.display = 'block';
+          if (!firstWrong) firstWrong = questionEl;
+          continue;
+        }
+
+        const userVal = selected.value;
+        const correctVal = answers[key];
+        const isCorrect = userVal === correctVal;
+
+        labels.forEach(label => {
+          const radio = label.querySelector('input');
+          if (!radio) return;
+          if (radio.value === userVal && isCorrect) label.classList.add('selected-correct');
+          else if (radio.value === userVal && !isCorrect) label.classList.add('selected-wrong');
+          if (radio.value === correctVal && !isCorrect) label.classList.add('correct-answer');
+        });
+
+        if (isCorrect) {
+          score++;
+          questionEl.classList.add('correct');
+          expEl.innerHTML = explanations[key].correct;
+          expEl.className = 'explanation correct';
+        } else {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          if (!firstWrong) firstWrong = questionEl;
+        }
+
+        expEl.style.display = 'block';
+      }
+
+      answered = true;
+      document.getElementById('check-btn').disabled = true;
+
+      const resultBox = document.getElementById('result-box');
+      const resultScore = document.getElementById('result-score');
+      const resultMessage = document.getElementById('result-message');
+      const resultActions = document.getElementById('result-actions');
+
+      resultScore.textContent = score + ' av ' + TOTAL + ' rätt';
+      resultBox.style.display = 'block';
+
+      if (score === TOTAL) {
+        localStorage.setItem(STORAGE_KEY, 'true');
+        resultBox.className = 'result-box pass';
+        resultMessage.innerHTML = 'Perfekt! Du klarade testet med full poäng och är nu godkänd på Modul 4.';
+        resultActions.innerHTML = '<a href="modul-5-tillganglighet.html" class="next-link">Gå vidare till Modul 5 →</a>';
+      } else {
+        resultBox.className = 'result-box fail';
+        const numWrong = TOTAL - score;
+        resultMessage.innerHTML = 'Du hade ' + numWrong + ' fel svar. Du behöver 100% rätt för att bli godkänd. Läs förklaringarna och försök igen.';
+        resultActions.innerHTML = '<button class="retry-btn" onclick="resetTest()">Försök igen</button>';
+        if (firstWrong) {
+          setTimeout(() => firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+      }
+
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetTest() {
+      answered = false;
+      document.getElementById('check-btn').disabled = false;
+      document.getElementById('result-box').style.display = 'none';
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const questionEl = document.getElementById(key);
+        questionEl.classList.remove('correct', 'wrong');
+
+        const expEl = document.getElementById('exp' + i);
+        expEl.style.display = 'none';
+        expEl.innerHTML = '';
+
+        questionEl.querySelectorAll('input[type="radio"]').forEach(r => {
+          r.checked = false;
+          r.disabled = false;
+        });
+
+        questionEl.querySelectorAll('.options label').forEach(l => {
+          l.classList.remove('selected-correct', 'selected-wrong', 'correct-answer');
+        });
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webutveckling 1 — Kursöversikt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Reset & bas ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary:    #1a1a2e;
+      --bg-secondary:  #16213e;
+      --bg-card:       #0f3460;
+      --bg-card-hover: #1a4070;
+      --accent-red:    #e94560;
+      --accent-blue:   #0db5e6;
+      --text-primary:  #e0e0e0;
+      --text-secondary:#a0a8b8;
+      --text-muted:    #6b7280;
+      --border:        rgba(13, 181, 230, 0.15);
+      --border-hover:  rgba(13, 181, 230, 0.4);
+      --radius:        10px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== Header / Hero ===== */
+    header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 60%, #0d1b3e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 20px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(13, 181, 230, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(233, 69, 96, 0.15);
+      border: 1px solid rgba(233, 69, 96, 0.35);
+      color: var(--accent-red);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+
+    h1 span {
+      color: var(--accent-blue);
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+
+    .course-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 20px;
+    }
+
+    .course-meta span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .course-meta span::before {
+      content: '// ';
+      color: var(--accent-blue);
+      opacity: 0.6;
+    }
+
+    /* ===== Main layout ===== */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 20px 40px;
+    }
+
+    /* ===== Section heading ===== */
+    .section-heading {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ===== Module grid ===== */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 70px;
+    }
+
+    /* ===== Module card ===== */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-blue));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .module-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent-blue);
+      background: rgba(13, 181, 230, 0.1);
+      border: 1px solid rgba(13, 181, 230, 0.2);
+      padding: 4px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .card h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .card-description {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    .card-lessons {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .card-arrow {
+      font-size: 16px;
+      color: var(--accent-blue);
+      margin-left: auto;
+      padding-left: 10px;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ===== Om kursen-sektion ===== */
+    .about-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 60px;
+    }
+
+    .about-section h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .about-section p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .about-section p + p {
+      margin-top: 12px;
+    }
+
+    .progress-track {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .progress-step {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 5px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .progress-step.done {
+      border-color: rgba(233, 69, 96, 0.3);
+      background: rgba(233, 69, 96, 0.07);
+      color: var(--accent-red);
+    }
+
+    .progress-step.highlight {
+      border-color: rgba(13, 181, 230, 0.35);
+      background: rgba(13, 181, 230, 0.08);
+      color: var(--accent-blue);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer strong {
+      color: var(--text-secondary);
+    }
+
+    /* ===== Responsivitet ===== */
+    @media (max-width: 640px) {
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-section {
+        padding: 26px 22px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* ===== Test-system tillägg ===== */
+    .card.dimmed {
+      opacity: 0.55;
+      filter: grayscale(0.3);
+    }
+
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    .status-godkand {
+      color: #2ecc71;
+    }
+
+    .status-ej-godkand {
+      color: #e94560;
+    }
+
+    .test-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 7px 14px;
+      background: rgba(233, 69, 96, 0.12);
+      border: 1px solid rgba(233, 69, 96, 0.35);
+      border-radius: 5px;
+      color: #e94560;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .test-link:hover {
+      background: rgba(233, 69, 96, 0.22);
+      border-color: rgba(233, 69, 96, 0.6);
+    }
+
+    .test-link.godkand {
+      background: rgba(46, 204, 113, 0.1);
+      border-color: rgba(46, 204, 113, 0.35);
+      color: #2ecc71;
+    }
+
+    .test-link.godkand:hover {
+      background: rgba(46, 204, 113, 0.2);
+    }
+
+    /* ===== Modal ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #16213e;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      border-radius: 12px;
+      padding: 32px 36px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .modal-box p {
+      font-size: 0.9rem;
+      color: #a0a8b8;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn-back {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid rgba(13, 181, 230, 0.3);
+      border-radius: 6px;
+      background: transparent;
+      color: #a0a8b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .modal-btn-back:hover {
+      border-color: rgba(13, 181, 230, 0.6);
+      color: #0db5e6;
+    }
+
+    .modal-btn-continue {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #e94560;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-btn-continue:hover {
+      background: #d63451;
+    }
+
+    /* ===== Återställ-knapp ===== */
+    .reset-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid rgba(107, 114, 128, 0.4);
+      border-radius: 6px;
+      color: #6b7280;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .reset-btn:hover {
+      border-color: #e94560;
+      color: #e94560;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header>
+    <div class="header-badge">Gymnasiet &mdash; Informatik</div>
+    <h1>Webutveckling <span>1</span></h1>
+    <p class="subtitle">Från noll till webbplats &mdash; en komplett kurs i HTML, CSS och JavaScript</p>
+    <div class="course-meta">
+      <span>Modul 1&ndash;8</span>
+      <span>Gymnasiet</span>
+      <span>35 lektioner</span>
+    </div>
+  </header>
+
+  <!-- ===== Moduler ===== -->
+  <main>
+    <h2 class="section-heading">Kursmoduler</h2>
+
+    <div class="module-grid">
+
+      <!-- Modul 1 -->
+      <div class="card" data-modul="1" data-href="modul-1-html-grunder-v2.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 01</span>
+          <h2>HTML-grunder</h2>
+        </div>
+        <p class="card-description">
+          Webbens historia, klient/server-modellen och hur du skapar din första HTML-sida.
+          Semantisk uppmärkning och grundläggande tillgänglighet.
+        </p>
+        <div class="card-status" id="status-1"></div>
+        <div class="card-footer">
+          <span class="card-lessons">8 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-1.html" id="test-link-1">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 2 -->
+      <div class="card" data-modul="2" data-href="modul-2-css.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 02</span>
+          <h2>CSS</h2>
+        </div>
+        <p class="card-description">
+          Syntax, selektorer, färger och typsnitt. Boxmodellen och de första
+          stegen mot strukturerad layout med CSS.
+        </p>
+        <div class="card-status" id="status-2"></div>
+        <div class="card-footer">
+          <span class="card-lessons">4 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-2.html" id="test-link-2">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 3 -->
+      <div class="card" data-modul="3" data-href="modul-3-responsiv-design.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 03</span>
+          <h2>Responsiv design</h2>
+        </div>
+        <p class="card-description">
+          Media queries och flexbox. Anpassa din webbplats för mobiler, surfplattor
+          och datorskärmar.
+        </p>
+        <div class="card-status" id="status-3"></div>
+        <div class="card-footer">
+          <span class="card-lessons">4 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-3.html" id="test-link-3">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 4 -->
+      <div class="card" data-modul="4" data-href="modul-4-media-och-typsnitt.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 04</span>
+          <h2>Media och typsnitt</h2>
+        </div>
+        <p class="card-description">
+          Bildformat, video, ljud och webbfonter. Lär dig bädda in media och
+          använda Google Fonts för ett professionellt uttryck.
+        </p>
+        <div class="card-status" id="status-4"></div>
+        <div class="card-footer">
+          <span class="card-lessons">4 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-4.html" id="test-link-4">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 5 -->
+      <div class="card" data-modul="5" data-href="modul-5-tillganglighet.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 05</span>
+          <h2>Tillgänglighet och standarder</h2>
+        </div>
+        <p class="card-description">
+          WCAG-riktlinjer, W3C-standarder, kontrast och skärmläsare. Bygg
+          webbplatser som fungerar för alla.
+        </p>
+        <div class="card-status" id="status-5"></div>
+        <div class="card-footer">
+          <span class="card-lessons">3 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-5.html" id="test-link-5">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 6 -->
+      <div class="card" data-modul="6" data-href="modul-6-javascript.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 06</span>
+          <h2>JavaScript-introduktion</h2>
+        </div>
+        <p class="card-description">
+          Variabler, DOM-manipulation och events. Gör din webbplats interaktiv
+          med grundläggande JavaScript.
+        </p>
+        <div class="card-status" id="status-6"></div>
+        <div class="card-footer">
+          <span class="card-lessons">4 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-6.html" id="test-link-6">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 7 -->
+      <div class="card" data-modul="7" data-href="modul-7-projektarbete.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 07</span>
+          <h2>Projektarbete</h2>
+        </div>
+        <p class="card-description">
+          Planering, byggfas, testning och dokumentation. Tillämpa allt du lärt
+          dig i ett eget webbprojekt.
+        </p>
+        <div class="card-status" id="status-7"></div>
+        <div class="card-footer">
+          <span class="card-lessons">6 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-7.html" id="test-link-7">Gå till test &rarr;</a>
+      </div>
+
+      <!-- Modul 8 -->
+      <div class="card" data-modul="8" data-href="modul-8-lagar-och-etik.html" style="cursor:pointer;" tabindex="0" role="button">
+        <div class="card-header">
+          <span class="module-number">Modul 08</span>
+          <h2>Lagar och etik</h2>
+        </div>
+        <p class="card-description">
+          Upphovsrätt, GDPR och etiska överväganden. Vad gäller juridiskt och
+          moraliskt på webben?
+        </p>
+        <div class="card-status" id="status-8"></div>
+        <div class="card-footer">
+          <span class="card-lessons">2 lektioner</span>
+          <span class="card-arrow">&rarr;</span>
+        </div>
+        <a class="test-link" href="test-modul-8.html" id="test-link-8">Gå till test &rarr;</a>
+      </div>
+
+    </div>
+
+    <!-- ===== Om kursen ===== -->
+    <h2 class="section-heading">Om kursen</h2>
+
+    <section class="about-section" aria-label="Om kursen">
+      <h2>Progressiv inlärning — från HTML till JavaScript</h2>
+      <p>
+        Webutveckling 1 är upplagd som en progressiv resa där varje modul bygger vidare på
+        föregående. Du börjar med ren HTML-struktur och tillgänglighet, lägger sedan till
+        CSS för utseende och layout, och avslutar med JavaScript för interaktivitet.
+      </p>
+      <p>
+        CSS-användningen i kursmaterialet följer samma progression: de tidiga modulerna
+        använder enkel inline-stil och grundläggande selektorer, medan de senare modulerna
+        introducerar flexbox, responsiv design, animationer och CSS-variabler — precis som
+        du lär dig dem i kursen.
+      </p>
+      <p>
+        Projektarbetet i modul 7 ger dig möjlighet att kombinera alla tekniker i ett
+        eget projekt. Modul 8 behandlar de juridiska och etiska ramarna som gäller
+        för all webbutveckling.
+      </p>
+
+      <div class="progress-track" aria-label="Teknikprogression">
+        <span class="progress-step done">HTML5</span>
+        <span class="progress-step done">Semantik</span>
+        <span class="progress-step done">CSS-syntax</span>
+        <span class="progress-step done">Boxmodellen</span>
+        <span class="progress-step done">Flexbox</span>
+        <span class="progress-step done">Media queries</span>
+        <span class="progress-step done">Webbfonter</span>
+        <span class="progress-step done">WCAG</span>
+        <span class="progress-step highlight">JavaScript</span>
+        <span class="progress-step highlight">DOM</span>
+        <span class="progress-step highlight">GDPR</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Återställ framsteg ===== -->
+  <div class="reset-section">
+    <button class="reset-btn" id="reset-btn">Återställ framsteg</button>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="footer-inner">
+      <p><strong>Webutveckling 1</strong> &mdash; Gymnasiet</p>
+      <p>Modul 1&ndash;8 &nbsp;&bull;&nbsp; 35 lektioner</p>
+      <p>HTML &middot; CSS &middot; JavaScript</p>
+    </div>
+  </footer>
+
+<!-- ===== Modal för olåst modul ===== -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box">
+    <h3 id="modal-title"></h3>
+    <p id="modal-text">Du har inte klarat testet för föregående modul ännu. Vill du fortsätta ändå?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn-back" id="modal-back">Gå tillbaka</button>
+      <button class="modal-btn-continue" id="modal-continue">Fortsätt ändå</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var pendingHref = null;
+
+    // ── Hjälpfunktioner ──────────────────────────────────────────
+    function isGodkand(modulNr) {
+      return localStorage.getItem('test-modul-' + modulNr + '-godkand') === 'true';
+    }
+
+    // ── Uppdatera kortens utseende ───────────────────────────────
+    function updateCards() {
+      for (var i = 1; i <= 8; i++) {
+        var card      = document.querySelector('[data-modul="' + i + '"]');
+        var statusEl  = document.getElementById('status-' + i);
+        var testLink  = document.getElementById('test-link-' + i);
+        if (!card) continue;
+
+        var prevGodkand = (i === 1) || isGodkand(i - 1);
+        var thisGodkand = isGodkand(i);
+
+        // Dimma kortet om föregående test inte är godkänt (och det inte är modul 1)
+        if (!prevGodkand) {
+          card.classList.add('dimmed');
+        } else {
+          card.classList.remove('dimmed');
+        }
+
+        // Statusindikator
+        if (statusEl) {
+          if (thisGodkand) {
+            statusEl.innerHTML = '<span class="status-godkand">&#10003; Godkänd</span>';
+            if (testLink) {
+              testLink.classList.add('godkand');
+              testLink.textContent = 'Test godkänt \u2713';
+            }
+          } else if (!prevGodkand) {
+            statusEl.innerHTML = '<span class="status-ej-godkand">&#128274; Ej godkänd (kräver modul ' + (i - 1) + ')</span>';
+          } else {
+            statusEl.innerHTML = '';
+          }
+        }
+      }
+    }
+
+    // ── Klickhantering för kort ──────────────────────────────────
+    document.querySelectorAll('.card[data-modul]').forEach(function (card) {
+      card.addEventListener('click', function (e) {
+        // Låt klick på test-länken passera direkt
+        if (e.target.closest('.test-link')) return;
+
+        var modulNr  = parseInt(card.getAttribute('data-modul'), 10);
+        var href     = card.getAttribute('data-href');
+        var prevGodkand = (modulNr === 1) || isGodkand(modulNr - 1);
+
+        if (prevGodkand) {
+          window.location.href = href;
+        } else {
+          // Visa modal
+          pendingHref = href;
+          var overlay = document.getElementById('modal-overlay');
+          document.getElementById('modal-title').textContent =
+            'Du har inte klarat testet för Modul ' + (modulNr - 1) + ' ännu. Vill du fortsätta ändå?';
+          overlay.classList.add('active');
+          document.getElementById('modal-back').focus();
+        }
+      });
+
+      // Tangentbordshantering: Enter och Space triggar klick
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+
+    // ── Modal-knappar ────────────────────────────────────────────
+    document.getElementById('modal-back').addEventListener('click', function () {
+      document.getElementById('modal-overlay').classList.remove('active');
+      pendingHref = null;
+    });
+
+    document.getElementById('modal-continue').addEventListener('click', function () {
+      if (pendingHref) window.location.href = pendingHref;
+    });
+
+    document.getElementById('modal-overlay').addEventListener('click', function (e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        pendingHref = null;
+      }
+    });
+
+    // ── Återställ-knapp ──────────────────────────────────────────
+    document.getElementById('reset-btn').addEventListener('click', function () {
+      if (!confirm('Är du säker? All testdata (godkända moduler) kommer att raderas.')) return;
+      for (var i = 1; i <= 8; i++) {
+        localStorage.removeItem('test-modul-' + i + '-godkand');
+      }
+      updateCards();
+    });
+
+    // ── Kör vid sidladdning ──────────────────────────────────────
+    updateCards();
+  })();
+</script>
+
+</body>
+</html>

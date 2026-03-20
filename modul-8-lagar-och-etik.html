@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul 8: Lagar och etik — Webutveckling 1</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  CSS-STRATEGI FÖR DEN HÄR PRESENTATIONEN                   ║
+    ║                                                              ║
+    ║  Det här är SISTA modulen. Vi bygger på allt från modul 1–7:║
+    ║                                                              ║
+    ║  Modul 1: font-family, margin, background-color, color,     ║
+    ║           padding, font-size, font-weight, border,          ║
+    ║           border-radius, text-decoration, :hover,           ║
+    ║           max-width, outline/:focus                         ║
+    ║                                                              ║
+    ║  Modul 2: class/id-selektorer, rgba(), font-style,          ║
+    ║           line-height, box-sizing: border-box,              ║
+    ║           display: block/inline/inline-block, shorthand     ║
+    ║                                                              ║
+    ║  Modul 3: @media queries, flexbox (display: flex,           ║
+    ║           flex-wrap, gap, justify-content, align-items),    ║
+    ║           CSS-enheter (rem, vh, vw), CSS Grid (teaser)      ║
+    ║                                                              ║
+    ║  Modul 4: object-fit, aspect-ratio, @import för Google       ║
+    ║           Fonts, transition för hover-effekter              ║
+    ║           (Media och typsnitt)                              ║
+    ║                                                              ║
+    ║  Modul 5: :focus-visible, prefers-reduced-motion,            ║
+    ║           prefers-color-scheme, @media print                ║
+    ║           (Tillgänglighet)                                  ║
+    ║                                                              ║
+    ║  Modul 6: cursor, user-select, JS-toggled classes,          ║
+    ║           @keyframes animation                              ║
+    ║           (JavaScript)                                      ║
+    ║                                                              ║
+    ║  Modul 7: CSS custom properties, animation                  ║
+    ║           (Projektarbete)                                   ║
+    ║                                                              ║
+    ║  NYTT I MODUL 8: @media print (utskriftsstylesheet),        ║
+    ║  CSS counters för automatisk numrering av paragrafer,       ║
+    ║  komplett CSS-referenstabell i sammanfattningen.            ║
+    ║                                                              ║
+    ║  Tips: Högerklicka → Inspektera för att granska CSS.        ║
+    ║  Prova också: Fil → Skriv ut — se hur print-CSS tar över!   ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       RESET OCH BAS
+       Allt vi har byggt upp sedan Modul 1.
+       ═══════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CSS-VARIABLER (från Modul 4)
+       Hela sidan styrs av dessa variabler.
+       ═══════════════════════════════════════════════════════════ */
+
+    :root {
+      --accent-rod:   #e94560;
+      --accent-bla:   #0db5e6;
+      --accent-gron:  #2ecc71;
+      --accent-gul:   #f39c12;
+      --bg-mork:      #1a1a2e;
+      --bg-mellmork:  #16213e;
+      --bg-panel:     #0d1b2a;
+      --bg-kod:       #12121a;
+      --text-ljus:    #e0e0e0;
+      --text-dim:     #aaa;
+      --border-dim:   #333;
+      --radius:       6px;
+      --skugga:       0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Dark mode respekt (från Modul 7) */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-mork:     #f5f5f5;
+        --bg-mellmork: #e8eaf0;
+        --bg-panel:    #dde0ea;
+        --bg-kod:      #1a1a2e;
+        --text-ljus:   #1a1a2e;
+        --text-dim:    #555;
+        --border-dim:  #bbb;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TYPOGRAFI
+       ═══════════════════════════════════════════════════════════ */
+
+    h1 {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 0;
+      border-bottom: 2px solid var(--border-dim);
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      color: var(--accent-rod);
+      margin-top: 28px;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    strong {
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LÄNKAR
+       ═══════════════════════════════════════════════════════════ */
+
+    a {
+      color: var(--accent-bla);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #6dd5f7;
+    }
+
+    a:focus {
+      outline: 3px solid var(--accent-rod);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TABELLER
+       ═══════════════════════════════════════════════════════════ */
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid var(--border-dim);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-panel);
+      color: var(--accent-rod);
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background-color: rgba(255,255,255,0.02);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       KOD OCH KODEXEMPEL
+       ═══════════════════════════════════════════════════════════ */
+
+    .kodexempel {
+      background-color: var(--bg-kod);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .kodexempel pre {
+      margin: 0;
+    }
+
+    .kodexempel code,
+    .kodexempel pre {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.88em;
+      background-color: rgba(13, 181, 230, 0.12);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--accent-bla);
+    }
+
+    .kodexempel code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      color: #e0e0e0;
+      font-size: 13px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       UPPDRAG-RUTOR OCH INFO-RUTOR
+       ═══════════════════════════════════════════════════════════ */
+
+    .uppdrag {
+      border-left: 4px solid var(--accent-rod);
+      padding: 16px 20px;
+      margin: 20px 0;
+      background-color: var(--bg-mellmork);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .uppdrag h3 {
+      margin-top: 0;
+    }
+
+    .info-ruta {
+      background-color: var(--bg-panel);
+      border-left: 4px solid var(--accent-bla);
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .info-ruta strong {
+      color: var(--accent-bla);
+    }
+
+    .varning-ruta {
+      background-color: rgba(243, 156, 18, 0.08);
+      border-left: 4px solid var(--accent-gul);
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .varning-ruta strong {
+      color: var(--accent-gul);
+    }
+
+    .gron-ruta {
+      background-color: rgba(46, 204, 113, 0.08);
+      border-left: 4px solid var(--accent-gron);
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .gron-ruta strong {
+      color: var(--accent-gron);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CSS-SPANING RUTOR
+       ═══════════════════════════════════════════════════════════ */
+
+    .css-spaning {
+      background-color: #0a0a1a;
+      color: #ccc;
+      border: 2px dashed var(--accent-bla);
+      padding: 14px 18px;
+      margin: 24px 0;
+      font-size: 14px;
+      border-radius: var(--radius);
+    }
+
+    .css-spaning strong {
+      color: var(--accent-rod);
+    }
+
+    .css-spaning code {
+      font-size: 0.9em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SEPARATOR
+       ═══════════════════════════════════════════════════════════ */
+
+    .separator {
+      border: none;
+      border-top: 1px solid var(--border-dim);
+      margin: 40px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HEADER MED FLEXBOX (Modul 3)
+       ═══════════════════════════════════════════════════════════ */
+
+    .modul-header {
+      background: linear-gradient(135deg, #0d1b2a 0%, #16213e 100%);
+      border-bottom: 3px solid var(--accent-rod);
+      padding: 40px 20px 30px;
+    }
+
+    .modul-header .container {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .modul-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .modul-badge {
+      background-color: var(--accent-rod);
+      color: #fff;
+      font-size: 0.75em;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .modul-uka {
+      color: var(--text-dim);
+      font-size: 0.9em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAVIGERING (Flexbox + Grid mix)
+       ═══════════════════════════════════════════════════════════ */
+
+    .toc {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .toc h2 {
+      font-size: 1em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      border: none;
+      padding: 0;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .toc li {
+      margin: 6px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LEKTION-SEKTIONER
+       ═══════════════════════════════════════════════════════════ */
+
+    .lektion {
+      padding: 40px 0;
+    }
+
+    .lektion-rubrik {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .lektion-nummer {
+      font-size: 0.7em;
+      font-weight: 700;
+      color: var(--accent-rod);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NYT I MODUL 8: CSS COUNTERS
+       Automatisk numrering av "paragraf"-element utan att
+       manuellt skriva siffror i HTML:en.
+       Egenskaper: counter-reset, counter-increment, content,
+       ::before pseudo-element
+       ═══════════════════════════════════════════════════════════ */
+
+    .numrerade-punkter {
+      counter-reset: paragraf-raknare;
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+    }
+
+    .numrerade-punkter li {
+      counter-increment: paragraf-raknare;
+      position: relative;
+      padding: 12px 16px 12px 52px;
+      margin: 8px 0;
+      background-color: var(--bg-mellmork);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-dim);
+    }
+
+    .numrerade-punkter li::before {
+      content: counter(paragraf-raknare);
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      background-color: var(--accent-rod);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85em;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LICENS-KORT (CSS Grid från Modul 4)
+       ═══════════════════════════════════════════════════════════ */
+
+    .licens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .licens-kort {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border-top: 3px solid var(--accent-gron);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .licens-kort:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--skugga);
+    }
+
+    .licens-kort.rod {
+      border-top-color: var(--accent-rod);
+    }
+
+    .licens-kort.bla {
+      border-top-color: var(--accent-bla);
+    }
+
+    .licens-kort.gul {
+      border-top-color: var(--accent-gul);
+    }
+
+    .licens-namn {
+      font-weight: 700;
+      font-size: 1em;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .licens-tag {
+      display: inline-block;
+      font-size: 0.72em;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background-color: var(--accent-gron);
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .licens-kort.rod .licens-tag { background-color: var(--accent-rod); }
+    .licens-kort.bla .licens-tag { background-color: var(--accent-bla); }
+    .licens-kort.gul .licens-tag { background-color: var(--accent-gul); }
+
+    .licens-kort p {
+      font-size: 0.88em;
+      color: var(--text-dim);
+      margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GDPR-VISUALISERING
+       ═══════════════════════════════════════════════════════════ */
+
+    .persondata-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .persondata-tagg {
+      background-color: var(--bg-mellmork);
+      border: 1px solid var(--border-dim);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 0.88em;
+      color: var(--text-ljus);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .persondata-tagg.ja {
+      border-color: var(--accent-rod);
+      background-color: rgba(233, 69, 96, 0.1);
+      color: #ff8fa0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       DARK PATTERN DEMO
+       ═══════════════════════════════════════════════════════════ */
+
+    .darkpattern-demo {
+      background-color: var(--bg-panel);
+      border: 2px solid var(--accent-gul);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .darkpattern-demo::before {
+      content: "DEMO: Dark pattern";
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.7em;
+      font-weight: 700;
+      color: var(--accent-gul);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dp-knappar {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .dp-knapp-ja {
+      background-color: var(--accent-gron);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dp-knapp-nej {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 0.7em;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      align-self: flex-end;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       KURSSAMMANFATTNING — STOR SEKTION
+       ═══════════════════════════════════════════════════════════ */
+
+    .kurs-sammanfattning {
+      background: linear-gradient(135deg, #0d1b2a 0%, #10172a 100%);
+      border: 2px solid var(--accent-rod);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 40px 0;
+    }
+
+    .kurs-sammanfattning h2 {
+      color: var(--accent-rod);
+      border-bottom-color: var(--accent-rod);
+      font-size: 2em;
+    }
+
+    /* Modulkort-grid (CSS Grid) */
+    .modul-korts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .modul-kort {
+      background-color: var(--bg-mellmork);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 16px;
+      border-top: 3px solid var(--accent-bla);
+      font-size: 0.88em;
+    }
+
+    .modul-kort-nr {
+      font-size: 0.7em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-bla);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .modul-kort-titel {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .modul-kort ul {
+      margin: 0;
+      padding-left: 16px;
+      color: var(--text-dim);
+    }
+
+    .modul-kort li {
+      margin: 3px 0;
+    }
+
+    /* CSS-referenstabell */
+    .css-referens-tabell {
+      font-size: 0.85em;
+    }
+
+    .css-referens-tabell th {
+      font-size: 0.8em;
+    }
+
+    .css-referens-tabell td:first-child {
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: var(--accent-bla);
+      white-space: nowrap;
+    }
+
+    .modul-badge-liten {
+      display: inline-block;
+      font-size: 0.7em;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background-color: var(--bg-panel);
+      color: var(--accent-rod);
+      border: 1px solid var(--border-dim);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GRATTIS-SEKTION (animation från Modul 4)
+       ═══════════════════════════════════════════════════════════ */
+
+    @keyframes glans {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .grattis-banner {
+      text-align: center;
+      padding: 50px 30px;
+      background: linear-gradient(135deg, #0d1b2a, #16213e, #0d1b2a);
+      border: 2px solid var(--accent-gul);
+      border-radius: 12px;
+      margin: 40px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grattis-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(243, 156, 18, 0.08) 50%,
+        transparent 60%
+      );
+      background-size: 200% auto;
+      animation: glans 4s linear infinite;
+    }
+
+    .grattis-rubrik {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: var(--accent-gul);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .grattis-text {
+      color: var(--text-dim);
+      font-size: 1.05em;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAVIGERING NERE
+       ═══════════════════════════════════════════════════════════ */
+
+    .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 30px 0;
+      border-top: 1px solid var(--border-dim);
+      margin-top: 40px;
+    }
+
+    .bottom-nav a {
+      display: inline-block;
+      padding: 10px 20px;
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      font-size: 0.9em;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .bottom-nav a:hover {
+      border-color: var(--accent-bla);
+      background-color: rgba(13, 181, 230, 0.08);
+      text-decoration: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TOPP-TILLBAKA-LÄNK
+       ═══════════════════════════════════════════════════════════ */
+
+    .tillbaka-topp {
+      display: block;
+      text-align: right;
+      font-size: 0.85em;
+      color: var(--text-dim);
+      margin-top: 32px;
+    }
+
+    .tillbaka-topp:hover {
+      color: var(--accent-bla);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MEDIA QUERIES (Modul 3)
+       ═══════════════════════════════════════════════════════════ */
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6em; }
+      h2 { font-size: 1.4em; }
+
+      .modul-header { padding: 24px 20px 20px; }
+
+      .licens-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modul-korts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .kurs-sammanfattning {
+        padding: 24px 20px;
+      }
+
+      .grattis-rubrik {
+        font-size: 1.6em;
+      }
+
+      .bottom-nav {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modul-korts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NYT I MODUL 8: @MEDIA PRINT
+       Det här stylesheetet gäller BARA när sidan skrivs ut
+       (Arkiv → Skriv ut, eller Ctrl+P).
+
+       Principen: webbsidor är designade för skärm. Vid utskrift
+       vill vi ha: vit bakgrund, svart text, inga skuggor,
+       inga knappar, synliga URL:er bakom länkarna.
+
+       Egenskaper: @media print, print-color-adjust,
+                   page-break-avoid, content: attr(href)
+       ═══════════════════════════════════════════════════════════ */
+
+    @media print {
+      /* Skriv ut på vit bakgrund med svart text */
+      *, *::before, *::after {
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        border-color: #999 !important;
+      }
+
+      body {
+        font-size: 11pt;
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      /* Dölj saker som inte är meningsfulla på papper */
+      .modul-header,
+      .toc,
+      .bottom-nav,
+      .css-spaning,
+      .darkpattern-demo,
+      .grattis-banner::after,
+      .tillbaka-topp,
+      nav {
+        display: none !important;
+      }
+
+      /* Visa länkens URL i klartext efter länktexten */
+      a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #555 !important;
+      }
+
+      /* Men inte för interna ankarlänkar (#...) */
+      a[href^="#"]::after {
+        content: "" !important;
+      }
+
+      /* Undvik sidbrytningar mitt i rutor */
+      .lektion,
+      .licens-kort,
+      .modul-kort,
+      .uppdrag,
+      .info-ruta {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Rubriker bryter inte av från sin text */
+      h2, h3 {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      /* Grattis-rubriken syns ändå! */
+      .grattis-rubrik {
+        display: block !important;
+        font-size: 18pt;
+        margin-bottom: 8pt;
+      }
+
+      .grattis-text {
+        display: block !important;
+        font-size: 11pt;
+      }
+
+      /* CSS-referenstabellen: compact vid utskrift */
+      .css-referens-tabell {
+        font-size: 9pt;
+      }
+    }
+
+  </style>
+</head>
+<body>
+<div style="padding: 10px 20px; font-size: 14px;"><a href="index.html" style="color: #888; text-decoration: none;">← Kursöversikt</a></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="modul-header" id="toppen">
+  <div class="container">
+    <div class="modul-meta">
+      <span class="modul-badge">Modul 8 av 8</span>
+      <span class="modul-uka">2 lektioner</span>
+    </div>
+    <h1>Lagar och etik</h1>
+    <p style="color: #aaa; margin: 0; font-size: 0.95em;">
+      Upphovsrätt, GDPR och ansvaret som följer med att bygga grejer på webben.
+    </p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     INNEHÅLLSFÖRTECKNING
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="container">
+  <nav class="toc" aria-label="Innehållsförteckning">
+    <h2>Innehåll</h2>
+    <ol>
+      <li><a href="#lektion-1">Upphovsrätt — vad du får och inte får göra</a></li>
+      <li><a href="#lektion-2">GDPR och etiska överväganden</a></li>
+      <li><a href="#sammanfattning">Kurssammanfattning — allt du lärt dig</a></li>
+    </ol>
+  </nav>
+
+  <div class="css-spaning">
+    <strong>CSS-spaning — Modul 8, den sista:</strong> Det här är kursens sista modul. Sidan du ser nu använder <em>allt</em> vi lärt oss sedan Modul 1: CSS-variabler, Grid, Flexbox, animationer, pseudo-element (<code>::before</code>/<code>::after</code>), transitions, media queries för skärm — och nu också <strong>CSS counters</strong> (automatisk numrering utan siffror i HTML) och ett <strong><code>@media print</code></strong>-stylesheet. Prova att trycka <strong>Ctrl+P</strong> (eller Cmd+P) och titta på förhandsvisningen. Sidan byter utseende helt — vit bakgrund, svart text, URL:er visas i klartext efter länkarna. Det är ett separat stylesheet som bara gäller vid utskrift.
+  </div>
+</div>
+
+<hr class="separator" style="margin: 0;">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 1 — UPPHOVSRÄTT
+     ═══════════════════════════════════════════════════════════════ -->
+<main>
+<section id="lektion-1" class="lektion">
+  <div class="container">
+    <div class="lektion-rubrik">
+      <span class="lektion-nummer">Lektion 1</span>
+      <h2>Upphovsrätt — vad du får och inte får göra</h2>
+    </div>
+
+    <p><strong>Föreställ dig det här:</strong> Du lägger ner 40 timmar på att rita grafiken till ett spel. Sen hittar du den på en annan sajt — utan att de frågat, utan att de betalat, utan att de ens nämnt ditt namn. Hur känns det?</p>
+
+    <p>Det är precis det upphovsrätten skyddar dig mot. Och det är precis det du riskerar att göra mot andra om du inte vet reglerna.</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — CSS counters:</strong> Ser du numreringen i listorna nedan? Den är helt automatisk — CSS räknar åt oss med <code>counter-reset</code>, <code>counter-increment</code> och <code>content: counter(...)</code> på <code>::before</code>. Inget nummer skrivs i HTML:en. Lägger vi till ett nytt <code>&lt;li&gt;</code> numreras det automatiskt. Prova att inspektera listan!
+    </div>
+
+    <h3>Vad är upphovsrätt?</h3>
+
+    <p>I Sverige skyddas allt du skapar av <strong>upphovsrättslagen</strong> — automatiskt, från sekunden du skapar det. Ingen registrering, ingen kostnad, inget snäckskal att skicka in. Det gäller för:</p>
+
+    <ul class="numrerade-punkter">
+      <li>Text — artiklar, blogginlägg, romankapitel, ja till och med längre konton i Discord</li>
+      <li>Bilder och foton — en kamerabild är skyddad av fotografen, en illustration av illustratören</li>
+      <li>Musik — låtar, beats, covers om de innehåller tillräcklig kreativitet</li>
+      <li>Film och video — YouTubers har upphovsrätt på sina videoklipp</li>
+      <li>Kod — ditt program är ett litterärt verk och är skyddat</li>
+      <li>Design — logotyper, grafik, layouter</li>
+    </ul>
+
+    <div class="varning-ruta">
+      <strong>Viktigt: "Fair use" finns inte i Sverige.</strong> Du kanske har hört talas om "fair use" från amerikanska YouTube-videos. Det är ett amerikanskt begrepp. I Sverige gäller andra regler — du kan inte bara använda andras material "för att det är okej". Det finns undantag (t.ex. citat, undervisning), men de är snävare än du tror.
+    </div>
+
+    <h3>Vad du INTE får göra</h3>
+
+    <p>Utan tillstånd från upphovsrättsinnehavaren får du <strong>inte</strong>:</p>
+
+    <ul class="numrerade-punkter">
+      <li>Kopiera en bild från Google och lägga upp den på din sajt — även om du "bara ville ha en bakgrundsbild"</li>
+      <li>Använda ett Spotify-spår som bakgrundsmusik i din video utan licens</li>
+      <li>Kopiera text från Wikipedia och presentera den som din egen (även med källhänvisning kan det vara problem)</li>
+      <li>Ladda ner och redistribuera ett betalt typsnitt</li>
+      <li>Ta en bild från Unsplash och sälja den — även om Unsplash är gratis att använda</li>
+    </ul>
+
+    <div class="info-ruta">
+      <strong>Men jag hittade den på Google Bilder — då är den väl fri att använda?</strong> Nej. Google Bilder visar bilder från hela internet. Att en bild dyker upp i sökresultaten säger ingenting om licensen. Upphovsrätten tillhör fortfarande fotografen eller konstnären.
+    </div>
+
+    <hr class="separator">
+
+    <h3>Creative Commons — fri men med regler</h3>
+
+    <p>Creative Commons (CC) är ett system med standardiserade licenser som upphovspersoner kan ge sina verk. Det löser problemet "jag vill att folk ska använda min grej — men på mina villkor".</p>
+
+    <div class="licens-grid">
+      <div class="licens-kort">
+        <div class="licens-namn">CC BY</div>
+        <div class="licens-tag">Fri att använda</div>
+        <p>Du får använda, redigera och sprida. Du <em>måste</em> ange vem som skapade verket. Den vanligaste och mest öppna licensen.</p>
+      </div>
+
+      <div class="licens-kort bla">
+        <div class="licens-namn">CC BY-SA</div>
+        <div class="licens-tag bla">Dela lika</div>
+        <p>Som CC BY, men om du skapar något baserat på verket måste ditt verk ha samma licens. Wikipedia använder CC BY-SA.</p>
+      </div>
+
+      <div class="licens-kort gul">
+        <div class="licens-namn">CC BY-NC</div>
+        <div class="licens-tag gul">Ej kommersiell</div>
+        <p>Fri att använda — men inte i kommersiella sammanhang. Säljer du något kan du inte använda det fritt.</p>
+      </div>
+
+      <div class="licens-kort rod">
+        <div class="licens-namn">CC BY-ND</div>
+        <div class="licens-tag rod">Inga ändringar</div>
+        <p>Du får sprida verket som det är, men inte ändra det. Bra när upphovspersonen vill kontrollera hur verket ser ut.</p>
+      </div>
+
+      <div class="licens-kort" style="border-top-color: #9b59b6;">
+        <div class="licens-namn">CC0</div>
+        <div class="licens-tag" style="background-color: #9b59b6;">Public domain</div>
+        <p>Upphovspersonen ger upp alla rättigheter. Du kan göra precis vad du vill — utan att ens ange källan. Sällsynt men guld värt. Tänk dock på att andra rättigheter fortfarande kan gälla — t.ex. om bilden visar en person (personuppgifter/GDPR) eller ett varumärke.</p>
+      </div>
+    </div>
+
+    <h3>Gratis resurser du faktiskt får använda</h3>
+
+    <table>
+      <tr>
+        <th>Resurs</th>
+        <th>Vad</th>
+        <th>Licens</th>
+        <th>URL</th>
+      </tr>
+      <tr>
+        <td><strong>Unsplash</strong></td>
+        <td>Högkvalitativa foton</td>
+        <td>Unsplash-licens (fri att använda, ej sälja)</td>
+        <td><a href="https://unsplash.com" target="_blank">unsplash.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Pexels</strong></td>
+        <td>Foton och video</td>
+        <td>CC0-liknande</td>
+        <td><a href="https://pexels.com" target="_blank">pexels.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Google Fonts</strong></td>
+        <td>Typsnitt</td>
+        <td>Open Font License / Apache</td>
+        <td><a href="https://fonts.google.com" target="_blank">fonts.google.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Font Awesome</strong></td>
+        <td>Ikoner (gratisversionen)</td>
+        <td>CC BY 4.0 för ikoner</td>
+        <td><a href="https://fontawesome.com" target="_blank">fontawesome.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Flaticon</strong></td>
+        <td>Ikoner och stickers</td>
+        <td>Gratis med attribution</td>
+        <td><a href="https://flaticon.com" target="_blank">flaticon.com</a></td>
+      </tr>
+      <tr>
+        <td><strong>Pixabay</strong></td>
+        <td>Bilder, illustrationer, video</td>
+        <td>Pixabay-licens (CC0-liknande)</td>
+        <td><a href="https://pixabay.com" target="_blank">pixabay.com</a></td>
+      </tr>
+    </table>
+
+    <hr class="separator">
+
+    <h3>Öppen källkod — licenser för kod</h3>
+
+    <p>Kod är också upphovsrättsligt skyddad. Öppen källkod (open source) löser det med specifika licenser. De vanligaste:</p>
+
+    <div class="licens-grid">
+      <div class="licens-kort gul">
+        <div class="licens-namn">MIT-licensen</div>
+        <div class="licens-tag gul">Mest permissiv</div>
+        <p>Gör i princip vad du vill — inklusive använda koden i kommersiella projekt. Du måste bara behålla licenstexten. React, Vue, Bootstrap använder MIT.</p>
+      </div>
+
+      <div class="licens-kort bla">
+        <div class="licens-namn">GPL (GNU)</div>
+        <div class="licens-tag bla">Copyleft</div>
+        <p>Fri att använda, men om du bygger på GPL-kod måste ditt projekt <em>också</em> vara GPL. Linux-kärnan använder GPL. Kallas "copyleft" — rättigheterna "smittar".</p>
+      </div>
+
+      <div class="licens-kort">
+        <div class="licens-namn">Apache 2.0</div>
+        <div class="licens-tag">Permissiv</div>
+        <p>Lik MIT men med extra skydd mot patentkrav. Google använder Apache för många av sina projekt.</p>
+      </div>
+    </div>
+
+    <div class="kodexempel">
+      <pre><code>&lt;!-- Så här anger du källan på din webbsida --&gt;
+
+&lt;!-- För en bild från Unsplash --&gt;
+&lt;figure&gt;
+  &lt;img src="landskap.jpg" alt="Solnedgång över fjord"&gt;
+  &lt;figcaption&gt;
+    Foto: &lt;a href="https://unsplash.com/@fotografnamn" target="_blank"&gt;
+      Anna Svensson
+    &lt;/a&gt; via Unsplash
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;!-- I din footer --&gt;
+&lt;footer&gt;
+  &lt;p&gt;
+    Typsnitt: &lt;a href="https://fonts.google.com/specimen/Inter"&gt;Inter&lt;/a&gt;
+    (SIL Open Font License). Ikoner: Font Awesome (CC BY 4.0).
+    Bakgrundsbild: Unsplash-licens.
+  &lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag: Källgranskning</h3>
+      <ol>
+        <li>Gå till en sajt du gillar — vilken som helst.</li>
+        <li>Högerklicka på en bild → "Sök efter bild med Google" eller "Kopiera bildadress".</li>
+        <li>Försök ta reda på var bilden egentligen kommer från och under vilken licens.</li>
+        <li>Hitta en bild på Unsplash som du faktiskt skulle vilja använda. Hur ser du vad licensen är? Vad krävs av dig?</li>
+        <li><strong>Boss-level:</strong> Kolla in GitHub-repon för ett projekt du använt (t.ex. Bootstrap). Vilken licens har de? Vad innebär det i praktiken?</li>
+      </ol>
+    </div>
+
+    <a href="#toppen" class="tillbaka-topp">Tillbaka till toppen</a>
+  </div>
+</section>
+
+<hr class="separator" style="margin: 0;">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEKTION 2 — GDPR OCH ETIK
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="lektion-2" class="lektion">
+  <div class="container">
+    <div class="lektion-rubrik">
+      <span class="lektion-nummer">Lektion 2</span>
+      <h2>GDPR och etiska överväganden</h2>
+    </div>
+
+    <p><strong>Din data är värd pengar.</strong> Facebook är gratis att använda — men Facebook tjänar miljarder om året. Hur? De säljer inte din data direkt, men de säljer möjligheten att nå dig med riktad reklam baserad på allt de vet om dig. GDPR är EUs svar på det: ett regelverk som ger <em>dig</em> tillbaka kontrollen.</p>
+
+    <div class="css-spaning">
+      <strong>CSS-spaning — @media print i aktion:</strong> Den här sidan har ett <code>@media print</code>-stylesheet som gäller bara vid utskrift. Det döljer navigering, CSS-spaning-rutor och header, byter till svart text på vit bakgrund, och skriver ut URL:er efter länkarna med <code>a[href]::after { content: " (" attr(href) ")"; }</code>. Slå på förhandsvisning med Ctrl+P för att se det nu!
+    </div>
+
+    <h3>Vad är GDPR?</h3>
+
+    <p>GDPR — <em>General Data Protection Regulation</em> — är en EU-lag som trädde i kraft 2018. Den gäller för alla som samlar in eller behandlar personuppgifter om personer som befinner sig inom EU — oavsett om företaget sitter i Stockholm eller San Francisco.</p>
+
+    <p>Bryter du mot GDPR kan böterna bli upp till <strong>4% av ett företags globala omsättning</strong> eller 20 miljoner euro — det som är störst. Facebook fick en bot på 1,2 miljarder euro 2023. Det är inte lite pengar.</p>
+
+    <h3>Vad räknas som personuppgifter?</h3>
+
+    <p>Mer än du tror. Klicka på det du tror är personuppgifter:</p>
+
+    <div class="persondata-flex" aria-label="Exempel på personuppgifter">
+      <span class="persondata-tagg ja">Namn</span>
+      <span class="persondata-tagg ja">E-postadress</span>
+      <span class="persondata-tagg ja">Telefonnummer</span>
+      <span class="persondata-tagg ja">IP-adress</span>
+      <span class="persondata-tagg ja">Cookies med ID</span>
+      <span class="persondata-tagg ja">Platsdata (GPS)</span>
+      <span class="persondata-tagg ja">Foto på en person</span>
+      <span class="persondata-tagg">Recept på pasta</span>
+      <span class="persondata-tagg ja">Personnummer</span>
+      <span class="persondata-tagg ja">Enhets-ID (UUID)</span>
+      <span class="persondata-tagg">Stadens befolkning</span>
+      <span class="persondata-tagg ja">Köphistorik kopplad till en person</span>
+      <span class="persondata-tagg">Anonymiserad statistik</span>
+      <span class="persondata-tagg ja">Biometrisk data (fingeravtryck)</span>
+    </div>
+
+    <p style="font-size:0.85em; color: var(--text-dim);">Röda = personuppgifter enligt GDPR. Grå = inte personuppgifter (eller kräver mer kontext).</p>
+
+    <h3>GDPR och din webbsida — vad gäller?</h3>
+
+    <table>
+      <tr>
+        <th>Du gör...</th>
+        <th>GDPR-krav</th>
+        <th>Konkret</th>
+      </tr>
+      <tr>
+        <td>Kontaktformulär</td>
+        <td>Du måste berätta varför du samlar in uppgifterna och hur länge du lagrar dem.</td>
+        <td>Lägg till en rad: "Dina uppgifter används bara för att svara dig och raderas inom 30 dagar."</td>
+      </tr>
+      <tr>
+        <td>Google Analytics</td>
+        <td>Kräver samtycke — Analytics sätter cookies med personuppgifter (IP-adress m.m.).</td>
+        <td>Du behöver en cookiebanner med riktigt samtycke, inte bara "Vi använder cookies".</td>
+      </tr>
+      <tr>
+        <td>Nyhetsbrev</td>
+        <td>Kräver aktivt samtycke. Förifylld checkbox är INTE okej.</td>
+        <td>Tom checkbox, tydlig text om vad de prenumererar på, och enkel avprenumeration.</td>
+      </tr>
+      <tr>
+        <td>Lagra lösenord</td>
+        <td>Krypterad lagring (hashing) — aldrig i klartext!</td>
+        <td>Använd bcrypt eller liknande. Aldrig <code>password = "qwerty"</code> i databasen.</td>
+      </tr>
+      <tr>
+        <td>Inget av ovan</td>
+        <td>Om du inte samlar in personuppgifter behövs ingen GDPR-rutin.</td>
+        <td>En statisk sida utan formulär, Analytics eller cookies kan klara sig utan allt detta.</td>
+      </tr>
+    </table>
+
+    <h3>Cookie-banners — varför finns de?</h3>
+
+    <p>Du har säkert sett de där "Vi använder cookies"-rutorna som dyker upp på alla sidor. De finns på grund av GDPR (och ePrivacy-direktivet). Men de flesta är dåligt implementerade — och det är faktiskt lagbrott.</p>
+
+    <div class="licens-grid">
+      <div class="licens-kort rod">
+        <div class="licens-namn">Olaglig banner</div>
+        <div class="licens-tag rod">Undvik</div>
+        <p>Bara "Ok"-knapp, ingen möjlighet att avvisa. Förifyllda kryssrutor. Texten "Genom att använda sidan samtycker du" (man kan inte samtycka passivt).</p>
+      </div>
+
+      <div class="licens-kort">
+        <div class="licens-namn">Laglig banner</div>
+        <div class="licens-tag">Korrekt</div>
+        <p>Tydlig "Acceptera" OCH "Avvisa"-knapp. Möjlighet att göra detaljerade val. Lätt att ändra sig senare (via inställningar).</p>
+      </div>
+    </div>
+
+    <h3>Integritetspolicy — vad ska den innehålla?</h3>
+
+    <p>Om du samlar in personuppgifter måste du ha en integritetspolicy. Den ska (förenklat) innehålla:</p>
+
+    <ul class="numrerade-punkter">
+      <li><strong>Vem är ansvarig?</strong> Ditt namn/företagsnamn och kontaktuppgifter</li>
+      <li><strong>Vad samlar du in?</strong> Lista vilka uppgifter och varför</li>
+      <li><strong>Hur länge lagrar du det?</strong> Ange tidsramar</li>
+      <li><strong>Delar du med tredje part?</strong> T.ex. Google, betalningsleverantörer</li>
+      <li><strong>Vilka rättigheter har användaren?</strong> Rätt att se, ändra och radera sina uppgifter</li>
+      <li><strong>Hur kontaktar man dig?</strong> Om man vill utöva sina rättigheter</li>
+    </ul>
+
+    <hr class="separator">
+
+    <h3>Etik på webben — bortom det som är lagligt</h3>
+
+    <p>Att något är lagligt betyder inte att det är etiskt rätt. Som webbutvecklare har du faktisk makt att påverka hur människor beter sig, mår och spenderar sina pengar. Det är ett ansvar.</p>
+
+    <h3>Dark patterns — manipulation inbyggd i designen</h3>
+
+    <p>Dark patterns är designval som medvetet lurar användaren att göra saker de inte vill. De är vanliga, de är effektiva — och de är ett etiskt svineri.</p>
+
+    <div class="darkpattern-demo" role="presentation" aria-label="Demonstration av dark pattern">
+      <p style="color: var(--text-ljus); margin: 0 0 8px;"><strong>Vill du prenumerera på vårt nyhetsbrev?</strong></p>
+      <p style="color: var(--text-dim); font-size: 0.85em; margin: 0 0 4px;">
+        Ja! Jag vill ha fantastiska erbjudanden och nyheter varje dag!
+      </p>
+      <div class="dp-knappar">
+        <button class="dp-knapp-ja" onclick="alert('Tack! Du är nu prenumerant.')">Ja tack!</button>
+        <button class="dp-knapp-nej" onclick="alert('Inga problem.')">Nej tack, jag hatar bra erbjudanden och pengar</button>
+      </div>
+    </div>
+
+    <p style="font-size: 0.88em; color: var(--text-dim);">
+      Ser du vad som händer? "Nej"-knappen är nästan osynlig och formulerad för att ge dig dåligt samvete. Det är ett klassiskt dark pattern — "confirmshaming". Det är lagligt (troligen). Det är etiskt fel.
+    </p>
+
+    <table>
+      <tr>
+        <th>Dark pattern</th>
+        <th>Hur det funkar</th>
+        <th>Var du sett det</th>
+      </tr>
+      <tr>
+        <td><strong>Confirmshaming</strong></td>
+        <td>"Nej tack, jag vill inte spara pengar" — gör avvisning emotionellt jobbigt.</td>
+        <td>Nyhetsbrevspopups överallt</td>
+      </tr>
+      <tr>
+        <td><strong>Hidden costs</strong></td>
+        <td>Priset ser billigare ut tills man är i kassan — då dyker avgifter upp.</td>
+        <td>Ticketmaster, flygbolag</td>
+      </tr>
+      <tr>
+        <td><strong>Roach motel</strong></td>
+        <td>Lätt att registrera sig, nästan omöjligt att avsluta prenumerationen.</td>
+        <td>Streamingtjänster, gym</td>
+      </tr>
+      <tr>
+        <td><strong>Forced continuity</strong></td>
+        <td>Gratis provperiod kräver kortuppgifter — och debiterar automatiskt utan tydlig varning.</td>
+        <td>SaaS-tjänster, appar</td>
+      </tr>
+      <tr>
+        <td><strong>Misdirection</strong></td>
+        <td>Uppmärksamheten riktas mot något för att dölja det viktiga.</td>
+        <td>Cookie-banners med "Acceptera alla" stor och tydlig, "Inställningar" liten och grå</td>
+      </tr>
+    </table>
+
+    <h3>Tillgänglighet är etik</h3>
+
+    <p>Vi pratade om tillgänglighet i Modul 1 (alt-text, semantisk HTML) och Modul 5 (kontrast, fokusstyling, WCAG). Men det är värt att upprepa: att bygga otillgängliga sajter är en etisk fråga, inte bara en teknisk.</p>
+
+    <ul>
+      <li>Ca <strong>10–15%</strong> av befolkningen har någon form av funktionsnedsättning (syn, hörsel, motorik, kognition).</li>
+      <li>Många fler påverkas <em>situationellt</em> — stark sol på skärmen, ett brutet handledsben, ett bråkigt barn i knäet.</li>
+      <li>Tillgänglig design är bra design — den fungerar för fler, i fler situationer.</li>
+      <li>I Sverige (och EU) är det lag att offentliga och offentligt finansierade webbplatser ska uppfylla WCAG 2.1 nivå AA.</li>
+    </ul>
+
+    <div class="gron-ruta">
+      <strong>Ansvaret som följer med att kunna bygga webben:</strong> Du kan nu skapa saker som hundratals eller tusentals människor interagerar med. Det gör dig ansvarig — inte juridiskt (oftast), men moraliskt. Bygg saker som hjälper, inte manipulerar. Gör det tillgängligt. Samla bara in det du faktiskt behöver. Var transparent. Det är skillnaden mellan en dålig och en bra webbutvecklare.
+    </div>
+
+    <div class="uppdrag">
+      <h3>Uppdrag: Hitta dark patterns</h3>
+      <ol>
+        <li>Gå till en sajt som erbjuder en gratis provperiod (t.ex. en streamingtjänst, en SaaS-tjänst).</li>
+        <li>Gå igenom registreringsflödet (du behöver inte slutföra det!) och dokumentera eventuella dark patterns.</li>
+        <li>Gå också till en sajt med en cookiebanner. Är det lätt att avvisa? Är det verkligen ett fritt samtycke?</li>
+        <li><strong>Boss-level:</strong> Hitta ett exempel på ett kontaktformulär som du tycker hanterar GDPR bra. Vad gör de rätt? Skriv ner.
+        </li>
+      </ol>
+    </div>
+
+    <a href="#toppen" class="tillbaka-topp">Tillbaka till toppen</a>
+  </div>
+</section>
+
+<hr class="separator" style="margin: 0;">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     KURSSAMMANFATTNING
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="sammanfattning" class="lektion">
+  <div class="container">
+    <div class="kurs-sammanfattning">
+      <h2>Kurssammanfattning — allt du har lärt dig</h2>
+      <p>Det här är en hel kurs i webutveckling. Åtta moduler. Från "vad är HTML?" till lagar, etik och ett fullständigt projekt. Här är allt, samlat på ett ställe.</p>
+
+      <div class="modul-korts-grid">
+        <div class="modul-kort">
+          <div class="modul-kort-nr">Modul 1</div>
+          <div class="modul-kort-titel">HTML-grunder</div>
+          <ul>
+            <li>Webbens historia</li>
+            <li>Klient &amp; server</li>
+            <li>HTML-struktur och taggar</li>
+            <li>Rubriker, listor, länkar</li>
+            <li>Bilder och alt-text</li>
+            <li>Semantisk HTML</li>
+            <li>Tillgänglighet</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: var(--accent-rod);">
+          <div class="modul-kort-nr" style="color: var(--accent-rod);">Modul 2</div>
+          <div class="modul-kort-titel">CSS</div>
+          <ul>
+            <li>Selektorer och specificitet</li>
+            <li>Färger (hex, rgb, rgba)</li>
+            <li>Typsnitt och textstyling</li>
+            <li>Boxmodellen</li>
+            <li>Display-egenskaper</li>
+            <li>Box-sizing</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: var(--accent-gron);">
+          <div class="modul-kort-nr" style="color: var(--accent-gron);">Modul 3</div>
+          <div class="modul-kort-titel">Responsiv design</div>
+          <ul>
+            <li>Media queries</li>
+            <li>Flexbox</li>
+            <li>CSS-enheter (rem, vw, vh)</li>
+            <li>Mobile-first</li>
+            <li>Responsiva bilder</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: var(--accent-gul);">
+          <div class="modul-kort-nr" style="color: var(--accent-gul);">Modul 4</div>
+          <div class="modul-kort-titel">Media och typsnitt</div>
+          <ul>
+            <li>Bildformat (jpg, png, webp, svg)</li>
+            <li>Video och ljud</li>
+            <li>Google Fonts</li>
+            <li>Transitions</li>
+            <li>object-fit, aspect-ratio</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: #9b59b6;">
+          <div class="modul-kort-nr" style="color: #9b59b6;">Modul 5</div>
+          <div class="modul-kort-titel">Tillgänglighet och standarder</div>
+          <ul>
+            <li>WCAG och W3C</li>
+            <li>Kontrast och alt-text</li>
+            <li>Skärmläsare och fokus</li>
+            <li>prefers-reduced-motion</li>
+            <li>@media print</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: #e67e22;">
+          <div class="modul-kort-nr" style="color: #e67e22;">Modul 6</div>
+          <div class="modul-kort-titel">JavaScript-introduktion</div>
+          <ul>
+            <li>Variabler (let, const)</li>
+            <li>DOM och querySelector</li>
+            <li>Events och addEventListener</li>
+            <li>classList, toggle</li>
+            <li>Interaktivitet</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: #1abc9c;">
+          <div class="modul-kort-nr" style="color: #1abc9c;">Modul 7</div>
+          <div class="modul-kort-titel">Projektarbete</div>
+          <ul>
+            <li>Planering och skiss</li>
+            <li>Byggfas</li>
+            <li>Testning</li>
+            <li>Dokumentation</li>
+          </ul>
+        </div>
+
+        <div class="modul-kort" style="border-top-color: var(--accent-rod);">
+          <div class="modul-kort-nr" style="color: var(--accent-rod);">Modul 8</div>
+          <div class="modul-kort-titel">Lagar och etik</div>
+          <ul>
+            <li>Upphovsrätt</li>
+            <li>Creative Commons</li>
+            <li>Öppen källkod</li>
+            <li>GDPR</li>
+            <li>Dark patterns</li>
+            <li>@media print</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="separator">
+
+      <h3>Komplett CSS-referens — alla egenskaper du lärt dig</h3>
+      <p style="color: var(--text-dim); font-size: 0.9em;">Sorterat efter vilken modul de introducerades i.</p>
+
+      <table class="css-referens-tabell">
+        <tr>
+          <th>CSS-egenskap / koncept</th>
+          <th>Vad den gör</th>
+          <th>Modul</th>
+        </tr>
+        <tr>
+          <td>font-family</td>
+          <td>Väljer typsnitt</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>font-size, font-weight</td>
+          <td>Storlek och fethet på text</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>color, background-color</td>
+          <td>Text- och bakgrundsfärg</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>margin, padding</td>
+          <td>Yttre och inre avstånd</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>border, border-radius</td>
+          <td>Ram och rundade hörn</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>text-decoration</td>
+          <td>Understrykning m.m.</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>max-width, height: auto</td>
+          <td>Responsiva bilder</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>outline, :focus</td>
+          <td>Fokusstyling för tillgänglighet</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>:hover</td>
+          <td>Styling vid hovring</td>
+          <td><span class="modul-badge-liten">M1</span></td>
+        </tr>
+        <tr>
+          <td>rgba(), hsla()</td>
+          <td>Färger med transparens</td>
+          <td><span class="modul-badge-liten">M2</span></td>
+        </tr>
+        <tr>
+          <td>line-height, letter-spacing</td>
+          <td>Radavstånd och teckenavstånd</td>
+          <td><span class="modul-badge-liten">M2</span></td>
+        </tr>
+        <tr>
+          <td>box-sizing: border-box</td>
+          <td>Inkluderar padding i bredden</td>
+          <td><span class="modul-badge-liten">M2</span></td>
+        </tr>
+        <tr>
+          <td>display: block / inline / inline-block</td>
+          <td>Hur element flödar</td>
+          <td><span class="modul-badge-liten">M2</span></td>
+        </tr>
+        <tr>
+          <td>@media (max-width: ...)</td>
+          <td>Responsiv styling per skärmstorlek</td>
+          <td><span class="modul-badge-liten">M3</span></td>
+        </tr>
+        <tr>
+          <td>display: flex, flex-wrap, gap</td>
+          <td>Flexbox-layout</td>
+          <td><span class="modul-badge-liten">M3</span></td>
+        </tr>
+        <tr>
+          <td>justify-content, align-items</td>
+          <td>Justering längs flex-axlarna</td>
+          <td><span class="modul-badge-liten">M3</span></td>
+        </tr>
+        <tr>
+          <td>rem, vw, vh</td>
+          <td>Relativa CSS-enheter</td>
+          <td><span class="modul-badge-liten">M3</span></td>
+        </tr>
+        <tr>
+          <td>display: grid, grid-template-columns</td>
+          <td>CSS Grid-layout</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>grid-column, grid-row</td>
+          <td>Spänna element över grid-celler</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>repeat(), minmax(), auto-fill</td>
+          <td>Dynamiska grid-kolumner</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>--custom-property, var()</td>
+          <td>CSS-variabler</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>transition</td>
+          <td>Mjuka övergångar vid tillståndsbyten</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>@keyframes, animation</td>
+          <td>CSS-animationer</td>
+          <td><span class="modul-badge-liten">M4</span></td>
+        </tr>
+        <tr>
+          <td>:valid, :invalid, :placeholder-shown</td>
+          <td>Formulär-pseudo-klasser</td>
+          <td><span class="modul-badge-liten">M5</span></td>
+        </tr>
+        <tr>
+          <td>::before, ::after</td>
+          <td>Pseudo-element (genererat innehåll)</td>
+          <td><span class="modul-badge-liten">M5</span></td>
+        </tr>
+        <tr>
+          <td>counter-reset, counter-increment, content: counter()</td>
+          <td>CSS counters — automatisk numrering</td>
+          <td><span class="modul-badge-liten">M5/M8</span></td>
+        </tr>
+        <tr>
+          <td>position: relative / absolute / fixed / sticky</td>
+          <td>Positionering utanför normalflödet</td>
+          <td><span class="modul-badge-liten">M6</span></td>
+        </tr>
+        <tr>
+          <td>z-index</td>
+          <td>Stapelordning (vad som är framför vad)</td>
+          <td><span class="modul-badge-liten">M6</span></td>
+        </tr>
+        <tr>
+          <td>overflow, clip-path, filter</td>
+          <td>Klippning och visuella effekter</td>
+          <td><span class="modul-badge-liten">M6</span></td>
+        </tr>
+        <tr>
+          <td>prefers-color-scheme</td>
+          <td>Anpassa till systemets ljust/mörkt-läge</td>
+          <td><span class="modul-badge-liten">M7</span></td>
+        </tr>
+        <tr>
+          <td>will-change</td>
+          <td>Tips till webbläsaren för GPU-acceleration</td>
+          <td><span class="modul-badge-liten">M7</span></td>
+        </tr>
+        <tr>
+          <td>@media print</td>
+          <td>Stylesheet som bara gäller vid utskrift</td>
+          <td><span class="modul-badge-liten">M8</span></td>
+        </tr>
+        <tr>
+          <td>page-break-inside: avoid</td>
+          <td>Hindra sidbrytningar mitt i ett element</td>
+          <td><span class="modul-badge-liten">M8</span></td>
+        </tr>
+        <tr>
+          <td>content: attr(href)</td>
+          <td>Visa ett HTML-attributs värde i CSS-genererat innehåll</td>
+          <td><span class="modul-badge-liten">M8</span></td>
+        </tr>
+      </table>
+
+    </div><!-- /kurs-sammanfattning -->
+
+    <!-- GRATTIS-BANNER -->
+    <div class="grattis-banner">
+      <div class="grattis-rubrik">Grattis — du har klarat hela kursen!</div>
+      <p class="grattis-text">
+        Från noll HTML till responsiv design, CSS Grid, animationer, formulär, positionering, ett eget projekt och slutligen lagar och etik. Det är inte lite. Du kan nu bygga grejer som faktiskt funkar på webben — och du vet varför de funkar.
+      </p>
+      <p style="color: var(--text-dim); font-size: 0.9em; margin: 0;">
+        Webutveckling 1 — klar.
+      </p>
+    </div>
+
+    <!-- TEST LÄNK -->
+    <div style="text-align: center; margin: 24px 0 8px;">
+      <a href="test-modul-8.html" style="display: inline-block; background-color: #e94560; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 1.05em;">Gå till testet för Modul 8 →</a>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" aria-label="Modulnavigering">
+      <a href="modul-7-projektarbete.html">&larr; Modul 7: Projektarbete</a>
+      <a href="#toppen">Tillbaka till toppen</a>
+    </nav>
+
+  </div>
+</section>
+</main>
+
+</body>
+</html>

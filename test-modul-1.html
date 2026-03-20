@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test – Modul 1: HTML-grunder</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    a {
+      color: #0db5e6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #e94560;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro {
+      color: #a0a0b0;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #2a2a4a;
+    }
+
+    .question {
+      background: #16213e;
+      border: 2px solid #2a2a4a;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s;
+    }
+
+    .question.correct {
+      border-color: #27ae60;
+      background: #0d2818;
+    }
+
+    .question.wrong {
+      border-color: #e94560;
+      background: #2e0d16;
+    }
+
+    .question-text {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    .question-number {
+      color: #0db5e6;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      font-family: monospace;
+    }
+
+    .options label {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.2s;
+    }
+
+    .options label:hover {
+      background: #2a2a4a;
+    }
+
+    .options input[type="radio"] {
+      margin-right: 0.6rem;
+      accent-color: #0db5e6;
+    }
+
+    .options label.selected-correct {
+      background: #1a4a2a;
+      border-color: #27ae60;
+      color: #5dde8a;
+    }
+
+    .options label.selected-wrong {
+      background: #4a1a22;
+      border-color: #e94560;
+      color: #f07090;
+    }
+
+    .options label.correct-answer {
+      background: #1a4a2a;
+      border-color: #27ae60;
+      color: #5dde8a;
+    }
+
+    .explanation {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .explanation.correct {
+      background: #0d3320;
+      border-left: 3px solid #27ae60;
+      color: #90d8aa;
+    }
+
+    .explanation.wrong {
+      background: #3a0d18;
+      border-left: 3px solid #e94560;
+      color: #f0a0b0;
+    }
+
+    .check-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background: #e94560;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: Georgia, serif;
+      transition: background 0.2s;
+    }
+
+    .check-btn:hover {
+      background: #c73550;
+    }
+
+    .check-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .result-box {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .result-box.pass {
+      background: #0d2818;
+      border: 2px solid #27ae60;
+    }
+
+    .result-box.fail {
+      background: #2e0d16;
+      border: 2px solid #e94560;
+    }
+
+    .result-score {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .result-box.pass .result-score {
+      color: #27ae60;
+    }
+
+    .result-box.fail .result-score {
+      color: #e94560;
+    }
+
+    .result-message {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .retry-btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: #0db5e6;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: Georgia, serif;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .retry-btn:hover {
+      background: #0990ba;
+    }
+
+    .next-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      background: #27ae60;
+      color: white;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .next-link:hover {
+      background: #1e8a4a;
+      text-decoration: none;
+    }
+
+    code {
+      background: #0a0a1e;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #0db5e6;
+    }
+
+    pre {
+      background: #0a0a1e;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: #c8c8e0;
+      border-left: 3px solid #0db5e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav-links">
+      <a href="index.html">← Kursöversikt</a>
+      <a href="modul-1-html-grunder-v2.html">← Tillbaka till modulen</a>
+    </nav>
+
+    <h1>Test – Modul 1: HTML-grunder</h1>
+    <p class="intro">Svara på alla frågor och klicka sedan på "Rätta testet". Du behöver 100% rätt för att bli godkänd.</p>
+
+    <form id="quiz-form">
+
+      <div class="question" id="q1">
+        <div class="question-number">Fråga 1 av 10</div>
+        <div class="question-text">Vad står förkortningen HTML för?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> HyperText Markup Language</label>
+          <label><input type="radio" name="q1" value="b"> HighText Machine Language</label>
+          <label><input type="radio" name="q1" value="c"> HyperTransfer Markup Language</label>
+          <label><input type="radio" name="q1" value="d"> Home Tool Markup Language</label>
+        </div>
+        <div class="explanation" id="exp1"></div>
+      </div>
+
+      <div class="question" id="q2">
+        <div class="question-number">Fråga 2 av 10</div>
+        <div class="question-text">Vem uppfann World Wide Web och HTML?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> Bill Gates</label>
+          <label><input type="radio" name="q2" value="b"> Linus Torvalds</label>
+          <label><input type="radio" name="q2" value="c"> Tim Berners-Lee</label>
+          <label><input type="radio" name="q2" value="d"> Steve Jobs</label>
+        </div>
+        <div class="explanation" id="exp2"></div>
+      </div>
+
+      <div class="question" id="q3">
+        <div class="question-number">Fråga 3 av 10</div>
+        <div class="question-text">I en webbläsare skriver du in en adress och får tillbaka en webbsida. Vilken roll spelar din dator i detta scenario?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> Server – din dator skickar sidan till sig själv</label>
+          <label><input type="radio" name="q3" value="b"> Klient – din dator begär sidan från en server</label>
+          <label><input type="radio" name="q3" value="c"> Router – din dator vidarebefordrar förfrågan</label>
+          <label><input type="radio" name="q3" value="d"> DNS – din dator översätter domännamnet</label>
+        </div>
+        <div class="explanation" id="exp3"></div>
+      </div>
+
+      <div class="question" id="q4">
+        <div class="question-number">Fråga 4 av 10</div>
+        <div class="question-text">I URL:en <code>https://www.skolan.se/kurser/webb</code> – vad är <em>domännamnet</em>?</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"> https</label>
+          <label><input type="radio" name="q4" value="b"> www.skolan.se</label>
+          <label><input type="radio" name="q4" value="c"> /kurser/webb</label>
+          <label><input type="radio" name="q4" value="d"> https://www</label>
+        </div>
+        <div class="explanation" id="exp4"></div>
+      </div>
+
+      <div class="question" id="q5">
+        <div class="question-number">Fråga 5 av 10</div>
+        <div class="question-text">I vilken ordning ska dessa delar stå i ett korrekt HTML-dokument?</div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="a"> <code>&lt;html&gt;</code> → <code>&lt;!DOCTYPE html&gt;</code> → <code>&lt;head&gt;</code> → <code>&lt;body&gt;</code></label>
+          <label><input type="radio" name="q5" value="b"> <code>&lt;!DOCTYPE html&gt;</code> → <code>&lt;html&gt;</code> → <code>&lt;head&gt;</code> → <code>&lt;body&gt;</code></label>
+          <label><input type="radio" name="q5" value="c"> <code>&lt;!DOCTYPE html&gt;</code> → <code>&lt;head&gt;</code> → <code>&lt;html&gt;</code> → <code>&lt;body&gt;</code></label>
+          <label><input type="radio" name="q5" value="d"> <code>&lt;head&gt;</code> → <code>&lt;body&gt;</code> → <code>&lt;html&gt;</code> → <code>&lt;!DOCTYPE html&gt;</code></label>
+        </div>
+        <div class="explanation" id="exp5"></div>
+      </div>
+
+      <div class="question" id="q6">
+        <div class="question-number">Fråga 6 av 10</div>
+        <div class="question-text">Vilket av dessa alternativ är ett korrekt HTML-element med ett attribut?</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="a"> <code>&lt;a = "länk" href&gt;Klicka&lt;/a&gt;</code></label>
+          <label><input type="radio" name="q6" value="b"> <code>&lt;a href="https://exempel.se"&gt;Klicka&lt;/a&gt;</code></label>
+          <label><input type="radio" name="q6" value="c"> <code>&lt;a&gt;href="https://exempel.se" Klicka&lt;/a&gt;</code></label>
+          <label><input type="radio" name="q6" value="d"> <code>&lt;"href" a="https://exempel.se"&gt;Klicka&lt;/a&gt;</code></label>
+        </div>
+        <div class="explanation" id="exp6"></div>
+      </div>
+
+      <div class="question" id="q7">
+        <div class="question-number">Fråga 7 av 10</div>
+        <div class="question-text">Vilken rubrik-tagg har <em>lägst</em> semantisk vikt (minst viktig rubrik)?</div>
+        <div class="options">
+          <label><input type="radio" name="q7" value="a"> <code>&lt;h1&gt;</code></label>
+          <label><input type="radio" name="q7" value="b"> <code>&lt;h3&gt;</code></label>
+          <label><input type="radio" name="q7" value="c"> <code>&lt;h6&gt;</code></label>
+          <label><input type="radio" name="q7" value="d"> <code>&lt;h0&gt;</code></label>
+        </div>
+        <div class="explanation" id="exp7"></div>
+      </div>
+
+      <div class="question" id="q8">
+        <div class="question-number">Fråga 8 av 10</div>
+        <div class="question-text">Vad är skillnaden mellan <code>&lt;ul&gt;</code> och <code>&lt;ol&gt;</code>?</div>
+        <div class="options">
+          <label><input type="radio" name="q8" value="a"> <code>&lt;ul&gt;</code> är för stora listor, <code>&lt;ol&gt;</code> för små listor</label>
+          <label><input type="radio" name="q8" value="b"> <code>&lt;ul&gt;</code> skapar en onumrerad lista med punkter, <code>&lt;ol&gt;</code> skapar en numrerad lista</label>
+          <label><input type="radio" name="q8" value="c"> <code>&lt;ul&gt;</code> är för text, <code>&lt;ol&gt;</code> är för bilder</label>
+          <label><input type="radio" name="q8" value="d"> Det är ingen skillnad, båda gör exakt samma sak</label>
+        </div>
+        <div class="explanation" id="exp8"></div>
+      </div>
+
+      <div class="question" id="q9">
+        <div class="question-number">Fråga 9 av 10</div>
+        <div class="question-text">Titta på denna kod. Vad är FEL med bildelementet?
+<pre>&lt;img src="katt.jpg"&gt;</pre>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q9" value="a"> Det saknas ett <code>alt</code>-attribut för tillgänglighet</label>
+          <label><input type="radio" name="q9" value="b"> Taggen måste ha ett avslutande <code>&lt;/img&gt;</code></label>
+          <label><input type="radio" name="q9" value="c"> Attributet ska heta <code>href</code> istället för <code>src</code></label>
+          <label><input type="radio" name="q9" value="d"> Det är ingenting fel med koden</label>
+        </div>
+        <div class="explanation" id="exp9"></div>
+      </div>
+
+      <div class="question" id="q10">
+        <div class="question-number">Fråga 10 av 10</div>
+        <div class="question-text">Vilken av dessa HTML-strukturer använder <em>semantisk</em> HTML korrekt för en webbsidas layout?</div>
+        <div class="options">
+          <label><input type="radio" name="q10" value="a">
+<pre>&lt;div id="top"&gt;...&lt;/div&gt;
+&lt;div id="menu"&gt;...&lt;/div&gt;
+&lt;div id="content"&gt;...&lt;/div&gt;
+&lt;div id="bottom"&gt;...&lt;/div&gt;</pre>
+          </label>
+          <label><input type="radio" name="q10" value="b">
+<pre>&lt;header&gt;...&lt;/header&gt;
+&lt;nav&gt;...&lt;/nav&gt;
+&lt;main&gt;...&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;</pre>
+          </label>
+          <label><input type="radio" name="q10" value="c">
+<pre>&lt;top&gt;...&lt;/top&gt;
+&lt;navigation&gt;...&lt;/navigation&gt;
+&lt;content&gt;...&lt;/content&gt;
+&lt;bottom&gt;...&lt;/bottom&gt;</pre>
+          </label>
+          <label><input type="radio" name="q10" value="d">
+<pre>&lt;h1&gt;...&lt;/h1&gt;
+&lt;h2&gt;...&lt;/h2&gt;
+&lt;p&gt;...&lt;/p&gt;
+&lt;h6&gt;...&lt;/h6&gt;</pre>
+          </label>
+        </div>
+        <div class="explanation" id="exp10"></div>
+      </div>
+
+      <button type="button" class="check-btn" id="check-btn" onclick="rattaTest()">Rätta testet</button>
+    </form>
+
+    <div class="result-box" id="result-box">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-message" id="result-message"></div>
+      <div id="result-actions"></div>
+    </div>
+  </div>
+
+  <script>
+    const MODUL = 1;
+    const STORAGE_KEY = 'test-modul-1-godkand';
+    const TOTAL = 10;
+
+    const answers = {
+      q1: 'a',
+      q2: 'c',
+      q3: 'b',
+      q4: 'b',
+      q5: 'b',
+      q6: 'b',
+      q7: 'c',
+      q8: 'b',
+      q9: 'a',
+      q10: 'b'
+    };
+
+    const explanations = {
+      q1: {
+        correct: 'Rätt! HTML står för HyperText Markup Language – ett märkspråk för att strukturera webbsidor.',
+        wrong: 'Fel. HTML står för <strong>HyperText Markup Language</strong>. Det är ett märkspråk (inte ett programmeringsspråk) som används för att strukturera innehåll på webben.'
+      },
+      q2: {
+        correct: 'Rätt! Tim Berners-Lee uppfann World Wide Web år 1989 och skapade HTML som dess grundläggande språk.',
+        wrong: 'Fel. Det var <strong>Tim Berners-Lee</strong> som uppfann World Wide Web och HTML år 1989 medan han arbetade på CERN.'
+      },
+      q3: {
+        correct: 'Rätt! Din webbläsare agerar som en klient – den skickar en förfrågan (request) till en server som svarar med webbsidan.',
+        wrong: 'Fel. Din dator är <strong>klienten</strong>. I klient-server-modellen begär klienten (din webbläsare) information från servern, som sedan skickar tillbaka sidan.'
+      },
+      q4: {
+        correct: 'Rätt! Domännamnet är www.skolan.se. Protokollet är https, och /kurser/webb är sökvägen (path).',
+        wrong: 'Fel. I URL:en https://www.skolan.se/kurser/webb är <strong>www.skolan.se</strong> domännamnet. "https" är protokollet och "/kurser/webb" är sökvägen.'
+      },
+      q5: {
+        correct: 'Rätt! DOCTYPE-deklarationen kommer allra först, sedan html-elementet, sedan head och body inuti html.',
+        wrong: 'Fel. Rätt ordning är: <strong>&lt;!DOCTYPE html&gt;</strong> → <strong>&lt;html&gt;</strong> → <strong>&lt;head&gt;</strong> → <strong>&lt;body&gt;</strong>. DOCTYPE måste alltid stå överst i dokumentet.'
+      },
+      q6: {
+        correct: 'Rätt! Syntaxen för ett attribut är: attributnamn="värde" inuti öppningstaggen. Exempel: &lt;a href="url"&gt;.',
+        wrong: 'Fel. Rätt syntax för ett element med attribut är <strong>&lt;a href="https://exempel.se"&gt;Klicka&lt;/a&gt;</strong>. Attributet skrivs som namn="värde" inuti öppningstaggen.'
+      },
+      q7: {
+        correct: 'Rätt! h6 är den minst viktiga rubriktaggen. Skalan går från h1 (viktigast) till h6 (minst viktig).',
+        wrong: 'Fel. <strong>&lt;h6&gt;</strong> har lägst semantisk vikt. HTML har sex rubriknivåer: h1 är viktigast (sidans huvudrubrik) och h6 är minst viktig. &lt;h0&gt; existerar inte.'
+      },
+      q8: {
+        correct: 'Rätt! ul (unordered list) ger en punktlista, ol (ordered list) ger en numrerad lista. Båda använder li för listobjekten.',
+        wrong: 'Fel. <strong>&lt;ul&gt;</strong> (unordered list) skapar en punktlista och <strong>&lt;ol&gt;</strong> (ordered list) skapar en numrerad lista. Båda innehåller &lt;li&gt;-element.'
+      },
+      q9: {
+        correct: 'Rätt! Alt-attributet (alt-text) är viktigt för tillgänglighet – det beskriver bilden för skärmläsare och visas om bilden inte laddas.',
+        wrong: 'Fel. Det saknas ett <strong>alt-attribut</strong>. Korrekt: &lt;img src="katt.jpg" alt="En katt"&gt;. Alt-texten är viktig för tillgänglighet och SEO. Img är en void-element och behöver inget avslutande &lt;/img&gt;.'
+      },
+      q10: {
+        correct: 'Rätt! Semantiska HTML-element som header, nav, main och footer beskriver innebörden av innehållet, inte bara utseendet.',
+        wrong: 'Fel. Alternativ B använder <strong>semantiska HTML5-element</strong>: &lt;header&gt;, &lt;nav&gt;, &lt;main&gt; och &lt;footer&gt;. Dessa berättar för webbläsare och sökmotorer vad varje del av sidan innehåller – inte bara hur den ser ut.'
+      }
+    };
+
+    let answered = false;
+
+    function rattaTest() {
+      if (answered) return;
+
+      let score = 0;
+      let firstWrong = null;
+      const results = {};
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const questionEl = document.getElementById(key);
+        const expEl = document.getElementById('exp' + i);
+        const labels = questionEl.querySelectorAll('.options label');
+
+        // Disable all radio buttons for this question
+        questionEl.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+
+        if (!selected) {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = '<strong>Du svarade inte på denna fråga.</strong> ' + explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          expEl.style.display = 'block';
+          results[key] = false;
+          if (!firstWrong) firstWrong = questionEl;
+          continue;
+        }
+
+        const userVal = selected.value;
+        const correctVal = answers[key];
+        const isCorrect = userVal === correctVal;
+
+        // Mark the selected label
+        labels.forEach(label => {
+          const radio = label.querySelector('input');
+          if (radio.value === userVal && isCorrect) {
+            label.classList.add('selected-correct');
+          } else if (radio.value === userVal && !isCorrect) {
+            label.classList.add('selected-wrong');
+          }
+          if (radio.value === correctVal && !isCorrect) {
+            label.classList.add('correct-answer');
+          }
+        });
+
+        if (isCorrect) {
+          score++;
+          questionEl.classList.add('correct');
+          expEl.innerHTML = explanations[key].correct;
+          expEl.className = 'explanation correct';
+        } else {
+          questionEl.classList.add('wrong');
+          expEl.innerHTML = explanations[key].wrong;
+          expEl.className = 'explanation wrong';
+          if (!firstWrong) firstWrong = questionEl;
+        }
+
+        expEl.style.display = 'block';
+        results[key] = isCorrect;
+      }
+
+      answered = true;
+      document.getElementById('check-btn').disabled = true;
+
+      const resultBox = document.getElementById('result-box');
+      const resultScore = document.getElementById('result-score');
+      const resultMessage = document.getElementById('result-message');
+      const resultActions = document.getElementById('result-actions');
+
+      resultScore.textContent = score + ' av ' + TOTAL + ' rätt';
+      resultBox.style.display = 'block';
+
+      if (score === TOTAL) {
+        localStorage.setItem(STORAGE_KEY, 'true');
+        resultBox.className = 'result-box pass';
+        resultMessage.innerHTML = 'Utmärkt! Du klarade testet med full poäng och är nu godkänd på Modul 1.';
+        resultActions.innerHTML = '<a href="modul-2-css.html" class="next-link">Gå vidare till Modul 2 →</a>';
+      } else {
+        resultBox.className = 'result-box fail';
+        const numWrong = TOTAL - score;
+        resultMessage.innerHTML = 'Du hade ' + numWrong + ' fel svar. Du behöver 100% rätt för att bli godkänd. Se förklaringarna ovan och försök igen.';
+        resultActions.innerHTML = '<button class="retry-btn" onclick="resetTest()">Försök igen</button>';
+        if (firstWrong) {
+          setTimeout(() => firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+      }
+
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetTest() {
+      answered = false;
+      document.getElementById('check-btn').disabled = false;
+      document.getElementById('result-box').style.display = 'none';
+
+      for (let i = 1; i <= TOTAL; i++) {
+        const key = 'q' + i;
+        const questionEl = document.getElementById(key);
+        questionEl.classList.remove('correct', 'wrong');
+
+        const expEl = document.getElementById('exp' + i);
+        expEl.style.display = 'none';
+        expEl.innerHTML = '';
+
+        const radios = questionEl.querySelectorAll('input[type="radio"]');
+        radios.forEach(r => {
+          r.checked = false;
+          r.disabled = false;
+        });
+
+        const labels = questionEl.querySelectorAll('.options label');
+        labels.forEach(l => {
+          l.classList.remove('selected-correct', 'selected-wrong', 'correct-answer');
+        });
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+  </script>
+</body>
+</html>
